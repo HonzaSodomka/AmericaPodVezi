@@ -20,6 +20,15 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
         rgba(0,0,0,0.98) 100%);
 }
 
+/* Background Images (Extracted from HTML) */
+.bg-zebra {
+    background-image: url('zebra.jpg');
+}
+
+.bg-akce {
+    background-image: url('akce.jpg');
+}
+
 /* Mobile Menu Transitions */
 #mobile-menu {
     transition: transform 0.3s ease-in-out;
