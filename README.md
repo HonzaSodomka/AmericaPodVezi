@@ -1,35 +1,15 @@
-# America Pod Věží - Moderní Web
+# America Pod Věží
 
-Tento repozitář obsahuje zdrojový kód pro moderní one-page web restaurace America Pod Věží.
+Moderní web pro restauraci America Pod Věží v Mladé Boleslavi.
 
-## Jak web funguje
-Web je postaven na moderních technologiích (Tailwind CSS) pro rychlé načítání a skvělý vzhled na mobilech. Nepotřebuje žádné složité instalace, stačí otevřít `index.html`.
+## ⚠️ Důležité: První kroky
 
-## Jak upravit obsah
+Aby web vypadal správně, **musíte nahrát váš obrázek**:
 
-### 1. Denní Menu (PDF)
-Sekce "Denní menu" očekává PDF soubor.
-- Nahrajte svůj PDF soubor s denním menu do složky `assets/` (vytvořte ji, pokud neexistuje).
-- Pojmenujte soubor `denni_menu.pdf`.
-- Web ho automaticky zobrazí.
-
-### 2. Hlavní Menu (Efekt listování)
-Pro efekt "knihy" v sekci hlavního menu:
-- Web používá "fiktivní" stránky v HTML kódu (`<div class="page">...</div>`).
-- **Nejlepší řešení:** Vyexportujte vaše menu jako obrázky (JPG/PNG).
-- Vložte obrázky do složky `assets/`.
-- V souboru `index.html` najděte sekci `<div id="flipbook">`.
-- Nahraďte obsah `div class="page"` vašimi obrázky:
-  ```html
-  <div class="page">
-      <img src="assets/menu_strana_1.jpg" alt="Strana 1">
-  </div>
-  ```
-
-### 3. Obrázky
-Aktuálně jsou použity ilustrační obrázky z fotobanky Unsplash.
-- Nahraďte je reálnými fotkami z restaurace.
-- Upravte `src="..."` v `index.html` odkazy na vaše soubory.
+1.  Vezměte soubor s fotkou burgerů (ten, co jste mi poslali).
+2.  Přejmenujte ho přesně na `hero.jpg` (malá písmena).
+3.  Nahrajte ho přímo sem do hlavní složky (vedle `index.html`).
 
 ## Spuštění
-Pro náhled stačí otevřít soubor `index.html` ve vašem prohlížeči. Pro veřejné spuštění doporučuji nahrát na GitHub Pages (Settings -> Pages -> Source: main).
+Otevřete `index.html` v prohlížeči.
+Web je připravený jako One-Page prezentace s Hero sekcí přes celou obrazovku.
