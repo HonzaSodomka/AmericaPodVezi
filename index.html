@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>America Pod Věží</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (Script Config remains for Utility Classes) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -29,82 +29,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
-        
-        .hero-section {
-            background-image: url('hero.jpg');
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            position: relative;
-        }
-
-        /* Darker Overlay as requested */
-        .hero-overlay {
-            background: linear-gradient(to bottom, 
-                rgba(0,0,0,0.7) 0%, 
-                rgba(0,0,0,0.4) 40%, 
-                rgba(0,0,0,0.8) 80%,
-                rgba(0,0,0,0.98) 100%);
-        }
-
-        #mobile-menu {
-            transition: transform 0.3s ease-in-out;
-        }
-        .menu-open {
-            transform: translateX(0);
-        }
-        .menu-closed {
-            transform: translateX(100%);
-        }
-        
-        /* Nav Link Style */
-        .nav-link {
-            position: relative;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            font-size: 1rem;
-            color: rgba(255,255,255,0.9);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            transition: color 0.3s ease;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 3px;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #d4a373;
-            transition: width 0.3s ease;
-            box-shadow: 0 2px 3px rgba(0,0,0,0.8);
-        }
-
-        .nav-link:hover {
-            color: #d4a373;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-enter { opacity: 0; animation: fadeInUp 0.8s ease-out forwards; }
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-
-    </style>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-900 text-white overflow-x-hidden">
 
@@ -143,7 +73,7 @@
         
         <div class="relative z-10 w-full max-w-7xl mx-auto px-6 text-center md:text-left">
             
-            <!-- Main Headline (Maximized AMERICA) -->
+            <!-- Main Headline -->
             <div class="animate-enter delay-100">
                 <h1 class="text-6xl md:text-9xl font-bold font-heading mb-2 leading-none drop-shadow-2xl tracking-tight">
                     AMERICA
@@ -192,6 +122,24 @@
             </div>
         </div>
     </section>
+
+    <!-- Placeholders for One-Page Sections -->
+    <!-- These ensure the links scroll somewhere valid -->
+    <section id="menu" class="bg-black min-h-screen border-t border-white/10 flex items-center justify-center text-gray-500">
+        <!-- Content for Menu will go here -->
+        <p class="text-2xl font-heading">SEKCE: MENU (Připraveno)</p>
+    </section>
+
+    <section id="about" class="bg-gray-900 min-h-[50vh] border-t border-white/10 flex items-center justify-center text-gray-500">
+        <!-- Content for About will go here -->
+        <p class="text-2xl font-heading">SEKCE: O NÁS (Připraveno)</p>
+    </section>
+
+    <section id="contact" class="bg-black min-h-[50vh] border-t border-white/10 flex items-center justify-center text-gray-500">
+        <!-- Content for Contact will go here -->
+        <p class="text-2xl font-heading">SEKCE: KONTAKT (Připraveno)</p>
+    </section>
+
 
     <!-- Footer -->
     <footer class="bg-black text-gray-500 py-6 text-center text-xs tracking-widest uppercase border-t border-white/10">
