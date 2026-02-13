@@ -73,6 +73,11 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
 }
 
 /* Animations */
+.scroll-wait {
+    opacity: 0;
+    /* Use will-change to optimize rendering if needed, but usually optional */
+}
+
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
