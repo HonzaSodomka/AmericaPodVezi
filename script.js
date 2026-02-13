@@ -47,7 +47,7 @@ function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
     if (!preloader) return;
 
-    window.addEventListener('load', () => {
+    const fadeOut = () => {
         setTimeout(() => {
             preloader.style.opacity = '0';
             setTimeout(() => {
@@ -55,7 +55,14 @@ function initPreloader() {
                 document.body.style.overflow = '';
             }, CONFIG.animation.fadeDuration);
         }, CONFIG.animation.preloaderDelay);
-    });
+    };
+
+    // Check if page is already loaded
+    if (document.readyState === 'complete') {
+        fadeOut();
+    } else {
+        window.addEventListener('load', fadeOut);
+    }
 }
 
 /**
