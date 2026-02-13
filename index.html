@@ -38,7 +38,7 @@
 </head>
 <body class="bg-gray-900 text-white overflow-x-hidden">
 
-    <!-- Navigation (Changed to Absolute so it stays at top) -->
+    <!-- Navigation (Absolute) -->
     <nav class="absolute w-full z-50 top-0 left-0 p-6" id="navbar">
         <div class="flex justify-between items-center max-w-7xl mx-auto">
             <!-- Logo -->
@@ -96,17 +96,14 @@
                 <!-- Action Buttons -->
                 <div class="flex flex-col md:flex-row gap-4 items-center md:items-stretch animate-enter delay-300">
                     <!-- Menu -->
-                    <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-5 px-6 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 min-w-[160px]">
+                    <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-4 px-6 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 min-w-[160px]">
                         Naše Menu
                     </a>
 
-                    <!-- Rezervace (Updated Logic) -->
-                    <!-- Desktop: Shows Number. Mobile: Shows "Rezervovat" (or can show number too, but 'Rezervovat' is a clearer CTA) -->
-                    <!-- Current request: PC text visible number, Mobile clickable without text (or minimal text). Let's use Icon+Number for Desktop, Icon+Text for Mobile. -->
-                    <a href="tel:326322007" class="border-2 border-white/80 text-white font-bold font-heading py-5 px-6 text-xl rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 min-w-[160px]">
-                        <i class="fas fa-phone-alt mr-3"></i> 
-                        <span class="hidden md:inline">326 322 007</span>
-                        <span class="md:hidden">Rezervovat</span>
+                    <!-- Rezervace (Stacked Layout) -->
+                    <a href="tel:326322007" class="border-2 border-white/80 text-white font-bold font-heading py-3 px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 min-w-[180px] leading-none gap-1">
+                        <span class="text-lg">REZERVACE</span>
+                        <span class="text-sm font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> 326 322 007</span>
                     </a>
 
                     <!-- Delivery Widget -->
@@ -184,13 +181,13 @@
                 </div>
              </div>
 
-             <!-- Bottom Row: Stálý Lístek Viewer (Updated Layout) -->
+             <!-- Bottom Row: Stálý Lístek Viewer -->
              <div class="w-full">
                  <div class="flex items-center justify-between mb-4 px-2">
                      <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
                  </div>
 
-                 <!-- Book Container (Arrows moved inside) -->
+                 <!-- Book Container -->
                  <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[400px] md:min-h-[500px] flex items-center justify-center group">
                      
                      <!-- Left Arrow -->
@@ -201,12 +198,10 @@
                      <!-- Menu Page Images Container -->
                      <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-2 lg:p-4 transition duration-300">
                          <img src="menu-page-1.jpg" id="current-menu-image" alt="Strana menu" class="max-h-[600px] max-w-full object-contain shadow-2xl">
-                         
-                         <!-- Fallback Text -->
+                         <!-- Fallback -->
                          <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
                              <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
                              <p class="text-gray-500">Zde se zobrazí jídelní lístek</p>
-                             <p class="text-xs text-gray-700 mt-2">Nahrajte: menu-page-1.jpg ...</p>
                          </div>
                      </div>
 
@@ -215,7 +210,7 @@
                          <i class="fas fa-chevron-right text-xl"></i>
                      </button>
                      
-                     <!-- Page Indicator -->
+                     <!-- Indicator -->
                      <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none">
                          <span id="page-indicator" class="bg-black/80 px-4 py-1 rounded-full text-xs text-brand-gold font-heading tracking-widest border border-white/10 shadow-lg">
                              STRANA 1 / 4
@@ -247,7 +242,6 @@
     </footer>
 
     <script>
-        // Mobile Menu Logic
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const icon = menuBtn.querySelector('i');
@@ -277,13 +271,8 @@
             });
         });
 
-        // Simple Menu Viewer Script
-        const menuImages = [
-            'menu-page-1.jpg',
-            'menu-page-2.jpg',
-            'menu-page-3.jpg',
-            'menu-page-4.jpg'
-        ];
+        // Menu Viewer
+        const menuImages = ['menu-page-1.jpg', 'menu-page-2.jpg', 'menu-page-3.jpg', 'menu-page-4.jpg'];
         let currentIndex = 0;
         const currentImg = document.getElementById('current-menu-image');
         const prevBtn = document.getElementById('prev-page');
@@ -291,34 +280,23 @@
         const indicator = document.getElementById('page-indicator');
 
         function updateMenu() {
-            currentImg.style.opacity = '0'; // Simple fade out
+            currentImg.style.opacity = '0';
             setTimeout(() => {
                 currentImg.src = menuImages[currentIndex];
                 indicator.textContent = `STRANA ${currentIndex + 1} / ${menuImages.length}`;
-                currentImg.onload = () => {
-                    currentImg.style.opacity = '1'; // Fade in
-                };
+                currentImg.onload = () => { currentImg.style.opacity = '1'; };
                 if (currentImg.complete) currentImg.style.opacity = '1';
             }, 150);
         }
 
         prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateMenu();
-            }
+            if (currentIndex > 0) { currentIndex--; updateMenu(); }
         });
 
         nextBtn.addEventListener('click', () => {
-            if (currentIndex < menuImages.length - 1) {
-                currentIndex++;
-                updateMenu();
-            }
+            if (currentIndex < menuImages.length - 1) { currentIndex++; updateMenu(); }
         });
-        
-        // Initialize
         updateMenu();
-
     </script>
 </body>
 </html>
