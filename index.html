@@ -3,21 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>America Pod Věží | Mladá Boleslav</title>
+    <title>America Pod Věží | Úvod</title>
     <meta name="description" content="Pravá Amerika v historickém srdci Mladé Boleslavi. Burgery, žebra, steaky a skvělé pivo.">
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            dark: '#1a1a1a',
-                            accent: '#d97706', // amber-600
-                            muted: '#a8a29e',
-                        }
+                        brand: { dark: '#1a1a1a', accent: '#d97706', muted: '#a8a29e' }
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -27,295 +21,139 @@
             }
         }
     </script>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Roboto+Slab:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Flipbook Library -->
-    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
-
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #111; color: #f3f4f6; }
         h1, h2, h3, .font-heading { font-family: 'Roboto Slab', serif; }
-        
         .hero-bg {
-            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1965&auto=format&fit=crop');
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(17,17,17,1)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1965&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
-        }
-
-        /* Flipbook Styles */
-        .flip-book {
-            box-shadow: 0 0 20px 0 rgba(0,0,0,0.5);
-            display: none; /* Hidden until loaded */
-            background-size: cover;
-        }
-        
-        .page {
-            padding: 20px;
-            background-color: hsl(35, 30%, 90%);
-            color: #333;
-            border: 1px solid #c2b5a3;
-            overflow: hidden;
-        }
-        
-        .page img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .menu-pdf-container iframe {
-            width: 100%;
-            min-height: 500px;
-            border: none;
         }
     </style>
 </head>
-<body class="bg-stone-950 text-stone-200">
+<body class="bg-stone-950 text-stone-200 flex flex-col min-h-screen">
 
     <!-- Navigation -->
     <nav class="fixed w-full z-50 bg-stone-950/90 backdrop-blur-md border-b border-stone-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <div class="flex-shrink-0">
-                    <a href="#" class="font-heading text-2xl font-bold text-amber-500 tracking-wider">AMERICA <span class="text-stone-100 text-lg font-normal block sm:inline">POD VĚŽÍ</span></a>
+                    <a href="index.html" class="font-heading text-2xl font-bold text-amber-500 tracking-wider">AMERICA <span class="text-stone-100 text-lg font-normal block sm:inline">POD VĚŽÍ</span></a>
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#denni-menu" class="hover:text-amber-500 px-3 py-2 rounded-md font-medium transition">Denní menu</a>
-                        <a href="#hlavni-menu" class="hover:text-amber-500 px-3 py-2 rounded-md font-medium transition">Jídelní lístek</a>
-                        <a href="#o-nas" class="hover:text-amber-500 px-3 py-2 rounded-md font-medium transition">O nás</a>
-                        <a href="#kontakt" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md font-bold transition">Rezervace</a>
+                        <a href="index.html" class="text-white px-3 py-2 rounded-md font-medium">Domů</a>
+                        <a href="menu.html" class="hover:text-amber-500 text-stone-300 px-3 py-2 rounded-md font-medium transition">Menu</a>
+                        <a href="onas.html" class="hover:text-amber-500 text-stone-300 px-3 py-2 rounded-md font-medium transition">O nás</a>
+                        <a href="kontakt.html" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-md font-bold transition">Kontakt & Rezervace</a>
                     </div>
                 </div>
-                <!-- Mobile menu button -->
                 <div class="-mr-2 flex md:hidden">
-                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="inline-flex items-center justify-center p-2 rounded-md text-stone-400 hover:text-white hover:bg-stone-800 focus:outline-none">
-                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="inline-flex items-center justify-center p-2 rounded-md text-stone-400 hover:text-white focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div class="hidden md:hidden bg-stone-900" id="mobile-menu">
+        <div class="hidden md:hidden bg-stone-900 border-b border-stone-800" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#denni-menu" class="block hover:text-amber-500 px-3 py-2 rounded-md text-base font-medium">Denní menu</a>
-                <a href="#hlavni-menu" class="block hover:text-amber-500 px-3 py-2 rounded-md text-base font-medium">Jídelní lístek</a>
-                <a href="#o-nas" class="block hover:text-amber-500 px-3 py-2 rounded-md text-base font-medium">O nás</a>
-                <a href="#kontakt" class="block text-amber-500 px-3 py-2 rounded-md text-base font-bold">Rezervace: +420 123 456 789</a>
+                <a href="index.html" class="block text-white bg-stone-800 px-3 py-2 rounded-md text-base font-medium">Domů</a>
+                <a href="menu.html" class="block text-stone-300 hover:text-amber-500 px-3 py-2 rounded-md text-base font-medium">Menu & Denní nabídka</a>
+                <a href="onas.html" class="block text-stone-300 hover:text-amber-500 px-3 py-2 rounded-md text-base font-medium">O nás</a>
+                <a href="kontakt.html" class="block text-amber-500 px-3 py-2 rounded-md text-base font-bold">Kontakt</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero-bg h-screen flex items-center justify-center text-center px-4 relative">
-        <div class="absolute inset-0 bg-black/50 z-0"></div>
-        <div class="relative z-10 max-w-3xl">
-            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+    <header class="hero-bg min-h-[85vh] flex items-center justify-center text-center px-4 pt-20">
+        <div class="max-w-4xl relative z-10">
+            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight drop-shadow-lg">
                 POCTIVÁ <span class="text-amber-500">AMERIKA</span><br>
                 <span class="text-3xl md:text-5xl font-bold text-white">V SRDCI BOLESLAVI</span>
             </h1>
-            <p class="text-xl md:text-2xl text-stone-300 mb-8 max-w-2xl mx-auto">
+            <p class="text-xl md:text-2xl text-stone-200 mb-10 max-w-2xl mx-auto drop-shadow-md font-light">
                 Šťavnaté burgery, BBQ žebra a tankové pivo v unikátním historickém sklepení.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#hlavni-menu" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 px-8 rounded-full transition transform hover:scale-105 text-lg shadow-lg shadow-amber-900/50">
-                    Prohlédnout Menu
+                <a href="menu.html" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 px-10 rounded-full transition transform hover:scale-105 text-lg shadow-lg shadow-amber-900/50 flex items-center justify-center gap-2">
+                    <i class="fas fa-utensils"></i> Jídelní lístek
                 </a>
-                <a href="tel:+420123456789" class="bg-transparent border-2 border-stone-100 hover:bg-white hover:text-black text-white font-bold py-4 px-8 rounded-full transition text-lg">
-                    Zavolat do restaurace
+                <a href="kontakt.html" class="bg-stone-900/80 hover:bg-stone-800 backdrop-blur text-white border border-stone-600 font-bold py-4 px-10 rounded-full transition text-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-calendar-check"></i> Rezervovat stůl
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Denní Menu (Single PDF Page) -->
-    <section id="denni-menu" class="py-20 bg-stone-900">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-4xl font-heading font-bold mb-4 text-amber-500">DENNÍ NABÍDKA</h2>
-            <p class="text-stone-400 mb-10">Každý všední den pro vás připravujeme čerstvé menu.</p>
-            
-            <div class="bg-stone-800 p-2 rounded-lg shadow-2xl menu-pdf-container">
-                <!-- ZDE VLOŽIT PDF DENNÍHO MENU -->
-                <!-- Pro účely dema používám placeholder, nahradíte cestou k 'denni_menu.pdf' -->
-                <iframe src="assets/denni_menu.pdf" class="w-full h-[800px] rounded bg-white">
-                    <p>Váš prohlížeč nepodporuje PDF. <a href="assets/denni_menu.pdf" class="text-amber-500 underline">Stáhněte si denní menu zde.</a></p>
-                </iframe>
-            </div>
-        </div>
-    </section>
-
-    <!-- Hlavní Menu (Flipbook Effect) -->
-    <section id="hlavni-menu" class="py-20 bg-stone-950 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
-            <h2 class="text-4xl font-heading font-bold mb-4 text-white">JÍDELNÍ LÍSTEK</h2>
-            <p class="text-stone-400 mb-12">Listujte naším menu jako v restauraci. Táhněte myší nebo prstem.</p>
-
-            <!-- Flipbook Container -->
-            <div class="flex justify-center items-center h-[600px] md:h-[700px]">
-                <div id="flipbook" class="flip-book shadow-2xl">
-                    <!-- Cover -->
-                    <div class="page cover bg-stone-900 text-amber-500 flex items-center justify-center border-4 border-amber-600">
-                        <div class="text-center">
-                            <h3 class="text-4xl font-bold mb-4">MENU</h3>
-                            <p class="text-xl">America Pod Věží</p>
-                            <p class="mt-8 text-sm text-stone-400">Dotkněte se rohu pro otevření</p>
-                        </div>
+    <!-- Quick Actions (Mobile First Grid) -->
+    <section class="py-12 bg-stone-950 -mt-10 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Daily Menu -->
+                <a href="menu.html#denni-menu" class="group bg-stone-900 border border-stone-800 p-8 rounded-xl hover:border-amber-500 transition shadow-xl flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-stone-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-amber-600 transition">
+                        <i class="fas fa-clock text-2xl text-amber-500 group-hover:text-white"></i>
                     </div>
-                    
-                    <!-- Page 1 -->
-                    <div class="page">
-                        <div class="text-center h-full flex flex-col justify-center border-2 border-stone-800 p-4">
-                            <h4 class="text-2xl font-bold text-black mb-4 border-b-2 border-amber-500 pb-2">PŘEDKRMY</h4>
-                            <ul class="text-left space-y-4">
-                                <li class="flex justify-between">
-                                    <span class="font-bold">Onion Rings</span>
-                                    <span>129,-</span>
-                                </li>
-                                <li class="text-sm italic text-stone-600 mb-2">Domácí cibulové kroužky v pivním těstíčku, BBQ dip</li>
-                                
-                                <li class="flex justify-between">
-                                    <span class="font-bold">Nachos Grande</span>
-                                    <span>189,-</span>
-                                </li>
-                                <li class="text-sm italic text-stone-600">Zapékané se sýrem cheddar, jalapeños, salsa</li>
-                            </ul>
-                            <!-- PLACEHOLDER FOR IMAGE MENU PAGE 1 -->
-                            <!-- <img src="assets/menu_page_1.jpg" alt="Menu Strana 1" /> -->
-                        </div>
-                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Denní Menu</h3>
+                    <p class="text-stone-400 text-sm">Podívejte se, co pro vás dnes vaříme. Poctivé obědy každý všední den.</p>
+                </a>
 
-                    <!-- Page 2 -->
-                    <div class="page">
-                        <div class="text-center h-full flex flex-col justify-center border-2 border-stone-800 p-4">
-                            <h4 class="text-2xl font-bold text-black mb-4 border-b-2 border-amber-500 pb-2">BURGERS</h4>
-                            <ul class="text-left space-y-4">
-                                <li class="flex justify-between">
-                                    <span class="font-bold">Jack Daniel's Burger</span>
-                                    <span>289,-</span>
-                                </li>
-                                <li class="text-sm italic text-stone-600 mb-2">Hovězí maso, slanina, cheddar, cibulka na JD, domácí hranolky</li>
-                                
-                                <li class="flex justify-between">
-                                    <span class="font-bold">Bison Burger</span>
-                                    <span>329,-</span>
-                                </li>
-                                <li class="text-sm italic text-stone-600">Šťavnaté bizoní maso, chipotle majonéza, salát</li>
-                            </ul>
-                            <!-- PLACEHOLDER FOR IMAGE MENU PAGE 2 -->
-                        </div>
+                <!-- Card 2: Delivery -->
+                <a href="https://wolt.com" target="_blank" class="group bg-stone-900 border border-stone-800 p-8 rounded-xl hover:border-amber-500 transition shadow-xl flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-stone-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-amber-600 transition">
+                        <i class="fas fa-motorcycle text-2xl text-amber-500 group-hover:text-white"></i>
                     </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Rozvoz Domů</h3>
+                    <p class="text-stone-400 text-sm">Nechce se vám ven? Objednejte si naše burgery až ke dveřím přes Wolt nebo Foodoru.</p>
+                </a>
 
-                     <!-- Back Cover -->
-                     <div class="page cover bg-stone-900 text-stone-500 flex items-center justify-center">
-                        <div class="text-center">
-                            <p class="text-lg">Dobrou chuť!</p>
-                            <p class="mt-4 text-sm">www.americapodvezi.cz</p>
-                        </div>
+                <!-- Card 3: Events/Salonek -->
+                <a href="onas.html" class="group bg-stone-900 border border-stone-800 p-8 rounded-xl hover:border-amber-500 transition shadow-xl flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-stone-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-amber-600 transition">
+                        <i class="fas fa-glass-cheers text-2xl text-amber-500 group-hover:text-white"></i>
                     </div>
-                </div>
-            </div>
-            
-            <div class="mt-8">
-                <a href="assets/hlavni_menu.pdf" target="_blank" class="inline-flex items-center text-amber-500 hover:text-amber-400 underline">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Stáhnout celé menu v PDF
+                    <h3 class="text-xl font-bold text-white mb-2">Oslavy a Akce</h3>
+                    <p class="text-stone-400 text-sm">Plánujete večírek? Máme salónky pro soukromé akce v unikátní atmosféře.</p>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- O Nás Section -->
-    <section id="o-nas" class="py-20 bg-stone-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1974&auto=format&fit=crop" alt="Interiér restaurace" class="rounded-lg shadow-xl border border-stone-700 grayscale hover:grayscale-0 transition duration-500">
+    <!-- Signature Dish Spotlight -->
+    <section class="py-20 bg-stone-900">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1899&auto=format&fit=crop" alt="Signature Burger" class="rounded-lg shadow-2xl border-2 border-stone-800 rotate-1 hover:rotate-0 transition duration-500">
             </div>
-            <div>
-                <h2 class="text-3xl md:text-4xl font-heading font-bold mb-6 text-white">HISTORIE <span class="text-amber-600">POTKÁVÁ</span> CHUŤ</h2>
+            <div class="md:w-1/2 text-left">
+                <span class="text-amber-500 font-bold tracking-widest text-sm uppercase mb-2 block">Doporučujeme</span>
+                <h2 class="text-4xl md:text-5xl font-heading font-bold mb-6 text-white">JACK DANIEL'S <br><span class="text-stone-500">BURGER</span></h2>
                 <p class="text-stone-300 mb-6 text-lg leading-relaxed">
-                    Nacházíme se v unikátních sklepních prostorách přímo pod boleslavskou věží. Cihlové klenby pamatují staletí, ale naše kuchyně žije přítomností.
+                    Naše vlajková loď. 200g vyzrálého hovězího, křupavá slanina, roztékající se cheddar a naše tajná omáčka s kapkou Jacka. Podáváme s domácími hranolky.
                 </p>
-                <p class="text-stone-300 mb-8 text-lg leading-relaxed">
-                    Sázíme na <strong class="text-white">čerstvost</strong>. Maso si sami meleme, omáčky vaříme a hranolky krájíme z opravdových brambor. Žádné polotovary, jen poctivá práce a láska k jídlu.
-                </p>
-                <div class="flex items-center gap-4 text-amber-500 font-bold">
-                    <span class="flex items-center"><svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Dog Friendly</span>
-                    <span class="flex items-center"><svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Tankové Pivo</span>
-                </div>
+                <a href="menu.html" class="inline-block border-b-2 border-amber-500 pb-1 text-white hover:text-amber-500 transition text-lg font-bold">
+                    Prohlédnout celé menu <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer / Kontakt -->
-    <footer id="kontakt" class="bg-black text-stone-400 py-16 border-t border-stone-800">
-        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-12">
-            <div>
-                <h3 class="text-white text-xl font-bold mb-4 font-heading">KONTAKT</h3>
-                <p class="mb-2"><strong class="text-white">America Pod Věží</strong></p>
-                <p class="mb-2">Komenského náměstí 61</p>
-                <p class="mb-4">293 01 Mladá Boleslav</p>
-                <p class="mb-2"><a href="tel:+420123456789" class="hover:text-amber-500 transition">Tel: +420 123 456 789</a></p>
-                <p><a href="mailto:info@americapodvezi.cz" class="hover:text-amber-500 transition">Email: info@americapodvezi.cz</a></p>
+    <!-- Short Footer (Full footer will be consistent across pages) -->
+    <footer class="bg-black text-stone-500 py-8 border-t border-stone-900 text-center">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 America Pod Věží</p>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-white"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="hover:text-white"><i class="fab fa-instagram"></i></a>
             </div>
-            <div>
-                <h3 class="text-white text-xl font-bold mb-4 font-heading">OTEVÍRACÍ DOBA</h3>
-                <ul class="space-y-2">
-                    <li class="flex justify-between"><span>Pondělí - Čtvrtek</span> <span class="text-white">11:00 - 22:00</span></li>
-                    <li class="flex justify-between"><span>Pátek</span> <span class="text-white">11:00 - 23:00</span></li>
-                    <li class="flex justify-between"><span>Sobota</span> <span class="text-white">11:30 - 23:00</span></li>
-                    <li class="flex justify-between"><span>Neděle</span> <span class="text-amber-600">Zavřeno</span></li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-white text-xl font-bold mb-4 font-heading">KDE NÁS NAJDETE</h3>
-                <!-- Simple Map Placeholder -->
-                <div class="w-full h-40 bg-stone-800 rounded flex items-center justify-center mb-4">
-                    <span class="text-sm">Google Maps Embed Zde</span>
-                </div>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-2xl hover:text-white transition"><i class="fab fa-facebook"></i> FB</a>
-                    <a href="#" class="text-2xl hover:text-white transition"><i class="fab fa-instagram"></i> IG</a>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-12 pt-8 border-t border-stone-900 text-sm">
-            &copy; 2026 America Pod Věží. Vytvořeno s láskou k burgerům.
+            <p class="text-sm">Komenského náměstí 61, Mladá Boleslav</p>
         </div>
     </footer>
 
-    <!-- Init Flipbook Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu Toggle
-            const mobileBtn = document.querySelector('button.md\\:hidden');
-            const mobileMenu = document.getElementById('mobile-menu');
-            
-            // Simple Flipbook Init (PageFlip)
-            const pageFlip = new St.PageFlip(document.getElementById('flipbook'), {
-                width: 400, // base page width
-                height: 600, // base page height
-                size: "stretch",
-                minWidth: 300,
-                maxWidth: 1000,
-                minHeight: 400,
-                maxHeight: 1333,
-                maxShadowOpacity: 0.5,
-                showCover: true,
-                mobileScrollSupport: false // disable on mobile to allow scrolling the page
-            });
-
-            // Load pages
-            const pages = document.querySelectorAll('.page');
-            pageFlip.loadFromHTML(pages);
-            
-            // Show flipbook after init
-            document.getElementById('flipbook').style.display = 'block';
-        });
-    </script>
 </body>
 </html>
