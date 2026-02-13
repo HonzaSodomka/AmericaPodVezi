@@ -38,8 +38,8 @@
 </head>
 <body class="bg-gray-900 text-white overflow-x-hidden">
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 top-0 left-0 p-6 transition duration-300" id="navbar">
+    <!-- Navigation (Changed to Absolute so it stays at top) -->
+    <nav class="absolute w-full z-50 top-0 left-0 p-6" id="navbar">
         <div class="flex justify-between items-center max-w-7xl mx-auto">
             <!-- Logo -->
             <div class="flex items-center gap-3 animate-enter">
@@ -100,12 +100,16 @@
                         Naše Menu
                     </a>
 
-                    <!-- Rezervace -->
-                    <a href="tel:+420123456789" class="border-2 border-white/80 text-white font-bold font-heading py-5 px-6 text-xl rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 min-w-[160px]">
-                        Rezervovat
+                    <!-- Rezervace (Updated Logic) -->
+                    <!-- Desktop: Shows Number. Mobile: Shows "Rezervovat" (or can show number too, but 'Rezervovat' is a clearer CTA) -->
+                    <!-- Current request: PC text visible number, Mobile clickable without text (or minimal text). Let's use Icon+Number for Desktop, Icon+Text for Mobile. -->
+                    <a href="tel:326322007" class="border-2 border-white/80 text-white font-bold font-heading py-5 px-6 text-xl rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 min-w-[160px]">
+                        <i class="fas fa-phone-alt mr-3"></i> 
+                        <span class="hidden md:inline">326 322 007</span>
+                        <span class="md:hidden">Rezervovat</span>
                     </a>
 
-                    <!-- Delivery Widget (Links Updated) -->
+                    <!-- Delivery Widget -->
                     <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col md:flex-row items-center justify-center px-6 py-2 gap-2 shadow-xl min-w-[200px]">
                         <span class="text-xs uppercase tracking-widest text-gray-300 font-heading font-bold whitespace-nowrap">Rozvoz domů:</span>
                         <div class="flex gap-4 items-center">
@@ -135,8 +139,7 @@
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
              </div>
              
-             <!-- Top Row: Daily Menu + 3 Vertical Images -->
-             <!-- On mobile: Grid col-1 but images are limited in height to avoid huge scroll -->
+             <!-- Top Row: Daily Menu + 3 Images -->
              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
                 
                 <!-- 1. Denní Menu Card -->
@@ -153,7 +156,7 @@
                     </a>
                 </div>
 
-                <!-- 2. Image: Zebra (Ribs) -->
+                <!-- 2. Zebra -->
                 <div class="relative group aspect-[3/4] overflow-hidden rounded-sm border border-white/5 bg-gray-800">
                     <div class="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" style="background-image: url('zebra.jpg');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
@@ -162,7 +165,7 @@
                     </div>
                 </div>
 
-                <!-- 3. Image: Prostory (Interior) -->
+                <!-- 3. Prostory -->
                 <div class="relative group aspect-[3/4] overflow-hidden rounded-sm border border-white/5 bg-gray-800">
                     <div class="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" style="background-image: url('prostory.jpg');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
@@ -171,7 +174,7 @@
                     </div>
                 </div>
 
-                <!-- 4. Image: Akce (Catering) -->
+                <!-- 4. Akce -->
                 <div class="relative group aspect-[3/4] overflow-hidden rounded-sm border border-white/5 bg-gray-800">
                     <div class="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" style="background-image: url('akce.jpg');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
@@ -179,32 +182,25 @@
                         <span class="text-white font-heading font-bold tracking-widest text-lg uppercase border-b-2 border-brand-gold pb-1">Catering</span>
                     </div>
                 </div>
-
              </div>
 
-             <!-- Bottom Row: Stálý Lístek Viewer (Flipbook Style) -->
+             <!-- Bottom Row: Stálý Lístek Viewer (Updated Layout) -->
              <div class="w-full">
                  <div class="flex items-center justify-between mb-4 px-2">
                      <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
-                     
-                     <!-- Navigation Controls -->
-                     <div class="flex gap-2">
-                         <button id="prev-page" class="w-10 h-10 border border-white/20 hover:bg-brand-gold hover:text-black hover:border-brand-gold transition text-white flex items-center justify-center rounded-sm">
-                             <i class="fas fa-chevron-left"></i>
-                         </button>
-                         <button id="next-page" class="w-10 h-10 border border-white/20 hover:bg-brand-gold hover:text-black hover:border-brand-gold transition text-white flex items-center justify-center rounded-sm">
-                             <i class="fas fa-chevron-right"></i>
-                         </button>
-                     </div>
                  </div>
 
-                 <!-- Book Container -->
-                 <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[700px] flex items-center justify-center group">
+                 <!-- Book Container (Arrows moved inside) -->
+                 <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[400px] md:min-h-[500px] flex items-center justify-center group">
                      
+                     <!-- Left Arrow -->
+                     <button id="prev-page" class="absolute left-2 md:left-4 z-20 w-12 h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
+                         <i class="fas fa-chevron-left text-xl"></i>
+                     </button>
+
                      <!-- Menu Page Images Container -->
-                     <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-2 lg:p-8 transition duration-300">
-                         <!-- Default Content -->
-                         <img src="menu-page-1.jpg" id="current-menu-image" alt="Strana menu" class="max-h-full max-w-full object-contain shadow-2xl">
+                     <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-2 lg:p-4 transition duration-300">
+                         <img src="menu-page-1.jpg" id="current-menu-image" alt="Strana menu" class="max-h-[600px] max-w-full object-contain shadow-2xl">
                          
                          <!-- Fallback Text -->
                          <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
@@ -213,9 +209,14 @@
                              <p class="text-xs text-gray-700 mt-2">Nahrajte: menu-page-1.jpg ...</p>
                          </div>
                      </div>
+
+                     <!-- Right Arrow -->
+                     <button id="next-page" class="absolute right-2 md:right-4 z-20 w-12 h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
+                         <i class="fas fa-chevron-right text-xl"></i>
+                     </button>
                      
                      <!-- Page Indicator -->
-                     <div class="absolute bottom-4 left-0 right-0 text-center">
+                     <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none">
                          <span id="page-indicator" class="bg-black/80 px-4 py-1 rounded-full text-xs text-brand-gold font-heading tracking-widest border border-white/10 shadow-lg">
                              STRANA 1 / 4
                          </span>
@@ -297,7 +298,6 @@
                 currentImg.onload = () => {
                     currentImg.style.opacity = '1'; // Fade in
                 };
-                // Handle cached images that load instantly
                 if (currentImg.complete) currentImg.style.opacity = '1';
             }, 150);
         }
