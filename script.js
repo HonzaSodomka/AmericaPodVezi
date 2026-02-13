@@ -23,8 +23,8 @@ const CONFIG = {
         'menu-page-4.svg'
     ],
     animation: {
-        preloaderDelay: 2600,
-        fadeDuration: 1000,
+        preloaderDelay: 2200, // Reduced from 2600 for faster load
+        fadeDuration: 800,   // Reduced from 1000
         menuFadeTime: 150
     },
     swipeThreshold: 50
@@ -141,7 +141,7 @@ function initMenuViewer() {
             if (elements.currentImg.complete) fadeIn();
             
         }, CONFIG.animation.menuFadeTime); 
-    };
+    };\
 
     const changePage = (direction) => {
         const newIndex = currentIndex + direction;
