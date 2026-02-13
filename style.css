@@ -1,0 +1,79 @@
+/* Global Typography */
+body { font-family: 'Inter', sans-serif; }
+h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
+
+/* Hero Section */
+.hero-section {
+    background-image: url('hero.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    position: relative;
+}
+
+/* Darker Overlay for Contrast */
+.hero-overlay {
+    background: linear-gradient(to bottom, 
+        rgba(0,0,0,0.7) 0%, 
+        rgba(0,0,0,0.4) 40%, 
+        rgba(0,0,0,0.8) 80%,
+        rgba(0,0,0,0.98) 100%);
+}
+
+/* Mobile Menu Transitions */
+#mobile-menu {
+    transition: transform 0.3s ease-in-out;
+}
+.menu-open {
+    transform: translateX(0);
+}
+.menu-closed {
+    transform: translateX(100%);
+}
+
+/* Nav Link Style */
+.nav-link {
+    position: relative;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.9);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    transition: color 0.3s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #d4a373; /* brand-gold */
+    transition: width 0.3s ease;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.8);
+}
+
+.nav-link:hover {
+    color: #d4a373;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-enter { 
+    opacity: 0; 
+    animation: fadeInUp 0.8s ease-out forwards; 
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
