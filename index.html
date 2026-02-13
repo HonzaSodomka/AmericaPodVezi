@@ -13,6 +13,7 @@
                 extend: {
                     colors: {
                         'brand-gold': '#d4a373', // Jantarová z hranolek/housky
+                        'brand-dark': '#111827',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -41,13 +42,13 @@
             position: relative;
         }
 
-        /* Jemný gradient pro čitelnost, ale ne ztmavující celý obrázek */
+        /* Jemný gradient pro čitelnost */
         .hero-overlay {
             background: linear-gradient(to bottom, 
-                rgba(0,0,0,0.6) 0%, 
-                rgba(0,0,0,0.1) 30%, 
-                rgba(0,0,0,0.4) 80%,
-                rgba(0,0,0,0.9) 100%);
+                rgba(0,0,0,0.7) 0%, 
+                rgba(0,0,0,0.2) 30%, 
+                rgba(0,0,0,0.5) 80%,
+                rgba(0,0,0,0.95) 100%);
         }
 
         /* Mobile Menu Transition */
@@ -60,28 +61,54 @@
         .menu-closed {
             transform: translateX(100%);
         }
+        
+        /* Nav Link Hover Effect */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #d4a373;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white overflow-x-hidden">
 
-    <!-- Navigation (Mobile First) -->
+    <!-- Navigation (Desktop & Mobile) -->
     <nav class="fixed w-full z-50 top-0 left-0 p-4 transition duration-300" id="navbar">
         <div class="flex justify-between items-center max-w-7xl mx-auto">
             
             <!-- Logo Placeholder -->
-            <div class="w-32 h-12 border-2 border-white/30 flex items-center justify-center bg-black/20 backdrop-blur-sm rounded">
-                <span class="text-white/70 text-sm font-heading tracking-widest">LOGO</span>
+            <div class="w-32 h-12 border-2 border-white/30 flex items-center justify-center bg-black/20 backdrop-blur-sm rounded hover:border-brand-gold transition cursor-pointer">
+                <span class="text-white/80 text-sm font-heading tracking-widest">LOGO</span>
             </div>
 
-            <!-- Hamburger Button -->
-            <button id="menu-btn" class="text-white text-3xl focus:outline-none z-50 relative">
+            <!-- Desktop Menu (Hidden on Mobile) -->
+            <div class="hidden md:flex gap-8 items-center bg-black/30 backdrop-blur-md px-8 py-3 rounded-full border border-white/10">
+                <a href="#" class="nav-link font-heading font-bold tracking-wider hover:text-brand-gold transition text-sm">DOMŮ</a>
+                <a href="#menu" class="nav-link font-heading font-bold tracking-wider hover:text-brand-gold transition text-sm">MENU</a>
+                <a href="#about" class="nav-link font-heading font-bold tracking-wider hover:text-brand-gold transition text-sm">O NÁS</a>
+                <a href="#contact" class="nav-link font-heading font-bold tracking-wider hover:text-brand-gold transition text-sm">KONTAKT</a>
+            </div>
+
+            <!-- Hamburger Button (Mobile Only) -->
+            <button id="menu-btn" class="text-white text-3xl focus:outline-none z-50 relative md:hidden">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
 
     <!-- Fullscreen Mobile Menu (Slide-out) -->
-    <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-8 menu-closed backdrop-blur-xl">
+    <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-8 menu-closed backdrop-blur-xl md:hidden">
         <a href="#" class="text-3xl font-heading font-bold hover:text-brand-gold transition">DOMŮ</a>
         <a href="#menu" class="text-3xl font-heading font-bold hover:text-brand-gold transition">MENU</a>
         <a href="#about" class="text-3xl font-heading font-bold hover:text-brand-gold transition">O NÁS</a>
@@ -89,35 +116,43 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="hero-section flex items-end pb-20 md:items-center md:pb-0">
+    <section class="hero-section flex items-end pb-16 md:items-center md:pb-0">
         <div class="absolute inset-0 hero-overlay"></div> <!-- Gradient Overlay -->
         
         <div class="relative z-10 w-full max-w-7xl mx-auto px-6 text-center md:text-left">
             
             <!-- Main Headline -->
-            <h1 class="text-5xl md:text-7xl font-bold font-heading mb-4 leading-tight drop-shadow-lg">
+            <h1 class="text-5xl md:text-7xl font-bold font-heading mb-4 leading-tight drop-shadow-2xl">
                 AMERICA <br>
                 <span class="text-brand-gold">POD VĚŽÍ</span>
             </h1>
 
-            <!-- Subtext (Facebook Copy) -->
+            <!-- Subtext -->
             <div class="max-w-xl md:ml-2">
-                <p class="text-lg md:text-xl font-light mb-6 text-gray-200 drop-shadow-md">
+                <p class="text-lg md:text-xl font-light mb-6 text-gray-200 drop-shadow-lg">
                     BBQ speciality připravované rovnou z grilu. 
                     <br>
                     <span class="font-semibold text-white">Naší pýchou jsou burgery z čerstvě mletého hovězího masa.</span>
                 </p>
 
-                <p class="text-sm md:text-base text-gray-300 mb-10 hidden md:block">
+                <p class="text-sm md:text-base text-gray-300 mb-10 hidden md:block drop-shadow-md">
                     Dále nabízíme grilovaná masa, steaky, saláty a dezerty.
                 </p>
 
                 <!-- Call to Action Buttons -->
-                <div class="flex flex-col md:flex-row gap-4">
-                    <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-wide">
+                <div class="flex flex-col md:flex-row gap-4 flex-wrap">
+                    <!-- Primary: Menu -->
+                    <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-wide text-center">
                         Naše Menu
                     </a>
-                    <a href="tel:+420123456789" class="border-2 border-white text-white font-bold font-heading py-3 px-8 text-xl rounded hover:bg-white hover:text-black transition uppercase tracking-wide">
+                    
+                    <!-- Secondary: Rozvoz (New) -->
+                    <a href="https://wolt.com" target="_blank" class="bg-white text-black font-bold font-heading py-3 px-8 text-xl rounded hover:bg-gray-200 transition shadow-lg uppercase tracking-wide flex items-center justify-center gap-2 text-center">
+                        <i class="fas fa-motorcycle text-lg"></i> Rozvoz
+                    </a>
+
+                    <!-- Tertiary: Rezervace -->
+                    <a href="tel:+420123456789" class="border-2 border-white text-white font-bold font-heading py-3 px-8 text-xl rounded hover:bg-white hover:text-black transition uppercase tracking-wide text-center">
                         Rezervovat
                     </a>
                 </div>
@@ -127,11 +162,11 @@
     </section>
 
     <!-- Footer / Info Bar -->
-    <footer class="bg-black text-gray-400 py-6 text-center text-sm">
+    <footer class="bg-black text-gray-400 py-6 text-center text-sm border-t border-gray-900">
         <p>&copy; 2026 America Pod Věží | Komenského náměstí 61, Mladá Boleslav</p>
     </footer>
 
-    <!-- Script for Menu -->
+    <!-- Script for Mobile Menu -->
     <script>
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -153,7 +188,6 @@
             }
         });
 
-        // Close menu on link click
         mobileMenu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 isOpen = false;
