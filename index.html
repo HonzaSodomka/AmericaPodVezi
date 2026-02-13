@@ -28,7 +28,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Oswald:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -61,19 +61,20 @@
             transform: translateX(100%);
         }
         
-        /* Clean Nav Link Style */
+        /* Nav Link Style - BOLD & PUNCHY */
         .nav-link {
             position: relative;
-            font-weight: 300; /* Lehký font */
-            letter-spacing: 0.15em; /* Větší rozestupy */
-            font-size: 0.9rem;
+            font-weight: 700; /* Zpátky na tučné */
+            letter-spacing: 0.1em;
+            font-size: 1rem;
             color: rgba(255,255,255,0.9);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Lepší čitelnost na pozadí */
         }
         .nav-link::after {
             content: '';
             position: absolute;
             width: 0;
-            height: 1px;
+            height: 3px; /* Tlustší podtržení */
             bottom: -5px;
             left: 50%;
             transform: translateX(-50%);
@@ -90,17 +91,16 @@
 </head>
 <body class="bg-gray-900 text-white overflow-x-hidden">
 
-    <!-- Navigation (Clean Desktop & Mobile) -->
+    <!-- Navigation (Bold Desktop & Mobile) -->
     <nav class="fixed w-full z-50 top-0 left-0 p-6 transition duration-300" id="navbar">
         <div class="flex justify-between items-center max-w-7xl mx-auto">
             
             <!-- Logo Placeholder -->
             <div class="flex items-center gap-3">
-                <!-- Zde by mohlo být .svg logo -->
-                <span class="text-white font-heading tracking-[0.2em] text-lg border border-white/20 px-3 py-1 bg-black/10 backdrop-blur-sm">AMERICA</span>
+                <span class="text-white font-heading font-bold tracking-[0.2em] text-xl border-2 border-white/80 px-4 py-1 bg-black/20 backdrop-blur-sm">AMERICA</span>
             </div>
 
-            <!-- Desktop Menu (Clean) -->
+            <!-- Desktop Menu (Bold) -->
             <div class="hidden md:flex gap-12 items-center">
                 <a href="#" class="nav-link font-heading">DOMŮ</a>
                 <a href="#menu" class="nav-link font-heading">MENU</a>
@@ -117,10 +117,10 @@
 
     <!-- Fullscreen Mobile Menu (Slide-out) -->
     <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-8 menu-closed backdrop-blur-xl md:hidden">
-        <a href="#" class="text-3xl font-heading font-light tracking-widest hover:text-brand-gold transition">DOMŮ</a>
-        <a href="#menu" class="text-3xl font-heading font-light tracking-widest hover:text-brand-gold transition">MENU</a>
-        <a href="#about" class="text-3xl font-heading font-light tracking-widest hover:text-brand-gold transition">O NÁS</a>
-        <a href="#contact" class="text-3xl font-heading font-light tracking-widest hover:text-brand-gold transition">KONTAKT</a>
+        <a href="#" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">DOMŮ</a>
+        <a href="#menu" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">MENU</a>
+        <a href="#about" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">O NÁS</a>
+        <a href="#contact" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">KONTAKT</a>
     </div>
 
     <!-- Hero Section -->
@@ -130,40 +130,40 @@
         <div class="relative z-10 w-full max-w-7xl mx-auto px-6 text-center md:text-left">
             
             <!-- Main Headline -->
-            <h1 class="text-5xl md:text-8xl font-medium font-heading mb-4 leading-tight drop-shadow-2xl">
+            <h1 class="text-5xl md:text-8xl font-bold font-heading mb-4 leading-tight drop-shadow-2xl">
                 AMERICA <br>
-                <span class="text-brand-gold font-bold">POD VĚŽÍ</span>
+                <span class="text-brand-gold">POD VĚŽÍ</span>
             </h1>
 
             <!-- Subtext -->
             <div class="max-w-xl md:ml-2">
-                <p class="text-lg md:text-xl font-light mb-8 text-gray-200 drop-shadow-lg tracking-wide">
+                <p class="text-lg md:text-xl font-medium mb-8 text-gray-100 drop-shadow-lg tracking-wide">
                     BBQ speciality rovnou z grilu. 
-                    <span class="font-normal text-white border-b border-brand-gold/50 pb-0.5">Legendární burgery v centru Boleslavi.</span>
+                    <span class="font-bold text-white border-b-2 border-brand-gold pb-1">Legendární burgery v centru Boleslavi.</span>
                 </p>
 
                 <!-- Action Buttons Container -->
                 <div class="flex flex-col md:flex-row gap-5 items-center md:items-stretch">
                     
                     <!-- 1. Hlavní Menu -->
-                    <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-4 px-10 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/30 uppercase tracking-widest w-full md:w-auto text-center flex items-center justify-center">
+                    <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-4 px-10 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/30 uppercase tracking-widest w-full md:w-auto text-center flex items-center justify-center transform hover:scale-105 duration-200">
                         Naše Menu
                     </a>
 
                     <!-- 2. Rezervace (Outline) -->
-                    <a href="tel:+420123456789" class="border border-white/40 text-white font-light font-heading py-4 px-8 text-xl rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest w-full md:w-auto text-center flex items-center justify-center">
+                    <a href="tel:+420123456789" class="border-2 border-white/80 text-white font-bold font-heading py-4 px-8 text-xl rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest w-full md:w-auto text-center flex items-center justify-center">
                         Rezervovat
                     </a>
 
-                    <!-- 3. Rozvoz (Dual Link Container) -->
-                    <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded flex flex-col md:flex-row items-center justify-center px-6 py-2 w-full md:w-auto gap-3 md:gap-4">
-                        <span class="text-xs uppercase tracking-widest text-gray-400 font-heading">Rozvoz domů:</span>
+                    <!-- 3. Rozvoz (Dual Link Container - Crazy Good) -->
+                    <div class="bg-black/40 backdrop-blur-md border border-white/20 rounded flex flex-col md:flex-row items-center justify-center px-6 py-2 w-full md:w-auto gap-3 md:gap-4 shadow-xl">
+                        <span class="text-xs uppercase tracking-widest text-gray-300 font-heading font-bold">Rozvoz domů:</span>
                         <div class="flex gap-4 items-center">
-                            <a href="https://wolt.com" target="_blank" class="font-bold text-white hover:text-wolt-blue transition flex items-center gap-2">
+                            <a href="https://wolt.com" target="_blank" class="font-bold text-lg text-white hover:text-wolt-blue transition flex items-center gap-2 transform hover:scale-110 duration-200">
                                 <i class="fas fa-bicycle"></i> Wolt
                             </a>
-                            <span class="text-gray-600">|</span>
-                            <a href="https://www.foodora.cz" target="_blank" class="font-bold text-white hover:text-foodora-pink transition flex items-center gap-2">
+                            <span class="text-gray-500">|</span>
+                            <a href="https://www.foodora.cz" target="_blank" class="font-bold text-lg text-white hover:text-foodora-pink transition flex items-center gap-2 transform hover:scale-110 duration-200">
                                 <i class="fas fa-shopping-bag"></i> Foodora
                             </a>
                         </div>
@@ -176,7 +176,7 @@
     </section>
 
     <!-- Footer / Info Bar -->
-    <footer class="bg-black text-gray-500 py-6 text-center text-xs tracking-widest uppercase border-t border-white/5">
+    <footer class="bg-black text-gray-500 py-6 text-center text-xs tracking-widest uppercase border-t border-white/10">
         <p>&copy; 2026 America Pod Věží | Komenského náměstí 61</p>
     </footer>
 
