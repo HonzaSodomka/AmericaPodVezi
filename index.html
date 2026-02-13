@@ -307,7 +307,7 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- CONTACT SECTION (Refined) -->
+    <!-- CONTACT SECTION (Refined Layout: 3 Columns on PC, Square Map on Mobile) -->
     <section id="contact" class="bg-black py-16 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-10 scroll-wait">
@@ -317,20 +317,19 @@
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
             </div>
 
-            <!-- Changed items-start to items-center for better balance with smaller map -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
+            <!-- Changed to 3 columns on LG screens for Contact Info | Hours | Map -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                 
-                <!-- Info Column -->
-                <div class="flex flex-col justify-center space-y-8 h-full md:py-8 scroll-wait delay-100">
+                <!-- Column 1: Contact Details -->
+                <div class="flex flex-col space-y-8 scroll-wait delay-100 bg-white/5 p-6 rounded-sm border border-white/5 h-full">
                     <!-- Address Item -->
                     <div class="flex items-start gap-4 group">
-                        <!-- Added bg-brand-gold/5 for polished look -->
                         <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <div>
                             <h4 class="text-white font-heading text-lg tracking-widest uppercase">Adresa</h4>
-                            <p class="text-gray-400">Komenského náměstí 61, Mladá Boleslav</p>
+                            <p class="text-gray-400">Komenského náměstí 61<br>Mladá Boleslav</p>
                             <p class="text-gray-500 text-xs mt-1">Přímo pod věží</p>
                         </div>
                     </div>
@@ -346,26 +345,40 @@
                             <a href="mailto:info@americapodvezi.cz" class="text-sm text-gray-500 hover:text-white transition">info@americapodvezi.cz</a>
                         </div>
                     </div>
-
-                    <!-- Hours Item -->
-                    <div class="flex items-start gap-4 group">
-                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="w-full max-w-xs">
-                            <h4 class="text-white font-heading text-lg tracking-widest uppercase mb-2">Otevírací Doba</h4>
-                            <ul class="text-gray-400 text-sm space-y-1">
-                                <li class="flex justify-between border-b border-white/10 pb-1"><span>Pondělí</span> <span>11:00 - 14:00</span></li>
-                                <li class="flex justify-between border-b border-white/10 pb-1"><span>Út - Pá</span> <span>11:00 - 22:00</span></li>
-                                <li class="flex justify-between border-b border-white/10 pb-1"><span>Sobota</span> <span>11:30 - 22:00</span></li>
-                                <li class="flex justify-between pt-1"><span>Neděle</span> <span>ZAVŘENO</span></li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Color Map (Reduced height to 280px) -->
-                <div class="w-full h-[280px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl scroll-wait delay-200">
+                <!-- Column 2: Opening Hours -->
+                <div class="flex flex-col space-y-4 scroll-wait delay-200 bg-white/5 p-6 rounded-sm border border-white/5 h-full">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4 class="text-white font-heading text-lg tracking-widest uppercase">Otevírací Doba</h4>
+                    </div>
+                    
+                    <ul class="text-gray-400 text-sm space-y-3 w-full">
+                        <li class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="font-bold text-white">Pondělí</span> 
+                            <span>11:00 - 14:00</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="font-bold text-white">Úterý - Pátek</span> 
+                            <span>11:00 - 22:00</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/10 pb-2">
+                            <span class="font-bold text-white">Sobota</span> 
+                            <span>11:30 - 22:00</span>
+                        </li>
+                        <li class="flex justify-between pt-1">
+                            <span class="font-bold text-white">Neděle</span> 
+                            <span class="text-brand-gold">ZAVŘENO</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Map -->
+                <!-- Mobile: aspect-square (square), PC: h-full (fills column height) -->
+                <div class="w-full aspect-square lg:aspect-auto lg:h-full min-h-[300px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl scroll-wait delay-300">
                     <iframe 
                         src="https://maps.google.com/maps?q=America+Pod+V%C4%9B%C5%BE%C3%AD%2C+Komensk%C3%A9ho+n%C3%A1m%C4%9Bst%C3%AD+61%2C+Mlad%C3%A1+Boleslav&t=&z=17&ie=UTF8&iwloc=&output=embed" 
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
