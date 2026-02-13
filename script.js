@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initMenuViewer();
+    initScrollAnimations();
 });
 
 /**
@@ -114,4 +115,32 @@ function initMenuViewer() {
 
     // Initialize first state
     updateMenu();
+}
+
+/**
+ * Scroll Animations (Intersection Observer)
+ */
+function initScrollAnimations() {
+    const observerOptions = {
+        root: null, // viewport
+        rootMargin: '0px',
+        threshold: 0.1 // Trigger when 10% of element is visible
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Add the animation class
+                entry.target.classList.add('animate-enter');
+                // Remove the initial wait class (opacity: 0)
+                entry.target.classList.remove('scroll-wait');
+                // Stop observing once animated
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Find all elements waiting for scroll animation
+    const scrollElements = document.querySelectorAll('.scroll-wait');
+    scrollElements.forEach(el => observer.observe(el));
 }
