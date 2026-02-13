@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initMenuViewer();
     initScrollAnimations();
+    initMap();
 });
 
 /**
@@ -143,4 +144,41 @@ function initScrollAnimations() {
     // Find all elements waiting for scroll animation
     const scrollElements = document.querySelectorAll('.scroll-wait');
     scrollElements.forEach(el => observer.observe(el));
+}
+
+/**
+ * Leaflet Map Initialization
+ */
+function initMap() {
+    const mapElement = document.getElementById('map');
+    if (!mapElement) return;
+
+    // Coordinates for America Pod Věží, Mladá Boleslav
+    const lat = 50.4109; 
+    const lng = 14.9032;
+
+    const map = L.map('map', {
+        center: [lat, lng],
+        zoom: 16,
+        scrollWheelZoom: false // Prevent scrolling while page scrolling
+    });
+
+    // Dark Matter Tiles (CartoDB) - Fits the dark theme perfectly
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(map);
+
+    // Custom Gold Marker
+    const goldIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div style="background-color: #d4a373; width: 1.5rem; height: 1.5rem; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+    });
+
+    // Add Marker
+    L.marker([lat, lng], { icon: goldIcon }).addTo(map)
+        .bindPopup('<div style="color: black; font-weight: bold; font-family: sans-serif;">America Pod Věží<br>Komenského náměstí 61</div>');
 }
