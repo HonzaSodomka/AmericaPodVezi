@@ -11,18 +11,26 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Preloader Fade Out
+ * Preloader Fade Out (Cinematic Timing)
  */
 function initPreloader() {
     const preloader = document.getElementById('preloader');
     if (preloader) {
         window.addEventListener('load', () => {
+            // Wait for the cinematic animations to complete (approx 2.5s)
+            // Animation timings:
+            // Text: 2.5s
+            // Line: 1.5s (0.5s delay)
+            // Subtext: 1s (1.2s delay)
+            
             setTimeout(() => {
                 preloader.style.opacity = '0';
                 setTimeout(() => {
                     preloader.style.display = 'none';
-                }, 700);
-            }, 500); // Short delay for branding effect
+                    // Re-enable scrolling if blocked (optional)
+                    document.body.style.overflow = '';
+                }, 1000); // Matches CSS transition-opacity duration
+            }, 2600); // Wait slightly longer than the longest animation (2.5s)
         });
     }
 }
