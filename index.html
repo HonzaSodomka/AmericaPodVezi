@@ -105,15 +105,15 @@
                         Rezervovat
                     </a>
 
-                    <!-- Delivery Widget -->
+                    <!-- Delivery Widget (Links Updated) -->
                     <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col md:flex-row items-center justify-center px-6 py-2 gap-2 shadow-xl min-w-[200px]">
                         <span class="text-xs uppercase tracking-widest text-gray-300 font-heading font-bold whitespace-nowrap">Rozvoz domů:</span>
                         <div class="flex gap-4 items-center">
-                            <a href="https://wolt.com" target="_blank" class="font-bold text-lg text-white hover:text-wolt-blue transition flex items-center gap-2 transform hover:scale-110 duration-200">
+                            <a href="https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi" target="_blank" class="font-bold text-lg text-white hover:text-wolt-blue transition flex items-center gap-2 transform hover:scale-110 duration-200">
                                 <i class="fas fa-bicycle"></i> Wolt
                             </a>
                             <span class="text-gray-500">|</span>
-                            <a href="https://www.foodora.cz" target="_blank" class="font-bold text-lg text-white hover:text-foodora-pink transition flex items-center gap-2 transform hover:scale-110 duration-200">
+                            <a href="https://www.foodora.cz/restaurant/iqu6/america-pod-vezi" target="_blank" class="font-bold text-lg text-white hover:text-foodora-pink transition flex items-center gap-2 transform hover:scale-110 duration-200">
                                 <i class="fas fa-shopping-bag"></i> Foodora
                             </a>
                         </div>
@@ -124,7 +124,7 @@
     </section>
 
     <!-- MENU SECTION -->
-    <section id="menu" class="bg-black py-20 px-6 border-t border-white/10 relative">
+    <section id="menu" class="bg-black py-20 px-4 md:px-6 border-t border-white/10 relative">
         <div class="max-w-7xl mx-auto">
              
              <!-- Section Header -->
@@ -135,38 +135,48 @@
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
              </div>
              
-             <!-- Top Row: Denní Menu + Image Spots -->
-             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+             <!-- Top Row: Daily Menu + 3 Vertical Images -->
+             <!-- On mobile: Grid col-1 but images are limited in height to avoid huge scroll -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
                 
                 <!-- 1. Denní Menu Card -->
-                <div class="border border-white/10 bg-white/5 p-8 flex flex-col items-center text-center hover:bg-white/10 transition duration-300 group rounded-sm shadow-xl">
+                <div class="border border-white/10 bg-white/5 p-6 flex flex-col items-center justify-center text-center hover:bg-white/10 transition duration-300 group rounded-sm shadow-xl aspect-[3/4]">
                     <div class="text-brand-gold text-4xl mb-4 transform group-hover:scale-110 transition duration-300">
                         <i class="fas fa-calendar-alt"></i>
                     </div>
                     <h3 class="text-2xl font-heading font-bold text-white mb-2 tracking-wider uppercase">Denní Nabídka</h3>
-                    <p class="text-gray-400 text-sm mb-6 font-light">
-                        Aktuální polední menu na Menicka.cz
+                    <p class="text-gray-400 text-sm mb-6 font-light px-2">
+                        Poctivé menu na každý všední den.
                     </p>
-                    <a href="https://www.menicka.cz/" target="_blank" class="border border-brand-gold text-brand-gold font-heading font-bold py-3 px-8 text-sm hover:bg-brand-gold hover:text-black transition duration-300 uppercase tracking-widest w-full">
-                        Zobrazit Menu
+                    <a href="https://www.menicka.cz/7509-america-pod-vezi.html" target="_blank" class="border border-brand-gold text-brand-gold font-heading font-bold py-3 px-6 text-sm hover:bg-brand-gold hover:text-black transition duration-300 uppercase tracking-widest w-full">
+                        Zobrazit
                     </a>
                 </div>
 
-                <!-- 2. Image Spot 1 -->
-                <div class="h-64 lg:h-auto bg-gray-800 rounded-sm relative overflow-hidden group border border-white/5">
-                    <!-- Placeholder for image: img-spot-1.jpg -->
-                    <div class="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-110 opacity-60 group-hover:opacity-80" style="background-image: url('img-spot-1.jpg'); background-color: #2a2a2a;"></div>
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                        <span class="text-brand-gold font-heading tracking-widest border border-brand-gold px-4 py-1 bg-black/50 backdrop-blur-sm">ATMOSFÉRA</span>
+                <!-- 2. Image: Zebra (Ribs) -->
+                <div class="relative group aspect-[3/4] overflow-hidden rounded-sm border border-white/5 bg-gray-800">
+                    <div class="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" style="background-image: url('zebra.jpg');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-4 left-0 right-0 text-center">
+                        <span class="text-white font-heading font-bold tracking-widest text-lg uppercase border-b-2 border-brand-gold pb-1">Speciality</span>
                     </div>
                 </div>
 
-                <!-- 3. Image Spot 2 -->
-                <div class="h-64 lg:h-auto bg-gray-800 rounded-sm relative overflow-hidden group border border-white/5">
-                    <!-- Placeholder for image: img-spot-2.jpg -->
-                    <div class="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-110 opacity-60 group-hover:opacity-80" style="background-image: url('img-spot-2.jpg'); background-color: #2a2a2a;"></div>
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                        <span class="text-brand-gold font-heading tracking-widest border border-brand-gold px-4 py-1 bg-black/50 backdrop-blur-sm">SPECIALITY</span>
+                <!-- 3. Image: Prostory (Interior) -->
+                <div class="relative group aspect-[3/4] overflow-hidden rounded-sm border border-white/5 bg-gray-800">
+                    <div class="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" style="background-image: url('prostory.jpg');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-4 left-0 right-0 text-center">
+                        <span class="text-white font-heading font-bold tracking-widest text-lg uppercase border-b-2 border-brand-gold pb-1">Interiér</span>
+                    </div>
+                </div>
+
+                <!-- 4. Image: Akce (Catering) -->
+                <div class="relative group aspect-[3/4] overflow-hidden rounded-sm border border-white/5 bg-gray-800">
+                    <div class="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" style="background-image: url('akce.jpg');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute bottom-4 left-0 right-0 text-center">
+                        <span class="text-white font-heading font-bold tracking-widest text-lg uppercase border-b-2 border-brand-gold pb-1">Catering</span>
                     </div>
                 </div>
 
@@ -174,8 +184,8 @@
 
              <!-- Bottom Row: Stálý Lístek Viewer (Flipbook Style) -->
              <div class="w-full">
-                 <div class="flex items-center justify-between mb-4">
-                     <h3 class="text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
+                 <div class="flex items-center justify-between mb-4 px-2">
+                     <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
                      
                      <!-- Navigation Controls -->
                      <div class="flex gap-2">
@@ -189,24 +199,24 @@
                  </div>
 
                  <!-- Book Container -->
-                 <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[700px] flex items-center justify-center">
+                 <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[700px] flex items-center justify-center group">
                      
                      <!-- Menu Page Images Container -->
-                     <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-2">
-                         <!-- Default Content (Will be replaced by JS if images exist) -->
-                         <img src="menu-page-1.jpg" id="current-menu-image" alt="Strana menu" class="max-h-full max-w-full object-contain shadow-lg opacity-90">
+                     <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-2 lg:p-8 transition duration-300">
+                         <!-- Default Content -->
+                         <img src="menu-page-1.jpg" id="current-menu-image" alt="Strana menu" class="max-h-full max-w-full object-contain shadow-2xl">
                          
-                         <!-- Fallback Text (Visible if image fails) -->
+                         <!-- Fallback Text -->
                          <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
                              <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
                              <p class="text-gray-500">Zde se zobrazí jídelní lístek</p>
-                             <p class="text-xs text-gray-700 mt-2">Nahrajte: menu-page-1.jpg, menu-page-2.jpg</p>
+                             <p class="text-xs text-gray-700 mt-2">Nahrajte: menu-page-1.jpg ...</p>
                          </div>
                      </div>
                      
                      <!-- Page Indicator -->
                      <div class="absolute bottom-4 left-0 right-0 text-center">
-                         <span id="page-indicator" class="bg-black/70 px-4 py-1 rounded-full text-xs text-gray-300 font-heading tracking-widest border border-white/10">
+                         <span id="page-indicator" class="bg-black/80 px-4 py-1 rounded-full text-xs text-brand-gold font-heading tracking-widest border border-white/10 shadow-lg">
                              STRANA 1 / 4
                          </span>
                      </div>
@@ -280,9 +290,16 @@
         const indicator = document.getElementById('page-indicator');
 
         function updateMenu() {
-            // Fade out effect could be added here
-            currentImg.src = menuImages[currentIndex];
-            indicator.textContent = `STRANA ${currentIndex + 1} / ${menuImages.length}`;
+            currentImg.style.opacity = '0'; // Simple fade out
+            setTimeout(() => {
+                currentImg.src = menuImages[currentIndex];
+                indicator.textContent = `STRANA ${currentIndex + 1} / ${menuImages.length}`;
+                currentImg.onload = () => {
+                    currentImg.style.opacity = '1'; // Fade in
+                };
+                // Handle cached images that load instantly
+                if (currentImg.complete) currentImg.style.opacity = '1';
+            }, 150);
         }
 
         prevBtn.addEventListener('click', () => {
