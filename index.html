@@ -3,8 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>America Pod Věží</title>
+    <title>America Pod Věží | Burger & BBQ Restaurant Mladá Boleslav</title>
+    <meta name="description" content="Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.">
     
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://americapodvezi.cz/">
+    <meta property="og:title" content="America Pod Věží | Burger & BBQ Restaurant">
+    <meta property="og:description" content="Přijďte ochutnat nejlepší burgery a BBQ v Mladé Boleslavi. Těšíme se na vás!">
+    <meta property="og:image" content="prostory.jpg">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,6 +45,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-black text-white overflow-x-hidden">
+
+    <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="text-white font-heading font-bold tracking-[0.2em] text-3xl border-4 border-white/80 px-6 py-2 bg-black/20 backdrop-blur-sm shadow-lg animate-pulse">
+            AMERICA
+        </div>
+        <div class="mt-4 w-16 h-1 bg-brand-gold rounded-full"></div>
+    </div>
 
     <!-- Navigation (Absolute) -->
     <nav class="absolute w-full z-50 top-0 left-0 p-6" id="navbar">
@@ -182,19 +198,24 @@
              <div class="w-full scroll-wait">
                  <div class="flex items-center justify-between mb-4 px-2">
                      <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
+                     
+                     <!-- Swipe Hint (Mobile Only) -->
+                     <div class="md:hidden text-gray-500 text-xs flex items-center gap-1 animate-pulse">
+                         <i class="fas fa-hand-pointer"></i> Posouvej tahem
+                     </div>
                  </div>
 
                  <!-- Book Container -->
-                 <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[600px] flex items-center justify-center">
+                 <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[600px] flex items-center justify-center" id="menu-container">
                      
                      <!-- Left Arrow -->
-                     <button id="prev-page" class="absolute left-2 md:left-4 z-20 w-12 h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
+                     <button id="prev-page" class="absolute left-2 md:left-4 z-20 w-12 h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10 hidden md:flex">
                          <i class="fas fa-chevron-left text-xl"></i>
                      </button>
 
                      <!-- Menu Page Images Container -->
                      <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-0 md:p-4 transition duration-300">
-                         <img src="menu-page-1.jpg" id="current-menu-image" alt="Strana menu" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px]">
+                         <img src="menu-page-1.jpg" id="current-menu-image" alt="Strana menu" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
                          <!-- Fallback -->
                          <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
                              <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
@@ -203,7 +224,7 @@
                      </div>
 
                      <!-- Right Arrow -->
-                     <button id="next-page" class="absolute right-2 md:right-4 z-20 w-12 h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
+                     <button id="next-page" class="absolute right-2 md:right-4 z-20 w-12 h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10 hidden md:flex">
                          <i class="fas fa-chevron-right text-xl"></i>
                      </button>
                      
@@ -345,6 +366,17 @@
                             <a href="mailto:info@americapodvezi.cz" class="text-sm text-gray-500 hover:text-white transition">info@americapodvezi.cz</a>
                         </div>
                     </div>
+
+                    <!-- Social Media Item (NEW) -->
+                    <div class="flex items-start gap-4 group cursor-pointer" onclick="window.open('https://www.facebook.com/profile.php?id=100063543104526', '_blank')">
+                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-heading text-lg tracking-widest uppercase">Sledujte Nás</h4>
+                            <p class="text-gray-400 text-sm">Novinky & Akce na Facebooku</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Column 2: Opening Hours -->
@@ -407,7 +439,7 @@
 
     <!-- Footer -->
     <footer class="bg-black text-gray-500 py-6 text-center text-xs tracking-widest uppercase border-t border-white/10">
-        <p>&copy; 2026 America Pod Věží | Komenského náměstí 61 | <a href="mailto:info@americapodvezi.cz" class="hover:text-brand-gold transition">info@americapodvezi.cz</a></p>
+        <p>&copy; <span id="current-year">2026</span> America Pod Věží | Komenského náměstí 61 | <a href="mailto:info@americapodvezi.cz" class="hover:text-brand-gold transition">info@americapodvezi.cz</a></p>
     </footer>
 
     <!-- Scripts -->
