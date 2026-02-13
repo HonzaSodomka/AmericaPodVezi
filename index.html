@@ -46,12 +46,20 @@
 </head>
 <body class="bg-black text-white overflow-x-hidden">
 
-    <!-- Preloader -->
-    <div id="preloader" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center transition-opacity duration-700">
-        <div class="text-white font-heading font-bold tracking-[0.2em] text-3xl border-4 border-white/80 px-6 py-2 bg-black/20 backdrop-blur-sm shadow-lg animate-pulse">
+    <!-- Preloader (Cinematic) -->
+    <div id="preloader" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center transition-opacity duration-1000">
+        <!-- Main Text with Cinematic Reveal -->
+        <div class="text-white font-heading font-bold text-5xl md:text-7xl anim-text-reveal mb-6 select-none">
             AMERICA
         </div>
-        <div class="mt-4 w-16 h-1 bg-brand-gold rounded-full"></div>
+        
+        <!-- Gold Line Expanding -->
+        <div class="h-1 bg-brand-gold rounded-full anim-line-expand w-0 shadow-[0_0_10px_#d4a373]"></div>
+        
+        <!-- Subtext Fading Up -->
+        <div class="mt-4 text-brand-gold font-sans text-xs md:text-sm tracking-[0.5em] uppercase opacity-0 anim-sub-reveal font-light select-none">
+            POD VĚŽÍ
+        </div>
     </div>
 
     <!-- Navigation (Absolute) -->
@@ -236,92 +244,6 @@
                      </div>
                  </div>
              </div>
-        </div>
-    </section>
-
-    <!-- SECTION SEPARATOR -->
-    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
-
-    <!-- ABOUT SECTION (With Google Reviews) -->
-    <section id="about" class="bg-[#050505] py-20 px-6 overflow-hidden relative">
-        <div class="max-w-7xl mx-auto">
-            
-            <!-- Section Header -->
-            <div class="text-center mb-16 scroll-wait">
-                 <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
-                    Náš <span class="text-brand-gold">Příběh</span>
-                 </h2>
-                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-12 items-center">
-                
-                <!-- Image Column -->
-                <div class="w-full md:w-1/2 relative scroll-wait delay-100">
-                    <div class="absolute -inset-2 bg-brand-gold/10 rounded-sm blur opacity-50"></div>
-                    <img src="prostory.jpg" alt="Interiér America Pod Věží" class="relative rounded-sm shadow-2xl w-full object-cover h-[450px] md:h-[550px] border border-white/10 filter brightness-90 contrast-110">
-                    
-                    <!-- Modern Gradient Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/10 to-transparent bottom-0"></div>
-                    <!-- Clean Text Label -->
-                    <div class="absolute bottom-6 left-6 z-10">
-                        <div class="flex items-center gap-3 mb-1">
-                             <div class="w-1 h-8 bg-brand-gold"></div>
-                             <h3 class="text-brand-gold font-heading text-2xl tracking-widest uppercase">Atmosféra</h3>
-                        </div>
-                        <p class="text-gray-300 text-sm font-light pl-4">Restaurant & Salonky</p>
-                    </div>
-                </div>
-
-                <!-- Text Column -->
-                <div class="w-full md:w-1/2 text-center md:text-left scroll-wait delay-200">
-                    <h2 class="text-3xl md:text-4xl font-heading font-bold text-white tracking-wider uppercase mb-6 leading-tight">
-                        Autentická chuť Ameriky <br>
-                        <span class="text-brand-gold">pod Boleslavskou věží</span>
-                    </h2>
-                    
-                    <p class="text-gray-300 text-lg mb-6 leading-relaxed font-light">
-                        Jsme <strong>Family Style Restaurant</strong> s dlouholetou tradicí, přímo v historickém srdci Mladé Boleslavi. Naším cílem není být jen další restaurací, ale místem, kde se budete cítit jako doma.
-                    </p>
-                    
-                    <p class="text-gray-400 mb-6 leading-relaxed">
-                        Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen "na jedno" (čepujeme Plzeň a Bohém), u nás si přijdete na své.
-                    </p>
-
-                    <!-- Reviews Widget (Static based on user data) -->
-                    <div class="bg-white/5 border border-white/10 rounded-sm p-4 inline-flex items-center gap-4 mb-6 hover:bg-white/10 transition cursor-pointer group" onclick="window.open('https://www.google.com/search?q=America+Pod+V%C4%9B%C5%BE%C3%AD+recenze', '_blank')">
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 uppercase tracking-wider mb-1">Hodnocení Google</span>
-                            <div class="flex items-center gap-2">
-                                <span class="text-2xl font-bold text-white">4.5</span>
-                                <div class="flex text-brand-gold text-sm">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </div>
-                            </div>
-                            <span class="text-xs text-gray-500 group-hover:text-white transition">900+ recenzí</span>
-                        </div>
-                        <div class="h-8 w-px bg-white/10 mx-2"></div>
-                        <i class="fab fa-google text-2xl text-gray-400 group-hover:text-brand-gold transition"></i>
-                    </div>
-
-                    <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-                        <span class="px-4 py-2 border border-white/20 rounded-full text-xs uppercase tracking-widest text-brand-gold bg-black/40 hover:bg-white/10 transition cursor-default">
-                            <i class="fas fa-utensils mr-2"></i> Poctivá kuchyně
-                        </span>
-                        <span class="px-4 py-2 border border-white/20 rounded-full text-xs uppercase tracking-widest text-brand-gold bg-black/40 hover:bg-white/10 transition cursor-default">
-                            <i class="fas fa-beer mr-2"></i> Čepovaná Plzeň
-                        </span>
-                        <span class="px-4 py-2 border border-white/20 rounded-full text-xs uppercase tracking-widest text-brand-gold bg-black/40 hover:bg-white/10 transition cursor-default">
-                            <i class="fas fa-users mr-2"></i> Akce & Oslavy
-                        </span>
-                    </div>
-                </div>
-
-            </div>
         </div>
     </section>
 
