@@ -18,10 +18,6 @@ function initPreloader() {
     if (preloader) {
         window.addEventListener('load', () => {
             // Wait for the cinematic animations to complete (approx 2.5s)
-            // Animation timings:
-            // Text: 2.5s
-            // Line: 1.5s (0.5s delay)
-            // Subtext: 1s (1.2s delay)
             
             setTimeout(() => {
                 preloader.style.opacity = '0';
@@ -89,11 +85,12 @@ function initMobileMenu() {
  * Static Menu Viewer (Image Gallery) with Touch Swipe
  */
 function initMenuViewer() {
+    // UPDATED: Using SVG placeholders instead of missing JPGs
     const menuImages = [
-        'menu-page-1.jpg', 
-        'menu-page-2.jpg', 
-        'menu-page-3.jpg', 
-        'menu-page-4.jpg'
+        'menu-page-1.svg', 
+        'menu-page-2.svg', 
+        'menu-page-3.svg', 
+        'menu-page-4.svg'
     ];
     
     let currentIndex = 0;
@@ -184,22 +181,4 @@ function initScrollAnimations() {
         root: null, // viewport
         rootMargin: '0px',
         threshold: 0.1 // Trigger when 10% of element is visible
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Add the animation class
-                entry.target.classList.add('animate-enter');
-                // Remove the initial wait class (opacity: 0)
-                entry.target.classList.remove('scroll-wait');
-                // Stop observing once animated
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    // Find all elements waiting for scroll animation
-    const scrollElements = document.querySelectorAll('.scroll-wait');
-    scrollElements.forEach(el => observer.observe(el));
-}
+    };\n\n    const observer = new IntersectionObserver((entries, observer) => {\n        entries.forEach(entry => {\n            if (entry.isIntersecting) {\n                // Add the animation class\n                entry.target.classList.add('animate-enter');\n                // Remove the initial wait class (opacity: 0)\n                entry.target.classList.remove('scroll-wait');\n                // Stop observing once animated\n                observer.unobserve(entry.target);\n            }\n        });\n    }, observerOptions);\n\n    // Find all elements waiting for scroll animation\n    const scrollElements = document.querySelectorAll('.scroll-wait');\n    scrollElements.forEach(el => observer.observe(el));\n}
