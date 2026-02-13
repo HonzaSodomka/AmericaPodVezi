@@ -153,18 +153,23 @@ function initMap() {
     const mapElement = document.getElementById('map');
     if (!mapElement) return;
 
-    // Coordinates for America Pod Věží, Mladá Boleslav
-    const lat = 50.4109; 
-    const lng = 14.9032;
+    // Corrected Coordinates for America Pod Věží
+    const lat = 50.41235680840374; 
+    const lng = 14.903186442396233;
 
     const map = L.map('map', {
         center: [lat, lng],
-        zoom: 16,
-        scrollWheelZoom: false // Prevent scrolling while page scrolling
+        zoom: 17, // Slightly closer zoom for better detail
+        scrollWheelZoom: false
     });
 
-    // Dark Matter Tiles (CartoDB) - Fits the dark theme perfectly
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // Stadia Alidade Smooth Dark (Grey/Black/White) - still dark but higher contrast/sharper? 
+    // OR CartoDB Voyager (Light/Pastel) - clean but very bright.
+    // OR 'Jawg Light' or similar. 
+    // Let's try "CartoDB Voyager" - it is clean, legible, and professional. 
+    // If user said "moc tmavy", they want light.
+    
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
@@ -180,5 +185,5 @@ function initMap() {
 
     // Add Marker
     L.marker([lat, lng], { icon: goldIcon }).addTo(map)
-        .bindPopup('<div style="color: black; font-weight: bold; font-family: sans-serif;">America Pod Věží<br>Komenského náměstí 61</div>');
+        .bindPopup('<div style="color: black; font-weight: bold; font-family: sans-serif; text-align: center;">America Pod Věží<br>Vchod z náměstí</div>');
 }
