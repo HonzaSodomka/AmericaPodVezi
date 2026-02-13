@@ -20,25 +20,16 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
         rgba(0,0,0,0.98) 100%);
 }
 
-/* Background Images (Extracted from HTML) */
-.bg-zebra {
-    background-image: url('zebra.jpg');
-}
-
-.bg-akce {
-    background-image: url('akce.jpg');
-}
+/* Background Images */
+.bg-zebra { background-image: url('zebra.jpg'); }
+.bg-akce { background-image: url('akce.jpg'); }
 
 /* Mobile Menu Transitions */
 #mobile-menu {
     transition: transform 0.3s ease-in-out;
 }
-.menu-open {
-    transform: translateX(0);
-}
-.menu-closed {
-    transform: translateX(100%);
-}
+.menu-open { transform: translateX(0); }
+.menu-closed { transform: translateX(100%); }
 
 /* Nav Link Style */
 .nav-link {
@@ -64,19 +55,11 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
     box-shadow: 0 2px 3px rgba(0,0,0,0.8);
 }
 
-.nav-link:hover {
-    color: #d4a373;
-}
-
-.nav-link:hover::after {
-    width: 100%;
-}
+.nav-link:hover { color: #d4a373; }
+.nav-link:hover::after { width: 100%; }
 
 /* Animations */
-.scroll-wait {
-    opacity: 0;
-    /* Use will-change to optimize rendering if needed, but usually optional */
-}
+.scroll-wait { opacity: 0; }
 
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
@@ -91,3 +74,46 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
+
+/* --- CINEMATIC PRELOADER ANIMATIONS --- */
+@keyframes cinematicReveal {
+    0% {
+        opacity: 0;
+        letter-spacing: -0.1em;
+        filter: blur(10px);
+        transform: scale(0.9);
+    }
+    40% {
+        opacity: 1;
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 1;
+        letter-spacing: 0.3em;
+        transform: scale(1);
+        filter: blur(0px);
+    }
+}
+
+@keyframes goldLineExpand {
+    0% { width: 0; opacity: 0; }
+    50% { opacity: 1; }
+    100% { width: 100px; opacity: 1; }
+}
+
+@keyframes fadeInUpSub {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.anim-text-reveal {
+    animation: cinematicReveal 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.anim-line-expand {
+    animation: goldLineExpand 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards; /* Delayed start */
+}
+
+.anim-sub-reveal {
+    animation: fadeInUpSub 1s ease-out 1.2s forwards; /* Delayed start */
+}
