@@ -3,10 +3,39 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    initPreloader();
     initMobileMenu();
     initMenuViewer();
     initScrollAnimations();
+    initDynamicYear();
 });
+
+/**
+ * Preloader Fade Out
+ */
+function initPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 700);
+            }, 500); // Short delay for branding effect
+        });
+    }
+}
+
+/**
+ * Dynamic Year in Footer
+ */
+function initDynamicYear() {
+    const yearSpan = document.getElementById('current-year');
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
+}
 
 /**
  * Mobile Navigation Toggle
@@ -28,8 +57,6 @@ function initMobileMenu() {
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
             }
-            // Optional: Prevent scrolling when menu is open
-            // document.body.style.overflow = 'hidden'; 
         } else {
             mobileMenu.classList.remove('menu-open');
             mobileMenu.classList.add('menu-closed');
@@ -37,7 +64,6 @@ function initMobileMenu() {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
-            // document.body.style.overflow = '';
         }
     }
 
@@ -52,7 +78,7 @@ function initMobileMenu() {
 }
 
 /**
- * Static Menu Viewer (Image Gallery)
+ * Static Menu Viewer (Image Gallery) with Touch Swipe
  */
 function initMenuViewer() {
     const menuImages = [
@@ -63,12 +89,13 @@ function initMenuViewer() {
     ];
     
     let currentIndex = 0;
+    const container = document.getElementById('menu-container'); // Swipe target
     const currentImg = document.getElementById('current-menu-image');
     const prevBtn = document.getElementById('prev-page');
     const nextBtn = document.getElementById('next-page');
     const indicator = document.getElementById('page-indicator');
 
-    if (!currentImg) return; // Exit if element doesn't exist
+    if (!currentImg) return; 
 
     function updateMenu() {
         // Fade out
@@ -92,25 +119,49 @@ function initMenuViewer() {
             if (currentImg.complete) {
                 currentImg.style.opacity = '1';
             }
-        }, 150); // Matches CSS transition time
+        }, 150); 
     }
 
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateMenu();
-            }
-        });
+    function goNext() {
+        if (currentIndex < menuImages.length - 1) {
+            currentIndex++;
+            updateMenu();
+        }
     }
 
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < menuImages.length - 1) {
-                currentIndex++;
-                updateMenu();
-            }
-        });
+    function goPrev() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateMenu();
+        }
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', goPrev);
+    if (nextBtn) nextBtn.addEventListener('click', goNext);
+
+    // --- Touch Swipe Logic ---
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    if (container) {
+        container.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        container.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+    }
+
+    function handleSwipe() {
+        const threshold = 50; // Min distance to trigger swipe
+        if (touchStartX - touchEndX > threshold) {
+            goNext(); // Swipe Left -> Next
+        }
+        if (touchEndX - touchStartX > threshold) {
+            goPrev(); // Swipe Right -> Prev
+        }
     }
 
     // Initialize first state
