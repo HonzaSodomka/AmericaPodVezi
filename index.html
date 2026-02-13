@@ -125,7 +125,7 @@
     </section>
 
     <!-- SECTION SEPARATOR (More Visible) -->
-    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]\"></div>
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
     <!-- MENU SECTION -->
     <section id="menu" class="bg-black py-20 px-4 md:px-6 relative">
@@ -134,7 +134,7 @@
              <!-- Section Header -->
              <div class="text-center mb-10">
                  <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
-                    Naše <span class=\"text-brand-gold\">Menu</span>
+                    Naše <span class="text-brand-gold">Menu</span>
                  </h2>
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
              </div>
@@ -198,7 +198,7 @@
                          <!-- Fallback -->
                          <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
                              <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
-                             <p class=\"text-gray-500\">Zde se zobrazí jídelní lístek</p>
+                             <p class="text-gray-500">Zde se zobrazí jídelní lístek</p>
                          </div>
                      </div>
 
@@ -241,7 +241,7 @@
                     <img src="prostory.jpg" alt="Interiér America Pod Věží" class="relative rounded-sm shadow-2xl w-full object-cover h-[450px] md:h-[550px] border border-white/10 filter brightness-90 contrast-110">
                     
                     <!-- Modern Gradient Overlay -->
-                    <div class=\"absolute inset-0 bg-gradient-to-t from-black/95 via-black/10 to-transparent bottom-0\"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/10 to-transparent bottom-0"></div>
                     <!-- Clean Text Label -->
                     <div class="absolute bottom-6 left-6 z-10">
                         <div class="flex items-center gap-3 mb-1">
@@ -264,7 +264,7 @@
                     </p>
                     
                     <p class="text-gray-400 mb-6 leading-relaxed">
-                        Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen \"na jedno\" (čepujeme Plzeň a Bohém), u nás si přijdete na své.
+                        Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen "na jedno" (čepujeme Plzeň a Bohém), u nás si přijdete na své.
                     </p>
 
                     <!-- Reviews Widget (Static based on user data) -->
@@ -379,62 +379,7 @@
         <p>&copy; 2026 America Pod Věží | Komenského náměstí 61 | <a href="mailto:info@americapodvezi.cz" class="hover:text-brand-gold transition">info@americapodvezi.cz</a></p>
     </footer>
 
-    <script>
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const icon = menuBtn.querySelector('i');
-        let isOpen = false;
-
-        menuBtn.addEventListener('click', () => {
-            isOpen = !isOpen;
-            if (isOpen) {
-                mobileMenu.classList.remove('menu-closed');
-                mobileMenu.classList.add('menu-open');
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                mobileMenu.classList.remove('menu-open');
-                mobileMenu.classList.add('menu-closed');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
-        });
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                isOpen = false;
-                mobileMenu.classList.remove('menu-open');
-                mobileMenu.classList.add('menu-closed');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            });
-        });
-
-        // Menu Viewer
-        const menuImages = ['menu-page-1.jpg', 'menu-page-2.jpg', 'menu-page-3.jpg', 'menu-page-4.jpg'];
-        let currentIndex = 0;
-        const currentImg = document.getElementById('current-menu-image');
-        const prevBtn = document.getElementById('prev-page');
-        const nextBtn = document.getElementById('next-page');
-        const indicator = document.getElementById('page-indicator');
-
-        function updateMenu() {
-            currentImg.style.opacity = '0';
-            setTimeout(() => {
-                currentImg.src = menuImages[currentIndex];
-                indicator.textContent = `STRANA ${currentIndex + 1} / ${menuImages.length}`;
-                currentImg.onload = () => { currentImg.style.opacity = '1'; };
-                if (currentImg.complete) currentImg.style.opacity = '1';
-            }, 150);
-        }
-
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) { currentIndex--; updateMenu(); }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < menuImages.length - 1) { currentIndex++; updateMenu(); }
-        });
-        updateMenu();
-    </script>
+    <!-- Scripts -->
+    <script src="script.js"></script>
 </body>
 </html>
