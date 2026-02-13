@@ -106,15 +106,15 @@
                         <span class="text-sm font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> 326 322 007</span>
                     </a>
 
-                    <!-- Delivery Widget -->
+                    <!-- Delivery Widget (No Scale Animation) -->
                     <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col md:flex-row items-center justify-center px-6 py-2 gap-2 shadow-xl min-w-[200px]">
                         <span class="text-xs uppercase tracking-widest text-gray-300 font-heading font-bold whitespace-nowrap">Rozvoz domů:</span>
                         <div class="flex gap-4 items-center">
-                            <a href="https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi" target="_blank" class="font-bold text-lg text-white hover:text-wolt-blue transition flex items-center gap-2 transform hover:scale-110 duration-200">
+                            <a href="https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi" target="_blank" class="font-bold text-lg text-white hover:text-wolt-blue transition flex items-center gap-2">
                                 <i class="fas fa-bicycle"></i> Wolt
                             </a>
                             <span class="text-gray-500">|</span>
-                            <a href="https://www.foodora.cz/restaurant/iqu6/america-pod-vezi" target="_blank" class="font-bold text-lg text-white hover:text-foodora-pink transition flex items-center gap-2 transform hover:scale-110 duration-200">
+                            <a href="https://www.foodora.cz/restaurant/iqu6/america-pod-vezi" target="_blank" class="font-bold text-lg text-white hover:text-foodora-pink transition flex items-center gap-2">
                                 <i class="fas fa-shopping-bag"></i> Foodora
                             </a>
                         </div>
@@ -124,8 +124,11 @@
         </div>
     </section>
 
+    <!-- SECTION SEPARATOR -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent"></div>
+
     <!-- MENU SECTION -->
-    <section id="menu" class="bg-black py-20 px-4 md:px-6 border-t border-white/10 relative">
+    <section id="menu" class="bg-black py-20 px-4 md:px-6 relative">
         <div class="max-w-7xl mx-auto">
              
              <!-- Section Header -->
@@ -150,7 +153,7 @@
                     </a>
                 </div>
 
-                <!-- 2. Zebra (Static Image, Non-clickable feel) -->
+                <!-- 2. Zebra -->
                 <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default">
                     <div class="absolute inset-0 bg-cover bg-center opacity-80" style="background-image: url('zebra.jpg');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
@@ -159,7 +162,7 @@
                     </div>
                 </div>
 
-                <!-- 3. Akce (Static Image, Non-clickable feel) -->
+                <!-- 3. Akce -->
                 <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default">
                     <div class="absolute inset-0 bg-cover bg-center opacity-80" style="background-image: url('akce.jpg');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
@@ -169,13 +172,13 @@
                 </div>
              </div>
 
-             <!-- Bottom Row: Stálý Lístek Viewer (Height Reduced) -->
+             <!-- Bottom Row: Stálý Lístek Viewer -->
              <div class="w-full">
                  <div class="flex items-center justify-between mb-4 px-2">
                      <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
                  </div>
 
-                 <!-- Book Container (Reduced Height) -->
+                 <!-- Book Container -->
                  <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[350px] md:min-h-[600px] flex items-center justify-center">
                      
                      <!-- Left Arrow -->
@@ -209,14 +212,16 @@
         </div>
     </section>
 
-    <!-- ABOUT SECTION (Neutral Background) -->
-    <section id="about" class="bg-[#050505] py-20 px-6 border-t border-white/5 overflow-hidden">
+    <!-- SECTION SEPARATOR -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent"></div>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="bg-[#050505] py-20 px-6 overflow-hidden relative">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row gap-12 items-center">
                 
                 <!-- Image Column -->
                 <div class="w-full md:w-1/2 relative">
-                    <!-- Static subtle glow -->
                     <div class="absolute -inset-2 bg-brand-gold/10 rounded-sm blur opacity-50"></div>
                     <img src="prostory.jpg" alt="Interiér America Pod Věží" class="relative rounded-sm shadow-2xl w-full object-cover h-[400px] md:h-[500px] border border-white/10 filter brightness-90 contrast-110">
                     <div class="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur-sm p-4 border-l-4 border-brand-gold">
@@ -257,11 +262,50 @@
         </div>
     </section>
 
-    <!-- Placeholder Contact -->
-    <section id="contact" class="bg-black min-h-[50vh] border-t border-white/10 flex items-center justify-center text-gray-500">
-        <div class="text-center">
-            <i class="fas fa-map-marker-alt text-4xl mb-4 text-brand-gold opacity-50"></i>
-            <p class="text-xl font-heading uppercase tracking-widest">Sekce: Kontakt</p>
+    <!-- SECTION SEPARATOR -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent"></div>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="bg-black py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                 <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+                    Kde nás <span class="text-brand-gold">Najdete</span>
+                 </h2>
+                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-12">
+                <!-- Contact Info -->
+                <div class="w-full md:w-1/3 space-y-8">
+                    <div class="border border-white/10 bg-white/5 p-8 rounded-sm text-center md:text-left">
+                        <h4 class="text-brand-gold font-heading text-xl tracking-widest mb-4 uppercase">Adresa</h4>
+                        <p class="text-gray-300 text-lg">Komenského náměstí 61</p>
+                        <p class="text-gray-300">293 01 Mladá Boleslav</p>
+                        <p class="text-gray-500 text-sm mt-2">Přímo pod věží</p>
+                    </div>
+
+                    <div class="border border-white/10 bg-white/5 p-8 rounded-sm text-center md:text-left">
+                        <h4 class="text-brand-gold font-heading text-xl tracking-widest mb-4 uppercase">Rezervace</h4>
+                        <p class="text-2xl font-bold text-white mb-2">326 322 007</p>
+                        <a href="mailto:info@americapodvezi.cz" class="text-gray-400 hover:text-brand-gold transition">info@americapodvezi.cz</a>
+                    </div>
+
+                    <div class="border border-white/10 bg-white/5 p-8 rounded-sm text-center md:text-left">
+                        <h4 class="text-brand-gold font-heading text-xl tracking-widest mb-4 uppercase">Otevírací Doba</h4>
+                        <ul class="text-gray-300 space-y-2">
+                            <li class="flex justify-between"><span>Po - Čt</span> <span>11:00 - 22:00</span></li>
+                            <li class="flex justify-between"><span>Pá - So</span> <span>11:00 - 23:00</span></li>
+                            <li class="flex justify-between"><span>Neděle</span> <span>11:00 - 21:00</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Map -->
+                <div class="w-full md:w-2/3 h-[400px] md:h-auto border border-white/10 rounded-sm overflow-hidden relative grayscale hover:grayscale-0 transition duration-500">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2543.896783856324!2d14.901691315729113!3d50.4121549794705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470955b2521f2d6d%3A0x4a0a552825859e2a!2sAmerica%20Pod%20V%C4%9B%C5%BE%C3%AD!5e0!3m2!1scs!2scz!4v1647863541234!5m2!1scs!2scz" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
         </div>
     </section>
 
