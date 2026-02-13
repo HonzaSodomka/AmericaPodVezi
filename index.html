@@ -33,6 +33,9 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -376,13 +379,10 @@
                     </ul>
                 </div>
 
-                <!-- Column 3: Map -->
+                <!-- Column 3: Map (Leaflet) -->
                 <!-- Mobile: aspect-square (square), PC: h-full (fills column height) -->
-                <div class="w-full aspect-square lg:aspect-auto lg:h-full min-h-[300px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl scroll-wait delay-300">
-                    <iframe 
-                        src="https://maps.google.com/maps?q=America+Pod+V%C4%9B%C5%BE%C3%AD%2C+Komensk%C3%A9ho+n%C3%A1m%C4%9Bst%C3%AD+61%2C+Mlad%C3%A1+Boleslav&t=&z=17&ie=UTF8&iwloc=&output=embed" 
-                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
-                    </iframe>
+                <div id="map" class="w-full aspect-square lg:aspect-auto lg:h-full min-h-[300px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl scroll-wait delay-300 bg-[#242424]">
+                    <!-- Leaflet map will be rendered here -->
                 </div>
 
             </div>
@@ -394,6 +394,9 @@
         <p>&copy; 2026 America Pod Věží | Komenského náměstí 61 | <a href="mailto:info@americapodvezi.cz" class="hover:text-brand-gold transition">info@americapodvezi.cz</a></p>
     </footer>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
     <!-- Scripts -->
     <script src="script.js"></script>
 </body>
