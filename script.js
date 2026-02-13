@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initMenuViewer();
     initScrollAnimations();
-    initMap();
 });
 
 /**
@@ -144,46 +143,4 @@ function initScrollAnimations() {
     // Find all elements waiting for scroll animation
     const scrollElements = document.querySelectorAll('.scroll-wait');
     scrollElements.forEach(el => observer.observe(el));
-}
-
-/**
- * Leaflet Map Initialization
- */
-function initMap() {
-    const mapElement = document.getElementById('map');
-    if (!mapElement) return;
-
-    // Corrected Coordinates for America Pod Věží
-    const lat = 50.41235680840374; 
-    const lng = 14.903186442396233;
-
-    const map = L.map('map', {
-        center: [lat, lng],
-        zoom: 17, // Slightly closer zoom for better detail
-        scrollWheelZoom: false
-    });
-
-    // Stadia Alidade Smooth Dark (Grey/Black/White) - still dark but higher contrast/sharper? 
-    // OR CartoDB Voyager (Light/Pastel) - clean but very bright.
-    // OR 'Jawg Light' or similar. 
-    // Let's try "CartoDB Voyager" - it is clean, legible, and professional. 
-    // If user said "moc tmavy", they want light.
-    
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20
-    }).addTo(map);
-
-    // Custom Gold Marker
-    const goldIcon = L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="background-color: #d4a373; width: 1.5rem; height: 1.5rem; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>`,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
-
-    // Add Marker
-    L.marker([lat, lng], { icon: goldIcon }).addTo(map)
-        .bindPopup('<div style="color: black; font-weight: bold; font-family: sans-serif; text-align: center;">America Pod Věží<br>Vchod z náměstí</div>');
 }
