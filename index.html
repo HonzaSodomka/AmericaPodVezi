@@ -307,7 +307,7 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- CONTACT SECTION (Fixed Sunday Color) -->
+    <!-- CONTACT SECTION (Refined) -->
     <section id="contact" class="bg-black py-16 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-10 scroll-wait">
@@ -317,13 +317,15 @@
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
+            <!-- Changed items-start to items-center for better balance with smaller map -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
                 
-                <!-- Compact Info Column -->
+                <!-- Info Column -->
                 <div class="flex flex-col justify-center space-y-8 h-full md:py-8 scroll-wait delay-100">
                     <!-- Address Item -->
                     <div class="flex items-start gap-4 group">
-                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
+                        <!-- Added bg-brand-gold/5 for polished look -->
+                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <div>
@@ -335,7 +337,7 @@
 
                     <!-- Phone Item -->
                     <div class="flex items-start gap-4 group">
-                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
+                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fas fa-phone-alt"></i>
                         </div>
                         <div>
@@ -345,9 +347,9 @@
                         </div>
                     </div>
 
-                    <!-- Hours Item (Fixed Colors) -->
+                    <!-- Hours Item -->
                     <div class="flex items-start gap-4 group">
-                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
+                        <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="w-full max-w-xs">
@@ -362,8 +364,8 @@
                     </div>
                 </div>
 
-                <!-- Color Map (Pin Fixed) -->
-                <div class="w-full h-[350px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl scroll-wait delay-200">
+                <!-- Color Map (Reduced height to 280px) -->
+                <div class="w-full h-[280px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl scroll-wait delay-200">
                     <iframe 
                         src="https://maps.google.com/maps?q=America+Pod+V%C4%9B%C5%BE%C3%AD%2C+Komensk%C3%A9ho+n%C3%A1m%C4%9Bst%C3%AD+61%2C+Mlad%C3%A1+Boleslav&t=&z=17&ie=UTF8&iwloc=&output=embed" 
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
