@@ -141,7 +141,7 @@ function initMenuViewer() {
             if (elements.currentImg.complete) fadeIn();
             
         }, CONFIG.animation.menuFadeTime); 
-    };\
+    };
 
     const changePage = (direction) => {
         const newIndex = currentIndex + direction;
