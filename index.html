@@ -376,13 +376,29 @@
                     </ul>
                 </div>
 
-                <!-- Column 3: Google Map -->
-                <!-- Reduced height: h-56 (224px) on mobile, h-full min-h-[250px] on PC -->
-                <div class="w-full h-56 lg:h-full min-h-[250px] border border-white/10 rounded-sm overflow-hidden relative shadow-2xl scroll-wait delay-300">
-                    <iframe 
-                        src="https://maps.google.com/maps?q=America+Pod+V%C4%9B%C5%BE%C3%AD%2C+Komensk%C3%A9ho+n%C3%A1m%C4%9Bst%C3%AD+61%2C+Mlad%C3%A1+Boleslav&t=&z=17&ie=UTF8&iwloc=&output=embed" 
-                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
-                    </iframe>
+                <!-- Column 3: Google Map in Frame -->
+                <div class="w-full h-auto lg:h-full min-h-[200px] flex flex-col scroll-wait delay-300">
+                    <!-- Frame Container -->
+                    <div class="border border-white/10 bg-white/5 p-3 rounded-sm shadow-xl h-full flex flex-col justify-between">
+                        <!-- Label -->
+                        <div class="flex items-center justify-between mb-2 px-1">
+                             <span class="text-xs uppercase tracking-widest text-brand-gold font-heading">Mapa</span>
+                             <i class="fas fa-map text-gray-500 text-xs"></i>
+                        </div>
+
+                        <!-- Inner Map Window -->
+                        <div class="relative w-full h-48 lg:h-auto lg:flex-grow border border-white/10 rounded-sm overflow-hidden grayscale-[50%] hover:grayscale-0 transition duration-500 bg-[#242424]">
+                             <iframe 
+                                src="https://maps.google.com/maps?q=America+Pod+V%C4%9B%C5%BE%C3%AD%2C+Komensk%C3%A9ho+n%C3%A1m%C4%9Bst%C3%AD+61%2C+Mlad%C3%A1+Boleslav&t=&z=17&ie=UTF8&iwloc=&output=embed" 
+                                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                            </iframe>
+                        </div>
+                        
+                        <!-- Footer Link -->
+                        <a href="https://maps.google.com/?q=America+Pod+Věží" target="_blank" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
+                            <i class="fas fa-external-link-alt"></i> Otevřít v aplikaci
+                        </a>
+                    </div>
                 </div>
 
             </div>
