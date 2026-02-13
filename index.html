@@ -43,12 +43,13 @@
             position: relative;
         }
 
+        /* Darker Overlay as requested */
         .hero-overlay {
             background: linear-gradient(to bottom, 
-                rgba(0,0,0,0.5) 0%, 
-                rgba(0,0,0,0.2) 40%, 
-                rgba(0,0,0,0.6) 80%,
-                rgba(0,0,0,0.95) 100%);
+                rgba(0,0,0,0.7) 0%, 
+                rgba(0,0,0,0.4) 40%, 
+                rgba(0,0,0,0.8) 80%,
+                rgba(0,0,0,0.98) 100%);
         }
 
         #mobile-menu {
@@ -61,14 +62,14 @@
             transform: translateX(100%);
         }
         
-        /* Nav Link Style - No Glow, Just Shadow */
+        /* Nav Link Style */
         .nav-link {
             position: relative;
             font-weight: 700;
             letter-spacing: 0.1em;
             font-size: 1rem;
             color: rgba(255,255,255,0.9);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Strong text shadow */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
             transition: color 0.3s ease;
         }
         
@@ -82,7 +83,7 @@
             transform: translateX(-50%);
             background-color: #d4a373;
             transition: width 0.3s ease;
-            box-shadow: 0 2px 3px rgba(0,0,0,0.8); /* Shadow for underline */
+            box-shadow: 0 2px 3px rgba(0,0,0,0.8);
         }
 
         .nav-link:hover {
@@ -155,14 +156,14 @@
                 <div class="h-1 w-24 bg-brand-gold mb-6 mx-auto md:mx-1 shadow-lg"></div>
             </div>
 
-            <!-- Subtext (Smaller Size) -->
+            <!-- Subtext -->
             <div class="max-w-3xl md:ml-1 animate-enter delay-200">
                 <p class="text-sm md:text-base font-light text-gray-200 mb-10 leading-relaxed drop-shadow-md">
                     <span class="font-bold text-white block mb-1 text-base md:text-lg">Naší pýchou jsou burgery z čerstvě mletého hovězího masa.</span>
                     Nabízíme BBQ speciality připravované rovnou z grilu, steaky, saláty a dezerty.
                 </p>
 
-                <!-- Action Buttons (Taller & Narrower) -->
+                <!-- Action Buttons -->
                 <div class="flex flex-col md:flex-row gap-4 items-center md:items-stretch animate-enter delay-300">
                     <!-- Menu -->
                     <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-5 px-6 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 min-w-[160px]">
@@ -174,7 +175,7 @@
                         Rezervovat
                     </a>
 
-                    <!-- Delivery Widget (Matching Height) -->
+                    <!-- Delivery Widget -->
                     <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col md:flex-row items-center justify-center px-6 py-2 gap-2 shadow-xl min-w-[200px]">
                         <span class="text-xs uppercase tracking-widest text-gray-300 font-heading font-bold whitespace-nowrap">Rozvoz domů:</span>
                         <div class="flex gap-4 items-center">
