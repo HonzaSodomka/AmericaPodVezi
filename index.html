@@ -221,11 +221,11 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- ABOUT SECTION (Redesigned) -->
+    <!-- ABOUT SECTION (With Google Reviews) -->
     <section id="about" class="bg-[#050505] py-20 px-6 overflow-hidden relative">
         <div class="max-w-7xl mx-auto">
             
-            <!-- NEW Section Header -->
+            <!-- Section Header -->
             <div class="text-center mb-16">
                  <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
                     Náš <span class="text-brand-gold">Příběh</span>
@@ -252,7 +252,7 @@
                     </div>
                 </div>
 
-                <!-- Text Column (Enhanced Content) -->
+                <!-- Text Column -->
                 <div class="w-full md:w-1/2 text-center md:text-left">
                     <h2 class="text-3xl md:text-4xl font-heading font-bold text-white tracking-wider uppercase mb-6 leading-tight">
                         Autentická chuť Ameriky <br>
@@ -267,10 +267,24 @@
                         Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen "na jedno" (čepujeme Plzeň a Bohém), u nás si přijdete na své.
                     </p>
 
-                    <div class="bg-white/5 border-l-4 border-brand-gold p-4 mb-8 text-left rounded-r-sm">
-                        <p class="text-sm text-gray-300 italic">
-                            "Kromě restaurace s kapacitou 40 míst nabízíme i dva soukromé salonky (20 a 35 osob). Ideální pro vaše firemní večírky, rodinné oslavy nebo svatby. Celkově se k nám vejde až 100 hostů."
-                        </p>
+                    <!-- Reviews Widget (Static based on user data) -->
+                    <div class="bg-white/5 border border-white/10 rounded-sm p-4 inline-flex items-center gap-4 mb-6 hover:bg-white/10 transition cursor-pointer group" onclick="window.open('https://www.google.com/search?q=America+Pod+V%C4%9B%C5%BE%C3%AD+recenze', '_blank')">
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-400 uppercase tracking-wider mb-1">Hodnocení Google</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl font-bold text-white">4.5</span>
+                                <div class="flex text-brand-gold text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                            <span class="text-xs text-gray-500 group-hover:text-white transition">907+ recenzí</span>
+                        </div>
+                        <div class="h-8 w-px bg-white/10 mx-2"></div>
+                        <i class="fab fa-google text-2xl text-gray-400 group-hover:text-brand-gold transition"></i>
                     </div>
 
                     <div class="flex flex-wrap gap-3 justify-center md:justify-start">
@@ -293,7 +307,7 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- CONTACT SECTION (Compact & Color) -->
+    <!-- CONTACT SECTION (Fixed Sunday Color) -->
     <section id="contact" class="bg-black py-16 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-10">
@@ -331,7 +345,7 @@
                         </div>
                     </div>
 
-                    <!-- Hours Item -->
+                    <!-- Hours Item (Fixed Colors) -->
                     <div class="flex items-start gap-4 group">
                         <div class="w-10 h-10 rounded-full border border-brand-gold/30 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fas fa-clock"></i>
@@ -342,7 +356,7 @@
                                 <li class="flex justify-between border-b border-white/10 pb-1"><span>Pondělí</span> <span>11:00 - 14:00</span></li>
                                 <li class="flex justify-between border-b border-white/10 pb-1"><span>Út - Pá</span> <span>11:00 - 22:00</span></li>
                                 <li class="flex justify-between border-b border-white/10 pb-1"><span>Sobota</span> <span>11:30 - 22:00</span></li>
-                                <li class="flex justify-between pt-1"><span class="text-foodora-pink font-bold">Neděle</span> <span class="text-foodora-pink font-bold">ZAVŘENO</span></li>
+                                <li class="flex justify-between pt-1"><span>Neděle</span> <span>ZAVŘENO</span></li>
                             </ul>
                         </div>
                     </div>
