@@ -44,6 +44,14 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- JS Fallback for content visibility -->
+    <noscript>
+        <style>
+            .scroll-wait { opacity: 1 !important; }
+            #preloader { display: none !important; }
+        </style>
+    </noscript>
 </head>
 <body class="bg-black text-white overflow-x-hidden">
 
@@ -78,7 +86,7 @@
                 <a href="#contact" class="nav-link font-heading">KONTAKT</a>
             </div>
             <!-- Mobile Menu Btn -->
-            <button id="menu-btn" class="text-white text-3xl focus:outline-none z-50 relative md:hidden animate-enter">
+            <button id="menu-btn" aria-label="Otevřít menu" class="text-white text-3xl focus:outline-none z-50 relative md:hidden animate-enter">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
@@ -135,11 +143,11 @@
                     <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col md:flex-row items-center justify-center px-6 py-2 gap-2 shadow-xl min-w-[200px]">
                         <span class="text-xs uppercase tracking-widest text-gray-300 font-heading font-bold whitespace-nowrap">Rozvoz domů:</span>
                         <div class="flex gap-4 items-center">
-                            <a href="https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi" target="_blank" class="font-bold text-lg text-white hover:text-wolt-blue transition flex items-center gap-2">
+                            <a href="https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi" target="_blank" rel="noopener noreferrer" class="font-bold text-lg text-white hover:text-wolt-blue transition flex items-center gap-2">
                                 <i class="fas fa-bicycle"></i> Wolt
                             </a>
                             <span class="text-gray-500">|</span>
-                            <a href="https://www.foodora.cz/restaurant/iqu6/america-pod-vezi" target="_blank" class="font-bold text-lg text-white hover:text-foodora-pink transition flex items-center gap-2">
+                            <a href="https://www.foodora.cz/restaurant/iqu6/america-pod-vezi" target="_blank" rel="noopener noreferrer" class="font-bold text-lg text-white hover:text-foodora-pink transition flex items-center gap-2">
                                 <i class="fas fa-shopping-bag"></i> Foodora
                             </a>
                         </div>
@@ -173,7 +181,7 @@
                         <i class="fas fa-calendar-alt"></i>
                     </div>
                     <h3 class="text-xl md:text-2xl font-heading font-bold text-white mb-1 md:mb-2 tracking-wider uppercase">Denní Nabídka</h3>
-                    <a href="https://www.menicka.cz/7509-america-pod-vezi.html" target="_blank" class="border border-brand-gold text-brand-gold font-heading font-bold py-2 px-6 text-xs md:text-sm hover:bg-brand-gold hover:text-black transition duration-300 uppercase tracking-widest mt-2">
+                    <a href="https://www.menicka.cz/7509-america-pod-vezi.html" target="_blank" rel="noopener noreferrer" class="border border-brand-gold text-brand-gold font-heading font-bold py-2 px-6 text-xs md:text-sm hover:bg-brand-gold hover:text-black transition duration-300 uppercase tracking-widest mt-2">
                         Zobrazit
                     </a>
                 </div>
@@ -436,7 +444,7 @@
                         </div>
                         
                         <!-- Footer Link -->
-                        <a href="https://maps.google.com/?q=America+Pod+Věží" target="_blank" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
+                        <a href="https://maps.google.com/?q=America+Pod+Věží" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
                             <i class="fas fa-external-link-alt"></i> Otevřít v aplikaci
                         </a>
                     </div>
