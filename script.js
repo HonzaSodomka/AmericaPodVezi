@@ -14,7 +14,8 @@ const CONFIG = {
         nextPageBtn: '#next-page',
         pageIndicator: '#page-indicator',
         scrollWait: '.scroll-wait',
-        menuLinks: '#mobile-menu a'
+        menuLinks: '#mobile-menu a',
+        heroSection: '.hero-section' // Added selector
     },
     menuImages: [
         'menu-page-1.svg', 
@@ -23,8 +24,8 @@ const CONFIG = {
         'menu-page-4.svg'
     ],
     animation: {
-        preloaderDelay: 2200, // Reduced from 2600 for faster load
-        fadeDuration: 800,   // Reduced from 1000
+        preloaderDelay: 2200, 
+        fadeDuration: 800,   
         menuFadeTime: 150
     },
     swipeThreshold: 50
@@ -38,6 +39,40 @@ function initApp() {
     initMenuViewer();
     initScrollAnimations();
     initDynamicYear();
+    initHeroHeightFix(); // Start the fix
+}
+
+/**
+ * FIXED HERO HEIGHT (Prevents jump on mobile scroll)
+ * Sets exact pixel height and only updates on rotation (width change),
+ * ignoring address bar show/hide events.
+ */
+function initHeroHeightFix() {
+    const hero = document.querySelector(CONFIG.selectors.heroSection);
+    if (!hero) return;
+
+    let lastWidth = window.innerWidth;
+
+    const setHeight = () => {
+        // Set exact pixel height to lock layout
+        hero.style.minHeight = `${window.innerHeight}px`;
+    };
+
+    // 1. Set on load
+    setHeight();
+
+    // 2. Listen for resize, BUT only act if WIDTH changes (Rotation)
+    window.addEventListener('resize', () => {
+        if (window.innerWidth !== lastWidth) {
+            lastWidth = window.innerWidth;
+            setHeight();
+        }
+    });
+
+    // 3. Extra safety for orientation change event
+    window.addEventListener('orientationchange', () => {
+        setTimeout(setHeight, 100); // Small delay to allow browser layout update
+    });
 }
 
 /**
@@ -57,7 +92,6 @@ function initPreloader() {
         }, CONFIG.animation.preloaderDelay);
     };
 
-    // Check if page is already loaded
     if (document.readyState === 'complete') {
         fadeOut();
     } else {
@@ -101,7 +135,6 @@ function initMobileMenu() {
 
     menuBtn.addEventListener('click', toggleMenu);
 
-    // Close menu when clicking a link
     document.querySelectorAll(CONFIG.selectors.menuLinks).forEach(link => {
         link.addEventListener('click', () => {
             if (isOpen) toggleMenu();
@@ -154,7 +187,6 @@ function initMenuViewer() {
     if (elements.prevBtn) elements.prevBtn.addEventListener('click', () => changePage(-1));
     if (elements.nextBtn) elements.nextBtn.addEventListener('click', () => changePage(1));
 
-    // Touch Swipe Logic
     if (elements.container) {
         let touchStartX = 0;
 
@@ -167,13 +199,12 @@ function initMenuViewer() {
             const diff = touchStartX - touchEndX;
 
             if (Math.abs(diff) > CONFIG.swipeThreshold) {
-                if (diff > 0) changePage(1); // Swipe Left -> Next
-                else changePage(-1);       // Swipe Right -> Prev
+                if (diff > 0) changePage(1); 
+                else changePage(-1);       
             }
         }, {passive: true});
     }
 
-    // Initialize
     updateMenu();
 }
 
