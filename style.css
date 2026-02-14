@@ -7,7 +7,8 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
     background-image: url('hero.jpg');
     background-size: cover;
     background-position: center;
-    min-height: 100vh; /* Changed from height: 100vh to prevent content clipping */
+    min-height: 100vh; /* Fallback for older browsers */
+    min-height: 100svh; /* STABLE height for mobile/tablet (ignores address bar resize) */
     position: relative;
 }
 
