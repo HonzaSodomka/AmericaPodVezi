@@ -259,7 +259,7 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- ABOUT SECTION (Redesigned with two images) -->
+    <!-- ABOUT SECTION (Redesigned with two images + Order switched for mobile) -->
     <section id="about" class="bg-[#050505] py-20 px-8 md:px-12 overflow-hidden relative">
         <div class="max-w-7xl mx-auto">
             
@@ -273,10 +273,10 @@
 
             <div class="flex flex-col lg:flex-row gap-12 items-center">
                 
-                <!-- Image Column (Split: Restaurant + Salonky) -->
-                <div class="w-full lg:w-1/2 flex flex-col gap-4 scroll-wait delay-100">
+                <!-- Image Column (Order 2 on Mobile, Order 1 on PC) -->
+                <div class="w-full lg:w-1/2 flex flex-col gap-4 scroll-wait delay-100 order-2 lg:order-1">
                     <!-- 1. Original Restaurant Photo -->
-                    <div class="relative rounded-sm overflow-hidden h-[250px] shadow-2xl border border-white/10 group">
+                    <div class="relative rounded-sm overflow-hidden h-[350px] shadow-2xl border border-white/10 group">
                         <img src="prostory.jpg" alt="Interiér Restaurace" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
                             <h3 class="text-brand-gold font-heading text-lg tracking-widest uppercase">Restaurace</h3>
@@ -285,7 +285,7 @@
                     </div>
 
                     <!-- 2. New Salonek Photo -->
-                    <div class="relative rounded-sm overflow-hidden h-[250px] shadow-2xl border border-white/10 group">
+                    <div class="relative rounded-sm overflow-hidden h-[350px] shadow-2xl border border-white/10 group">
                         <img src="salonek.jpg" alt="Privátní Salonek" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
                             <h3 class="text-brand-gold font-heading text-lg tracking-widest uppercase">Akce & Salonky</h3>
@@ -294,15 +294,15 @@
                     </div>
                 </div>
 
-                <!-- Text Column (Restored & Expanded) -->
-                <div class="w-full lg:w-1/2 text-center lg:text-left scroll-wait delay-200">
+                <!-- Text Column (Order 1 on Mobile, Order 2 on PC) -->
+                <div class="w-full lg:w-1/2 text-center lg:text-left scroll-wait delay-200 order-1 lg:order-2">
                     <h2 class="text-3xl md:text-4xl font-heading font-bold text-white tracking-wider uppercase mb-6 leading-tight">
-                        Family Style Restaurant <br>
-                        <span class="text-brand-gold">v srdci Boleslavi</span>
+                        Autentická chuť Ameriky <br>
+                        <span class="text-brand-gold">pod Boleslavskou věží</span>
                     </h2>
                     
                     <p class="text-gray-300 text-lg mb-6 leading-relaxed font-light">
-                        Jsme <strong>rodinná restaurace</strong> s dlouholetou tradicí, přímo v historickém srdci Mladé Boleslavi. Naším cílem není být jen další restaurací, ale místem, kde se budete cítit jako doma.
+                        Jsme <strong>Family Style Restaurant</strong> s dlouholetou tradicí, přímo v historickém srdci Mladé Boleslavi. Naším cílem není být jen další restaurací, ale místem, kde se budete cítit jako doma.
                     </p>
                     
                     <p class="text-gray-400 mb-6 leading-relaxed">
@@ -317,7 +317,7 @@
                         <ul class="text-gray-500 text-sm space-y-2">
                             <li class="flex items-center gap-2"><i class="fas fa-check text-brand-gold text-xs"></i> Rauty na míru (teplá i studená kuchyně)</li>
                             <li class="flex items-center gap-2"><i class="fas fa-check text-brand-gold text-xs"></i> Grilovací & BBQ speciality</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-brand-gold text-xs"></i> Zajistíme hudbu i zábavu</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-beer text-brand-gold text-xs"></i> Čepované pivo & hudba na přání</li>
                         </ul>
                     </div>
 
