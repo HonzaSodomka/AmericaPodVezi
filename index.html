@@ -189,10 +189,9 @@
 
                 <!-- 2. Zebra (Modern Magazine Label) -->
                 <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-100">
-                    <div class="absolute inset-0 bg-cover bg-center bg-zebra"></div>
-                    <!-- Modern Gradient Overlay -->
+                    <!-- Improved Alt Tag -->
+                    <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
-                    <!-- Clean Text Label -->
                     <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6">
                         <span class="block text-brand-gold font-heading text-xs md:text-lg tracking-widest uppercase mb-0 md:mb-1">Speciality</span>
                         <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Burgery, Quesadillas & BBQ</span>
@@ -201,10 +200,9 @@
 
                 <!-- 3. Akce (Modern Magazine Label) -->
                 <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-200">
-                    <div class="absolute inset-0 bg-cover bg-center bg-akce"></div>
-                    <!-- Modern Gradient Overlay -->
+                    <!-- Improved Alt Tag -->
+                    <div class="absolute inset-0 bg-cover bg-center bg-akce" role="img" aria-label="Catering a rauty pro firemní večírky"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
-                    <!-- Clean Text Label -->
                     <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6">
                         <span class="block text-brand-gold font-heading text-xs md:text-lg tracking-widest uppercase mb-0 md:mb-1">Catering</span>
                         <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Oslavy & Akce</span>
@@ -214,26 +212,31 @@
 
              <!-- Bottom Row: Stálý Lístek Viewer -->
              <div class="w-full scroll-wait">
-                 <div class="flex items-center justify-between mb-4 px-2">
+                 <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 px-2 gap-4">
                      <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
                      
-                     <!-- Swipe Hint (Mobile Only) -->
-                     <div class="md:hidden text-gray-500 text-xs flex items-center gap-1 animate-pulse">
-                         <i class="fas fa-hand-pointer"></i> Posouvej tahem
-                     </div>
+                     <!-- PDF Download Button -->
+                     <a href="menu.pdf" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-brand-gold text-white hover:text-black border border-white/20 hover:border-brand-gold px-4 py-2 rounded-sm transition duration-300 text-sm font-bold tracking-wider uppercase">
+                        <i class="fas fa-file-pdf"></i> Stáhnout Menu (PDF)
+                     </a>
                  </div>
 
-                 <!-- Book Container (Reverted: Full width) -->
+                 <!-- Swipe Hint (Mobile Only) -->
+                 <div class="md:hidden text-gray-500 text-xs flex items-center gap-1 animate-pulse mb-2 px-2">
+                     <i class="fas fa-hand-pointer"></i> Posouvej tahem
+                 </div>
+
+                 <!-- Book Container -->
                  <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[600px] flex items-center justify-center" id="menu-container">
                      
-                     <!-- Left Arrow (Visible on all screens) -->
+                     <!-- Left Arrow -->
                      <button id="prev-page" class="absolute left-2 md:left-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
                          <i class="fas fa-chevron-left text-lg md:text-xl"></i>
                      </button>
 
                      <!-- Menu Page Images Container -->
                      <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-0 md:p-4 transition duration-300">
-                         <img src="menu-page-1.svg" id="current-menu-image" alt="Strana menu" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
+                         <img src="menu-page-1.svg" id="current-menu-image" alt="Jídelní lístek strana 1 - Burgery a předkrmy" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
                          <!-- Fallback -->
                          <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
                              <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
@@ -241,7 +244,7 @@
                          </div>
                      </div>
 
-                     <!-- Right Arrow (Visible on all screens) -->
+                     <!-- Right Arrow -->
                      <button id="next-page" class="absolute right-2 md:right-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
                          <i class="fas fa-chevron-right text-lg md:text-xl"></i>
                      </button>
@@ -260,7 +263,7 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- ABOUT SECTION (Redesigned with two images + Order switched for mobile) -->
+    <!-- ABOUT SECTION -->
     <section id="about" class="bg-[#050505] py-20 px-8 md:px-12 overflow-hidden relative">
         <div class="max-w-7xl mx-auto">
             
@@ -274,11 +277,12 @@
 
             <div class="flex flex-col lg:flex-row gap-12 items-center">
                 
-                <!-- Image Column (Order 2 on Mobile, Order 1 on PC) -->
+                <!-- Image Column -->
                 <div class="w-full lg:w-1/2 flex flex-col gap-4 scroll-wait delay-100 order-2 lg:order-1">
                     <!-- 1. Original Restaurant Photo -->
                     <div class="relative rounded-sm overflow-hidden h-[350px] shadow-2xl border border-white/10 group">
-                        <img src="prostory.jpg" alt="Interiér Restaurace" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
+                        <!-- Improved Alt Tag -->
+                        <img src="prostory.jpg" alt="Stylový interiér restaurace America Pod Věží s barem" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
                             <h3 class="text-brand-gold font-heading text-lg tracking-widest uppercase">Restaurace</h3>
                             <p class="text-gray-300 text-xs">Příjemné prostředí pro 40 hostů</p>
@@ -287,7 +291,8 @@
 
                     <!-- 2. New Salonek Photo -->
                     <div class="relative rounded-sm overflow-hidden h-[350px] shadow-2xl border border-white/10 group">
-                        <img src="salonek.jpg" alt="Privátní Salonek" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
+                        <!-- Improved Alt Tag -->
+                        <img src="salonek.jpg" alt="Soukromý salonek pro 30 osob na oslavy v Mladé Boleslavi" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
                             <h3 class="text-brand-gold font-heading text-lg tracking-widest uppercase">Akce & Salonky</h3>
                             <p class="text-gray-300 text-xs">Kapacita až 100 osob pro vaše oslavy</p>
@@ -295,34 +300,37 @@
                     </div>
                 </div>
 
-                <!-- Text Column (Order 1 on Mobile, Order 2 on PC) -->
+                <!-- Text Column -->
                 <div class="w-full lg:w-1/2 text-center lg:text-left scroll-wait delay-200 order-1 lg:order-2">
                     <h2 class="text-3xl md:text-4xl font-heading font-bold text-white tracking-wider uppercase mb-6 leading-tight">
                         Autentická chuť Ameriky <br>
                         <span class="text-brand-gold">pod Boleslavskou věží</span>
                     </h2>
                     
+                    <!-- Increased Contrast: gray-300 -> gray-200/300 -->
                     <p class="text-gray-300 text-lg mb-6 leading-relaxed font-light">
                         Jsme <strong>Family Style Restaurant</strong> s dlouholetou tradicí, přímo v historickém srdci Mladé Boleslavi. Naším cílem není být jen další restaurací, ale místem, kde se budete cítit jako doma.
                     </p>
                     
-                    <p class="text-gray-400 mb-6 leading-relaxed">
+                    <p class="text-gray-300 mb-6 leading-relaxed">
                         Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen "na jedno" (čepujeme Plzeň a Bohém), u nás si přijdete na své.
                     </p>
 
                     <div class="bg-white/5 p-6 rounded-sm border border-white/5 mb-8 text-left">
                         <h3 class="text-brand-gold font-heading text-xl mb-3 border-b border-white/10 pb-2">Plánujete akci?</h3>
-                        <p class="text-gray-400 text-sm mb-4">
+                        <!-- Increased Contrast -->
+                        <p class="text-gray-300 text-sm mb-4">
                             Kromě restaurace nabízíme <strong>dva soukromé salonky</strong> (32 a 15 míst). Celková kapacita až 100 hostů je ideální pro svatby, firemní večírky i rodinné oslavy.
                         </p>
-                        <ul class="text-gray-500 text-sm space-y-2">
+                        <!-- Increased Contrast -->
+                        <ul class="text-gray-400 text-sm space-y-2">
                             <li class="flex items-center gap-2"><i class="fas fa-check text-brand-gold text-xs"></i> Rauty na míru (teplá i studená kuchyně)</li>
                             <li class="flex items-center gap-2"><i class="fas fa-check text-brand-gold text-xs"></i> Grilovací & BBQ speciality</li>
                             <li class="flex items-center gap-2"><i class="fas fa-beer text-brand-gold text-xs"></i> Čepované pivo & hudba na přání</li>
                         </ul>
                     </div>
 
-                    <!-- Reviews Widget (Static based on user data) -->
+                    <!-- Reviews Widget -->
                     <div class="bg-white/5 border border-white/10 rounded-sm p-4 inline-flex items-center gap-4 mb-6 hover:bg-white/10 transition cursor-pointer group" onclick="window.open('https://www.google.com/search?q=America+Pod+V%C4%9B%C5%BE%C3%AD+recenze', '_blank')">
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 uppercase tracking-wider mb-1">Hodnocení Google</span>
@@ -336,7 +344,7 @@
                                     <i class="fas fa-star-half-alt"></i>
                                 </div>
                             </div>
-                            <span class="text-xs text-gray-500 group-hover:text-white transition">900+ recenzí</span>
+                            <span class="text-xs text-gray-400 group-hover:text-white transition">900+ recenzí</span>
                         </div>
                         <div class="h-8 w-px bg-white/10 mx-2"></div>
                         <i class="fab fa-google text-2xl text-gray-400 group-hover:text-brand-gold transition"></i>
@@ -350,7 +358,7 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- CONTACT SECTION (Refined Layout: 3 Columns on PC, Small Fixed Map) -->
+    <!-- CONTACT SECTION -->
     <section id="contact" class="bg-black py-16 px-8 md:px-12">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-10 scroll-wait">
@@ -372,7 +380,8 @@
                         </div>
                         <div>
                             <h4 class="text-white font-heading text-lg tracking-widest uppercase">Adresa</h4>
-                            <p class="text-gray-400">Komenského náměstí 61<br>Mladá Boleslav</p>
+                            <!-- Increased Contrast -->
+                            <p class="text-gray-300">Komenského náměstí 61<br>Mladá Boleslav</p>
                             <p class="text-gray-500 text-xs mt-1">Přímo pod věží</p>
                         </div>
                     </div>
@@ -385,14 +394,15 @@
                         <div>
                             <h4 class="text-white font-heading text-lg tracking-widest uppercase">Rezervace & Akce</h4>
                             <div class="flex flex-col">
-                                <a href="tel:326322007" class="text-gray-400 text-lg font-bold hover:text-white transition">326 322 007</a>
+                                <!-- Increased Contrast -->
+                                <a href="tel:326322007" class="text-gray-300 text-lg font-bold hover:text-white transition">326 322 007</a>
                                 <a href="tel:606537469" class="text-brand-gold text-base font-bold hover:text-white transition">606 537 469</a>
                             </div>
                             <a href="mailto:info@americapodvezi.cz" class="text-sm text-gray-500 hover:text-white transition mt-1 block">info@americapodvezi.cz</a>
                         </div>
                     </div>
 
-                    <!-- Social Media Item (NEW) -->
+                    <!-- Social Media Item -->
                     <div class="flex items-start gap-4 group cursor-pointer" onclick="window.open('https://www.facebook.com/profile.php?id=100063543104526', '_blank')">
                         <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fab fa-facebook-f"></i>
@@ -413,7 +423,8 @@
                         <h4 class="text-white font-heading text-lg tracking-widest uppercase">Otevírací Doba</h4>
                     </div>
                     
-                    <ul class="text-gray-400 text-sm space-y-3 w-full">
+                    <!-- Increased Contrast -->
+                    <ul class="text-gray-300 text-sm space-y-3 w-full">
                         <li class="flex justify-between border-b border-white/10 pb-2">
                             <span class="font-bold text-white">Pondělí</span> 
                             <span>11:00 - 14:00</span>
@@ -467,8 +478,10 @@
         <p>
             &copy; <span id="current-year">2026</span> America Pod Věží | Komenského náměstí 61 | <a href="mailto:info@americapodvezi.cz" class="hover:text-brand-gold transition">info@americapodvezi.cz</a>
         </p>
-        <p class="mt-2 text-[10px] opacity-60">
-            Realizováno <a href="https://webresent.cz" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:underline">Webresent</a>
+        <!-- Legal & Credits -->
+        <p class="mt-4 text-[10px] text-gray-600 font-sans tracking-normal normal-case opacity-80">
+            Provozovatel: America Pod Věží [DOPLNIT MAJITELE/S.R.O.] | IČO: [DOPLNIT IČO] <br>
+            <span class="mt-1 block uppercase tracking-widest opacity-60">Realizováno <a href="https://webresent.cz" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:underline">Webresent</a></span>
         </p>
     </footer>
 
