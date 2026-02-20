@@ -1,0 +1,52 @@
+=============================================
+NASTAVENI A BUILD TAILWINDU NA WINDOWS
+=============================================
+
+Tento navod popisuje, jak prebuildit output.css pokazde, kdyz 
+udelas zmeny v index.html nebo input.css. 
+
+Postup pouziva standalone verzi Tailwind CLI (v3.4.17), takze nepotrebujes 
+Node.js ani npm.
+
+
+1. PRIPRAVA (Stazeni nastroju - udelas jen jednou, pokud je jeste nemas)
+------------------------------------------------------------------------
+V PowerShellu si stahni prislusny .exe soubor Tailwindu:
+
+Invoke-WebRequest -Uri "https://github.com/tailwindlabs/tailwindcss/releases/download/v3.4.17/tailwindcss-windows-x64.exe" -OutFile "tailwindcss.exe"
+
+
+2. KONFIGURACE (Zajisteni tvych barev - udelas jednou, pokud soubor chybi)
+------------------------------------------------------------------------
+Musis mit vytvoreny soubor `tailwind.config.js` ve slozce projektu, 
+aby Tailwind vedel, jakou hodnotu ma barva `brand-gold` atd.
+
+V PowerShellu:
+
+Set-Content -Path "tailwind.config.js" -Value "module.exports = { content: ['./index.html', './script.js'], theme: { extend: { colors: { 'brand-gold': '#d4a373', 'wolt-blue': '#009de0', 'foodora-pink': '#d70f64' } } }, plugins: [] }"
+
+
+3. SAMOTNY BUILD (Toto spust vzdy, kdyz neco zmenis)
+------------------------------------------------------------------------
+V PowerShellu:
+
+.\tailwindcss.exe -i input.css -o output.css --minify
+
+Tento prikaz vezme tvuj `input.css` (a naskenuje `index.html`), 
+zjisti jake classy jsi pouzil, dogeneruje je a zminifikovane 
+ulozi do `output.css`.
+
+
+4. PUSH NA GITHUB (Nahrat hotovy vysledek)
+------------------------------------------------------------------------
+Nakonec pushni zmeny na web (staci zmeneny output.css, pripadne 
+index.html pokud jsi ho menil):
+
+git add output.css index.html
+git commit -m "build: aktualizace CSS"
+git push
+
+
+*Poznamka:* Soubory `tailwindcss.exe` a `tailwind.config.js` se na GitHub
+nepushuji, jsou pridany v `.gitignore`. Jsou to jen tvoje lokalni 
+nastroje pro praci.
