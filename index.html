@@ -107,7 +107,7 @@
         </div>
     </div>
 
-    <!-- Navigation (Absolute) -->
+    <!-- Navigation -->
     <nav class="fixed w-full z-50 top-0 left-0 p-6 md:px-12" id="navbar">
         <div class="flex justify-between items-center max-w-7xl mx-auto">
             <div class="flex items-center gap-3 animate-enter">
@@ -408,11 +408,7 @@
                              <span class="text-xs uppercase tracking-widest text-brand-gold font-heading">Mapa</span>
                              <i class="fas fa-map text-gray-500 text-xs"></i>
                         </div>
-
-                        <!-- Map wrapper: iframe injected by JS only after consent -->
                         <div class="relative w-full h-64 lg:h-auto lg:flex-grow border border-white/10 rounded-sm overflow-hidden bg-[#242424]" id="map-wrapper">
-
-                            <!-- Placeholder (shown by default, hidden after consent) -->
                             <div id="map-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 gap-3">
                                 <div class="text-brand-gold text-2xl"><i class="fas fa-map-marked-alt"></i></div>
                                 <p class="text-gray-400 text-xs leading-relaxed">
@@ -428,11 +424,8 @@
                                     </a>
                                 </div>
                             </div>
-
-                            <!-- Iframe host: populated by JS after consent -->
                             <div id="map-iframe-host" class="absolute inset-0 hidden"></div>
                         </div>
-
                         <a href="https://maps.google.com/?q=America+Pod+V%C4%9B%C5%BE%C3%AD" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
                             <i class="fas fa-external-link-alt"></i> Otevřít v aplikaci
                         </a>
@@ -455,21 +448,43 @@
         </p>
     </footer>
 
-    <!-- GDPR Consent Banner — z-[110] aby byl nad preloaderem i hero -->
+    <!--
+        GDPR Consent Banner
+        — z-[110]: nad preloaderem (z-100) i hero
+        — zlatá linka nahoře jako brand separator
+        — Oswald font (font-heading) konzistentní se zbytkem webu
+        — ikona zámku místo cookie emoji
+        — tlačítka ve stylu sekcí webu
+    -->
     <div id="consent-banner" class="fixed bottom-0 left-0 right-0 z-[110] hidden">
-        <div class="px-4 py-3 border-t border-white/10 bg-black/97 backdrop-blur-xl shadow-[0_-4px_30px_rgba(0,0,0,0.6)]">
-            <div class="max-w-7xl mx-auto flex flex-row items-center justify-between gap-4">
-                <p class="text-gray-400 text-xs">
-                    🍪 Tento web používá <strong class="text-white">cookies</strong> (Google Mapy).
-                </p>
-                <div class="flex gap-2 shrink-0">
-                    <button id="consent-reject" class="border border-white/20 text-gray-400 px-3 py-1.5 rounded-sm uppercase tracking-widest text-[11px] hover:bg-white/10 hover:text-white transition font-heading whitespace-nowrap">
+        <!-- zlatá linka nahoře -->
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold to-transparent shadow-[0_0_12px_rgba(212,163,115,0.6)]"></div>
+        <div class="bg-black/95 backdrop-blur-xl shadow-[0_-8px_40px_rgba(0,0,0,0.7)]">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+                <!-- Levy blok: ikona + text -->
+                <div class="flex items-center gap-4">
+                    <div class="w-9 h-9 rounded-sm border border-brand-gold/40 bg-brand-gold/10 flex items-center justify-center text-brand-gold shrink-0">
+                        <i class="fas fa-lock text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="font-heading text-white text-sm tracking-wider uppercase leading-tight">Soukromí</p>
+                        <p class="text-gray-400 text-xs mt-0.5">Tento web používá Google Mapy (cookies třetích stran).</p>
+                    </div>
+                </div>
+
+                <!-- Pravy blok: tlacitka -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <button id="consent-reject"
+                        class="font-heading uppercase tracking-widest text-xs text-gray-400 border border-white/15 px-5 py-2.5 hover:border-white/40 hover:text-white transition duration-200">
                         Odmítnout
                     </button>
-                    <button id="consent-accept" class="bg-brand-gold text-black px-4 py-1.5 rounded-sm uppercase tracking-widest text-[11px] font-bold font-heading hover:bg-white transition whitespace-nowrap">
+                    <button id="consent-accept"
+                        class="font-heading uppercase tracking-widest text-xs font-bold bg-brand-gold text-black px-6 py-2.5 hover:bg-white transition duration-200 shadow-lg shadow-amber-900/30">
                         Povolit
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
