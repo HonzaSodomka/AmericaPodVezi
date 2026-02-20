@@ -99,18 +99,18 @@ function initStickyNavbar() {
 
     const hero = document.querySelector(CONFIG.selectors.heroSection);
 
-    const onScroll = () => {
+    window.addEventListener('scroll', () => {
         const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
-        if (window.scrollY > heroHeight * 0.3) {
-            navbar.classList.add('navbar-sticky');
-        } else {
-            navbar.classList.remove('navbar-sticky');
-        }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+        const progress = Math.min(window.scrollY / (heroHeight * 0.5), 1);
+        const alpha = Math.round(progress * 230);
+        navbar.style.backgroundColor = `rgba(0,0,0,${(alpha/255).toFixed(2)})`;
+        navbar.style.backdropFilter = progress > 0.1 ? `blur(${(progress * 12).toFixed(1)}px)` : '';
+        navbar.style.webkitBackdropFilter = navbar.style.backdropFilter;
+        navbar.style.boxShadow = progress > 0.5 ? `0 2px 20px rgba(0,0,0,${(progress * 0.8).toFixed(2)})` : '';
+        navbar.style.borderBottom = progress > 0.5 ? `1px solid rgba(212,163,115,${(progress * 0.15).toFixed(2)})` : '';
+    }, { passive: true });
 }
+
 
 /**
  * Preloader Fade Out (Cinematic Timing)
