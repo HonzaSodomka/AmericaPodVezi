@@ -34,12 +34,28 @@ const CONFIG = {
 document.addEventListener('DOMContentLoaded', initApp);
 
 function initApp() {
+    checkWebPSupport();
     initPreloader();
     initMobileMenu();
     initMenuViewer();
     initScrollAnimations();
     initDynamicYear();
     initHeroHeightFix();
+}
+
+/**
+ * WebP Support Detection
+ * Adds 'no-webp' class to <html> if browser doesn't support WebP.
+ * CSS fallbacks use .no-webp selector to serve JPG instead.
+ */
+function checkWebPSupport() {
+    const img = new Image();
+    img.onload = img.onerror = function () {
+        if (img.height !== 1) {
+            document.documentElement.classList.add('no-webp');
+        }
+    };
+    img.src = 'data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAUAmJZACdAEO/gHOAAA=';
 }
 
 /**
@@ -144,6 +160,7 @@ function initMobileMenu() {
 
 /**
  * Static Menu Viewer (Image Gallery) with Touch Swipe
+ * Skips initial updateMenu() call - first image is already set in HTML.
  */
 function initMenuViewer() {
     const elements = {
@@ -168,10 +185,7 @@ function initMenuViewer() {
                 elements.indicator.textContent = `STRANA ${currentIndex + 1} / ${CONFIG.menuImages.length}`;
             }
 
-            const fadeIn = () => {
-                elements.currentImg.style.opacity = '1';
-            };
-
+            const fadeIn = () => { elements.currentImg.style.opacity = '1'; };
             elements.currentImg.addEventListener('load', fadeIn, { once: true });
             if (elements.currentImg.complete) fadeIn();
 
@@ -201,13 +215,10 @@ function initMenuViewer() {
             const diff = touchStartX - touchEndX;
 
             if (Math.abs(diff) > CONFIG.swipeThreshold) {
-                if (diff > 0) changePage(1);
-                else changePage(-1);
+                changePage(diff > 0 ? 1 : -1);
             }
         }, { passive: true });
     }
-
-    updateMenu();
 }
 
 /**
