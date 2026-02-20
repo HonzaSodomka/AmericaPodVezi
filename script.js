@@ -24,7 +24,7 @@ const CONFIG = {
         'menu-page-4.svg'
     ],
     animation: {
-        preloaderDelay: 1400,
+        preloaderDelay: 1500,
         fadeDuration: 800,
         menuFadeTime: 150
     },
@@ -41,6 +41,7 @@ function initApp() {
     initScrollAnimations();
     initDynamicYear();
     initHeroHeightFix();
+    initStickyNavbar();
 }
 
 /**
@@ -85,6 +86,30 @@ function initHeroHeightFix() {
     window.addEventListener('orientationchange', () => {
         setTimeout(setHeight, 100);
     });
+}
+
+/**
+ * Sticky Navbar
+ * On scroll past hero, navbar becomes fixed with dark background.
+ * On scroll back to top, returns to absolute/transparent.
+ */
+function initStickyNavbar() {
+    const navbar = document.querySelector('#navbar');
+    if (!navbar) return;
+
+    const hero = document.querySelector(CONFIG.selectors.heroSection);
+
+    const onScroll = () => {
+        const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
+        if (window.scrollY > heroHeight * 0.3) {
+            navbar.classList.add('navbar-sticky');
+        } else {
+            navbar.classList.remove('navbar-sticky');
+        }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 }
 
 /**
