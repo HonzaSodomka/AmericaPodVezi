@@ -455,20 +455,19 @@
         </p>
     </footer>
 
-    <!-- GDPR Consent Banner -->
-    <div id="consent-banner" class="fixed bottom-0 left-0 right-0 z-[60] hidden">
-        <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 border-t border-white/10 bg-black/95 backdrop-blur-xl shadow-[0_-4px_30px_rgba(0,0,0,0.5)]">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <p class="text-gray-300 text-xs md:text-sm leading-relaxed">
-                    <i class="fas fa-map-marked-alt text-brand-gold mr-2"></i>
-                    Tento web používá vložený obsah od <strong class="text-white">Google Maps</strong>. Povolením souhlasíte s načtením obsahu třetí strany, který může nastavovat cookies.
+    <!-- GDPR Consent Banner — z-[110] aby byl nad preloaderem i hero -->
+    <div id="consent-banner" class="fixed bottom-0 left-0 right-0 z-[110] hidden">
+        <div class="px-4 py-3 border-t border-white/10 bg-black/97 backdrop-blur-xl shadow-[0_-4px_30px_rgba(0,0,0,0.6)]">
+            <div class="max-w-7xl mx-auto flex flex-row items-center justify-between gap-4">
+                <p class="text-gray-400 text-xs">
+                    🍪 Tento web používá <strong class="text-white">cookies</strong> (Google Mapy).
                 </p>
-                <div class="flex gap-3 shrink-0">
-                    <button id="consent-reject" class="border border-white/20 text-gray-400 px-4 py-2 rounded-sm uppercase tracking-widest text-xs hover:bg-white/10 hover:text-white transition font-heading">
-                        Nepovolit
+                <div class="flex gap-2 shrink-0">
+                    <button id="consent-reject" class="border border-white/20 text-gray-400 px-3 py-1.5 rounded-sm uppercase tracking-widest text-[11px] hover:bg-white/10 hover:text-white transition font-heading whitespace-nowrap">
+                        Odmítnout
                     </button>
-                    <button id="consent-accept" class="bg-brand-gold text-black px-5 py-2 rounded-sm uppercase tracking-widest text-xs font-bold font-heading hover:bg-white transition">
-                        Povolit mapu
+                    <button id="consent-accept" class="bg-brand-gold text-black px-4 py-1.5 rounded-sm uppercase tracking-widest text-[11px] font-bold font-heading hover:bg-white transition whitespace-nowrap">
+                        Povolit
                     </button>
                 </div>
             </div>
