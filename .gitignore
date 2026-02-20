@@ -1,9 +1,6 @@
-# Build artefakty
-output.css
-
-# Node
 node_modules/
-
-# OS
-.DS_Store
-Thumbs.db
+output.css
+fa/
+setup-fa.sh
+tailwindcss.exe
+tailwind.config.js
