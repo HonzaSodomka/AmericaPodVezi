@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="canonical" href="https://americapodvezi.cz/">
+    <!-- DEMO ONLY: remove before going live on americapodvezi.cz -->
+    <meta name="robots" content="noindex, nofollow">
     <title>America Pod Věží | Burger & BBQ Restaurant Mladá Boleslav</title>
     <meta name="description" content="Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.">
 
@@ -120,15 +122,10 @@
 
     <!-- Preloader (Cinematic) -->
     <div id="preloader" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center transition-opacity duration-1000">
-        <!-- Main Text with Cinematic Reveal -->
         <div class="text-white font-heading font-bold text-5xl md:text-7xl anim-text-reveal mb-6 select-none">
             AMERICA
         </div>
-
-        <!-- Gold Line Expanding -->
         <div class="h-1 bg-brand-gold rounded-full anim-line-expand w-0 shadow-[0_0_10px_#d4a373]"></div>
-
-        <!-- Subtext Fading Up -->
         <div class="mt-4 text-brand-gold font-sans text-xs md:text-sm tracking-[0.5em] uppercase opacity-0 anim-sub-reveal font-light select-none">
             POD VĚŽÍ
         </div>
@@ -137,18 +134,15 @@
     <!-- Navigation (Absolute) -->
     <nav class="absolute w-full z-50 top-0 left-0 p-6 md:px-12" id="navbar">
         <div class="flex justify-between items-center max-w-7xl mx-auto">
-            <!-- Logo -->
             <div class="flex items-center gap-3 animate-enter">
                 <span class="text-white font-heading font-bold tracking-[0.2em] text-xl border-2 border-white/80 px-4 py-1 bg-black/20 backdrop-blur-sm shadow-lg">AMERICA</span>
             </div>
-            <!-- Desktop Menu -->
             <div class="hidden md:flex gap-12 items-center animate-enter delay-100">
                 <a href="#" class="nav-link font-heading">DOMŮ</a>
                 <a href="#menu" class="nav-link font-heading">MENU</a>
                 <a href="#about" class="nav-link font-heading">O NÁS</a>
                 <a href="#contact" class="nav-link font-heading">KONTAKT</a>
             </div>
-            <!-- Mobile Menu Btn -->
             <button id="menu-btn" aria-label="Otevřít menu" class="text-white text-3xl focus:outline-none z-50 relative md:hidden animate-enter">
                 <i class="fas fa-bars"></i>
             </button>
@@ -166,10 +160,7 @@
     <!-- Hero Section -->
     <section class="hero-section flex flex-col justify-center pt-28 pb-20 md:justify-center md:pt-0 md:pb-0">
         <div class="absolute inset-0 hero-overlay"></div>
-
         <div class="relative z-10 w-full max-w-7xl mx-auto px-8 md:px-12 text-center md:text-left">
-
-            <!-- Main Headline -->
             <div class="animate-enter delay-100">
                 <h1 class="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold font-heading mb-2 leading-none drop-shadow-2xl tracking-tight">
                     AMERICA
@@ -177,32 +168,21 @@
                 <h2 class="text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold font-heading text-brand-gold tracking-widest mb-6 drop-shadow-lg">
                     POD VĚŽÍ
                 </h2>
-
-                <!-- Gold Separator Line -->
                 <div class="h-1 w-24 bg-brand-gold mb-6 mx-auto md:mx-1 shadow-lg"></div>
             </div>
-
-            <!-- Subtext -->
             <div class="max-w-3xl md:ml-1 animate-enter delay-200">
                 <p class="text-sm md:text-base font-light text-gray-200 mb-10 leading-relaxed drop-shadow-md">
                     <span class="font-bold text-white block mb-1 text-base md:text-lg">Naší pýchou jsou burgery z čerstvě mletého hovězího masa.</span>
                     Nabízíme BBQ speciality připravované rovnou z grilu, steaky, saláty a dezerty.
                 </p>
-
-                <!-- Action Buttons -->
                 <div class="flex flex-col md:flex-row gap-4 items-center md:items-stretch animate-enter delay-300">
-                    <!-- Menu -->
                     <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-4 px-6 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 min-w-[160px]">
                         Naše Menu
                     </a>
-
-                    <!-- Rezervace -->
                     <a href="tel:326322007" class="border-2 border-white/80 text-white font-bold font-heading py-3 px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform md:hover:scale-105 duration-200 min-w-[180px] leading-none gap-1 md:pointer-events-none md:cursor-default">
                         <span class="text-lg">REZERVACE</span>
                         <span class="text-sm font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> 326 322 007</span>
                     </a>
-
-                    <!-- Delivery Widget -->
                     <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col md:flex-row items-center justify-center px-6 py-2 gap-2 shadow-xl min-w-[200px]">
                         <span class="text-xs uppercase tracking-widest text-gray-300 font-heading font-bold whitespace-nowrap">Rozvoz domů:</span>
                         <div class="flex gap-4 items-center">
@@ -220,25 +200,19 @@
         </div>
     </section>
 
-    <!-- SECTION SEPARATOR (More Visible) -->
+    <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
     <!-- MENU SECTION -->
     <section id="menu" class="bg-black py-20 px-8 md:px-12 relative">
         <div class="max-w-7xl mx-auto">
-
-             <!-- Section Header -->
              <div class="text-center mb-10 scroll-wait">
                  <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
                     Naše <span class="text-brand-gold">Menu</span>
                  </h2>
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
              </div>
-
-             <!-- Top Row: Compact Grid -->
              <div class="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 mb-12">
-
-                <!-- 1. Denní Menu Card -->
                 <div class="col-span-2 lg:col-span-1 border border-white/10 bg-white/5 p-4 md:p-6 flex flex-col items-center justify-center text-center hover:bg-white/10 transition duration-300 group rounded-sm shadow-xl h-40 md:h-auto scroll-wait">
                     <div class="text-brand-gold text-3xl md:text-4xl mb-2 md:mb-4 transform group-hover:scale-110 transition duration-300">
                         <i class="fas fa-calendar-alt"></i>
@@ -248,8 +222,6 @@
                         Zobrazit
                     </a>
                 </div>
-
-                <!-- 2. Zebra (Modern Magazine Label) -->
                 <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-100">
                     <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
@@ -258,8 +230,6 @@
                         <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Burgery, Quesadillas & BBQ</span>
                     </div>
                 </div>
-
-                <!-- 3. Akce (Modern Magazine Label) -->
                 <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-200">
                     <div class="absolute inset-0 bg-cover bg-center bg-akce" role="img" aria-label="Catering a rauty pro firemní večírky"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
@@ -269,47 +239,30 @@
                     </div>
                 </div>
              </div>
-
-             <!-- Bottom Row: Stálý Lístek Viewer -->
              <div class="w-full scroll-wait">
                  <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 px-2 gap-4">
                      <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
-
-                     <!-- PDF Download Button -->
                      <a href="menu.pdf" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-brand-gold text-white hover:text-black border border-white/20 hover:border-brand-gold px-4 py-2 rounded-sm transition duration-300 text-sm font-bold tracking-wider uppercase">
                         <i class="fas fa-file-pdf"></i> Stáhnout Menu (PDF)
                      </a>
                  </div>
-
-                 <!-- Swipe Hint (Mobile Only) -->
                  <div class="md:hidden text-gray-500 text-xs flex items-center gap-1 animate-pulse mb-2 px-2">
                      <i class="fas fa-hand-pointer"></i> Posouvej tahem
                  </div>
-
-                 <!-- Book Container -->
                  <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[600px] flex items-center justify-center" id="menu-container">
-
-                     <!-- Left Arrow -->
                      <button id="prev-page" class="absolute left-2 md:left-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
                          <i class="fas fa-chevron-left text-lg md:text-xl"></i>
                      </button>
-
-                     <!-- Menu Page Images Container -->
                      <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-0 md:p-4 transition duration-300">
                          <img src="menu-page-1.svg" id="current-menu-image" alt="Jídelní lístek strana 1 - Burgery a předkrmy" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
-                         <!-- Fallback -->
                          <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
                              <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
                              <p class="text-gray-500">Zde se zobrazí jídelní lístek</p>
                          </div>
                      </div>
-
-                     <!-- Right Arrow -->
                      <button id="next-page" class="absolute right-2 md:right-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
                          <i class="fas fa-chevron-right text-lg md:text-xl"></i>
                      </button>
-
-                     <!-- Indicator -->
                      <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none">
                          <span id="page-indicator" class="bg-black/80 px-4 py-1 rounded-full text-xs text-brand-gold font-heading tracking-widest border border-white/10 shadow-lg">
                              STRANA 1 / 4
@@ -326,20 +279,14 @@
     <!-- ABOUT SECTION -->
     <section id="about" class="bg-[#050505] py-20 px-8 md:px-12 overflow-hidden relative">
         <div class="max-w-7xl mx-auto">
-
-            <!-- Section Header -->
             <div class="text-center mb-16 scroll-wait">
                  <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
                     Náš <span class="text-brand-gold">Příběh</span>
                  </h2>
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
             </div>
-
             <div class="flex flex-col lg:flex-row gap-12 items-center">
-
-                <!-- Image Column -->
                 <div class="w-full lg:w-1/2 flex flex-col gap-4 scroll-wait delay-100 order-2 lg:order-1">
-                    <!-- 1. Original Restaurant Photo -->
                     <div class="relative rounded-sm overflow-hidden h-[350px] shadow-2xl border border-white/10 group">
                         <img src="prostory.jpg" alt="Stylový interiér restaurace America Pod Věží s barem" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
@@ -347,8 +294,6 @@
                             <p class="text-gray-300 text-xs">Příjemné prostředí pro 40 hostů</p>
                         </div>
                     </div>
-
-                    <!-- 2. New Salonek Photo -->
                     <div class="relative rounded-sm overflow-hidden h-[350px] shadow-2xl border border-white/10 group">
                         <img src="salonek.jpg" alt="Soukromý salonek pro 30 osob na oslavy v Mladé Boleslavi" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
@@ -357,22 +302,17 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Text Column -->
                 <div class="w-full lg:w-1/2 text-center lg:text-left scroll-wait delay-200 order-1 lg:order-2">
                     <h2 class="text-3xl md:text-4xl font-heading font-bold text-white tracking-wider uppercase mb-6 leading-tight">
                         Autentická chuť Ameriky <br>
                         <span class="text-brand-gold">pod Boleslavskou věží</span>
                     </h2>
-
                     <p class="text-gray-300 text-lg mb-6 leading-relaxed font-light">
                         Jsme <strong>Family Style Restaurant</strong> s dlouholetou tradicí, přímo v historickém srdci Mladé Boleslavi. Naším cílem není být jen další restaurací, ale místem, kde se budete cítit jako doma.
                     </p>
-
                     <p class="text-gray-300 mb-6 leading-relaxed">
                         Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen "na jedno" (čepujeme Plzeň a Bohém), u nás si přijdete na své.
                     </p>
-
                     <div class="bg-white/5 p-6 rounded-sm border border-white/5 mb-8 text-left">
                         <h3 class="text-brand-gold font-heading text-xl mb-3 border-b border-white/10 pb-2">Plánujete akci?</h3>
                         <p class="text-gray-300 text-sm mb-4">
@@ -384,8 +324,6 @@
                             <li class="flex items-center gap-2"><i class="fas fa-beer text-brand-gold text-xs"></i> Čepované pivo & hudba na přání</li>
                         </ul>
                     </div>
-
-                    <!-- Reviews Widget -->
                     <a href="https://www.google.com/search?q=America+Pod+V%C4%9B%C5%BE%C3%AD+recenze" target="_blank" rel="noopener noreferrer" class="bg-white/5 border border-white/10 rounded-sm p-4 inline-flex items-center gap-4 mb-6 hover:bg-white/10 transition cursor-pointer group">
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 uppercase tracking-wider mb-1">Hodnocení Google</span>
@@ -405,7 +343,6 @@
                         <i class="fab fa-google text-2xl text-gray-400 group-hover:text-brand-gold transition"></i>
                     </a>
                 </div>
-
             </div>
         </div>
     </section>
@@ -422,12 +359,8 @@
                  </h2>
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
             </div>
-
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-
-                <!-- Column 1: Contact Details -->
                 <div class="flex flex-col space-y-8 scroll-wait delay-100 bg-white/5 p-6 rounded-sm border border-white/5 h-full">
-                    <!-- Address Item -->
                     <div class="flex items-start gap-4 group">
                         <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fas fa-map-marker-alt"></i>
@@ -438,8 +371,6 @@
                             <p class="text-gray-500 text-xs mt-1">Přímo pod věží</p>
                         </div>
                     </div>
-
-                    <!-- Phone Item -->
                     <div class="flex items-start gap-4 group">
                         <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fas fa-phone-alt"></i>
@@ -453,8 +384,6 @@
                             <a href="mailto:info@americapodvezi.cz" class="text-sm text-gray-500 hover:text-white transition mt-1 block">info@americapodvezi.cz</a>
                         </div>
                     </div>
-
-                    <!-- Social Media Item -->
                     <a href="https://www.facebook.com/profile.php?id=100063543104526" target="_blank" rel="noopener noreferrer" class="flex items-start gap-4 group cursor-pointer">
                         <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0 group-hover:bg-brand-gold group-hover:text-black transition">
                             <i class="fab fa-facebook-f"></i>
@@ -465,8 +394,6 @@
                         </div>
                     </a>
                 </div>
-
-                <!-- Column 2: Opening Hours -->
                 <div class="flex flex-col space-y-4 scroll-wait delay-200 bg-white/5 p-6 rounded-sm border border-white/5 h-full">
                     <div class="flex items-center gap-4 mb-2">
                         <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0">
@@ -474,7 +401,6 @@
                         </div>
                         <h4 class="text-white font-heading text-lg tracking-widest uppercase">Otevírací Doba</h4>
                     </div>
-
                     <ul class="text-gray-300 text-sm space-y-3 w-full">
                         <li class="flex justify-between border-b border-white/10 pb-2">
                             <span class="font-bold text-white">Pondělí</span>
@@ -494,15 +420,12 @@
                         </li>
                     </ul>
                 </div>
-
-                <!-- Column 3: Google Map in Frame -->
                 <div class="w-full h-auto lg:h-full min-h-[200px] flex flex-col scroll-wait delay-300">
                     <div class="border border-white/10 bg-white/5 p-3 rounded-sm shadow-xl h-full flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2 px-1">
                              <span class="text-xs uppercase tracking-widest text-brand-gold font-heading">Mapa</span>
                              <i class="fas fa-map text-gray-500 text-xs"></i>
                         </div>
-
                         <div class="relative w-full h-64 lg:h-auto lg:flex-grow border border-white/10 rounded-sm overflow-hidden bg-[#242424]">
                              <iframe
                                 title="Mapa restaurace America Pod Věží"
@@ -510,13 +433,11 @@
                                 width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
                             </iframe>
                         </div>
-
                         <a href="https://maps.google.com/?q=America+Pod+V%C4%9B%C5%BE%C3%AD" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
                             <i class="fas fa-external-link-alt"></i> Otevřít v aplikaci
                         </a>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
