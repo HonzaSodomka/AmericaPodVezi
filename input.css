@@ -134,18 +134,6 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
     transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
 }
 
-#navbar.navbar-sticky {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
-    border-bottom: 1px solid rgba(212, 163, 115, 0.15);
-}
-
 /* --- TOUCH / ACTIVE STAVY PRO MOBILNI TLACITKA --- */
 /* Primarne tlacitko (zlate) */
 a[href='#menu']:active,
