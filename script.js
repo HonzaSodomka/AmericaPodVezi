@@ -42,7 +42,7 @@ function initApp() {
     initDynamicYear();
     initHeroHeightFix();
     initStickyNavbar();
-    initConsentAndMaps();
+    // initConsentAndMaps() is now called AFTER preloader finishes
 }
 
 /**
@@ -120,13 +120,20 @@ function initStickyNavbar() {
  */
 function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
-    if (!preloader) return;
+    
+    // Fallback: If no preloader exists, just init consent immediately
+    if (!preloader) {
+        initConsentAndMaps();
+        return;
+    }
 
     const fadeOut = () => {
         setTimeout(() => {
             preloader.style.opacity = '0';
             setTimeout(() => {
                 preloader.style.display = 'none';
+                // Only initialize and show consent banner AFTER preloader is completely gone
+                initConsentAndMaps();
             }, CONFIG.animation.fadeDuration);
         }, CONFIG.animation.preloaderDelay);
     };
