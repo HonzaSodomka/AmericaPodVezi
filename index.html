@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="canonical" href="https://americapodvezi.cz/">
     <title>America Pod Věží | Burger & BBQ Restaurant Mladá Boleslav</title>
     <meta name="description" content="Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.">
 
@@ -13,6 +14,68 @@
     <meta property="og:title" content="America Pod Věží | Burger & BBQ Restaurant">
     <meta property="og:description" content="Přijďte ochutnat nejlepší burgery a BBQ v Mladé Boleslavi. Těšíme se na vás!">
     <meta property="og:image" content="https://americapodvezi.cz/prostory.jpg">
+
+    <!-- Schema.org structured data (Restaurant) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "America Pod V\u011b\u017e\u00ed",
+        "url": "https://americapodvezi.cz",
+        "image": "https://americapodvezi.cz/prostory.jpg",
+        "description": "Autentick\u00e1 americk\u00e1 restaurace v srdci Mlad\u00e9 Boleslavi. Burgery z \u010derstv\u00e9ho masa, BBQ \u017eebra, steaky a skv\u011bl\u00e1 atmosf\u00e9ra p\u0159\u00edmo pod v\u011b\u017e\u00ed.",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Komensk\u00e9ho n\u00e1m\u011bst\u00ed 61",
+            "addressLocality": "Mlad\u00e1 Boleslav",
+            "postalCode": "293 01",
+            "addressCountry": "CZ"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 50.4149,
+            "longitude": 14.9120
+        },
+        "telephone": "+420326322007",
+        "email": "info@americapodvezi.cz",
+        "servesCuisine": ["American", "BBQ", "Burgers", "Steaks"],
+        "priceRange": "$$",
+        "hasMenu": "https://www.menicka.cz/7509-america-pod-vezi.html",
+        "acceptsReservations": true,
+        "openingHoursSpecification": [
+            {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Monday",
+                "opens": "11:00",
+                "closes": "14:00"
+            },
+            {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "11:00",
+                "closes": "22:00"
+            },
+            {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "11:30",
+                "closes": "22:00"
+            }
+        ],
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.5",
+            "reviewCount": "900",
+            "bestRating": "5",
+            "worstRating": "1"
+        },
+        "sameAs": [
+            "https://www.facebook.com/profile.php?id=100063543104526",
+            "https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi",
+            "https://www.foodora.cz/restaurant/iqu6/america-pod-vezi"
+        ]
+    }
+    </script>
 
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -108,7 +171,6 @@
 
             <!-- Main Headline -->
             <div class="animate-enter delay-100">
-                <!-- Typography Update: Smoother scaling -->
                 <h1 class="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold font-heading mb-2 leading-none drop-shadow-2xl tracking-tight">
                     AMERICA
                 </h1>
@@ -361,7 +423,6 @@
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
             </div>
 
-            <!-- 3 columns on LG screens for Contact Info | Hours | Map -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
                 <!-- Column 1: Contact Details -->
@@ -436,15 +497,12 @@
 
                 <!-- Column 3: Google Map in Frame -->
                 <div class="w-full h-auto lg:h-full min-h-[200px] flex flex-col scroll-wait delay-300">
-                    <!-- Frame Container -->
                     <div class="border border-white/10 bg-white/5 p-3 rounded-sm shadow-xl h-full flex flex-col justify-between">
-                        <!-- Label -->
                         <div class="flex items-center justify-between mb-2 px-1">
                              <span class="text-xs uppercase tracking-widest text-brand-gold font-heading">Mapa</span>
                              <i class="fas fa-map text-gray-500 text-xs"></i>
                         </div>
 
-                        <!-- Inner Map Window -->
                         <div class="relative w-full h-64 lg:h-auto lg:flex-grow border border-white/10 rounded-sm overflow-hidden bg-[#242424]">
                              <iframe
                                 title="Mapa restaurace America Pod Věží"
@@ -453,7 +511,6 @@
                             </iframe>
                         </div>
 
-                        <!-- Footer Link -->
                         <a href="https://maps.google.com/?q=America+Pod+V%C4%9B%C5%BE%C3%AD" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
                             <i class="fas fa-external-link-alt"></i> Otevřít v aplikaci
                         </a>
@@ -469,7 +526,6 @@
         <p>
             &copy; <span id="current-year">2026</span> America Pod Věží | Komenského náměstí 61 | <a href="mailto:info@americapodvezi.cz" class="hover:text-brand-gold transition">info@americapodvezi.cz</a>
         </p>
-        <!-- Legal & Credits -->
         <p class="mt-4 text-[10px] text-gray-600 font-sans tracking-normal normal-case opacity-80">
             Provozovatel: America Pod Věží [DOPLNIT MAJITELE/S.R.O.] | IČO: [DOPLNIT IČO] <br>
             <span class="mt-1 block uppercase tracking-widest opacity-60">Realizováno <a href="https://webresent.cz" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:underline">Webresent</a></span>
