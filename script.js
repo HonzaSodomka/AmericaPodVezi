@@ -124,6 +124,9 @@ function initMobileMenu() {
         mobileMenu.classList.toggle('menu-closed', !isOpen);
         mobileMenu.classList.toggle('menu-open', isOpen);
 
+        // Accessibility: sync aria-expanded with menu state
+        menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
         if (icon) {
             icon.classList.toggle('fa-bars', !isOpen);
             icon.classList.toggle('fa-times', isOpen);
