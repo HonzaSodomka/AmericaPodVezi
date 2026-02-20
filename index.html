@@ -72,26 +72,6 @@
     }
     </script>
 
-    <!-- Tailwind CSS (CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand-gold': '#d4a373',
-                        'wolt-blue': '#009de0',
-                        'foodora-pink': '#d70f64',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Oswald', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,8 +83,8 @@
     <!-- Preload hero image for faster LCP -->
     <link rel="preload" as="image" href="hero.webp" type="image/webp">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS (build) -->
+    <link rel="stylesheet" href="output.css">
 
     <!-- JS Fallback for content visibility -->
     <noscript>
