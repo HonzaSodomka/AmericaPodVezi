@@ -129,6 +129,17 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
     animation: fadeInUpSub 1s ease-out 1.2s forwards;
 }
 
+/* Redukce pohybu (přístupnost) */
+@media (prefers-reduced-motion: reduce) {
+    .anim-text-reveal, .anim-line-expand, .anim-sub-reveal,
+    .animate-enter { 
+        animation: none !important; 
+        opacity: 1 !important; 
+        transform: none !important;
+        filter: none !important;
+    }
+}
+
 /* --- STICKY NAVBAR --- */
 #navbar {
     transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
