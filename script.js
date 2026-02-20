@@ -24,8 +24,8 @@ const CONFIG = {
         'menu-page-4.svg'
     ],
     animation: {
-        preloaderDelay: 1400,
-        fadeDuration: 400,
+        preloaderDelay: 2800, // Zvýšeno z 1500 na 2800 (animace nápisu končí ve 2.2s, tak ať je to chvíli vidět)
+        fadeDuration: 800,
         menuFadeTime: 150
     },
     swipeThreshold: 50
