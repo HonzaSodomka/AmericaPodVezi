@@ -118,15 +118,15 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
 }
 
 .anim-text-reveal {
-    animation: cinematicReveal 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: cinematicReveal 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .anim-line-expand {
-    animation: goldLineExpand 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+    animation: goldLineExpand 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
 }
 
 .anim-sub-reveal {
-    animation: fadeInUpSub 1s ease-out 1.2s forwards;
+    animation: fadeInUpSub 0.6s ease-out 0.8s forwards;
 }
 
 /* Redukce pohybu (přístupnost) */
