@@ -42,6 +42,7 @@ function initApp() {
     initDynamicYear();
     initHeroHeightFix();
     initStickyNavbar();
+    initConsentAndMaps();
 }
 
 /**
@@ -261,4 +262,91 @@ function initScrollAnimations() {
     }, { threshold: 0.1 });
 
     document.querySelectorAll(CONFIG.selectors.scrollWait).forEach(el => observer.observe(el));
+}
+
+/**
+ * GDPR Consent - Google Maps
+ * Iframe is injected only after user grants consent.
+ * Choice is persisted in localStorage.
+ * User can revoke consent via 'Změnit souhlas' link in footer.
+ */
+function initConsentAndMaps() {
+    const STORAGE_KEY = 'consent_google_maps'; // 'granted' | 'denied'
+
+    const banner = document.querySelector('#consent-banner');
+    const acceptBtn = document.querySelector('#consent-accept');
+    const rejectBtn = document.querySelector('#consent-reject');
+    const settingsLink = document.querySelector('#cookie-settings');
+    const placeholderBtn = document.querySelector('#map-consent-accept');
+    const placeholder = document.querySelector('#map-placeholder');
+    const host = document.querySelector('#map-iframe-host');
+
+    const getState = () => localStorage.getItem(STORAGE_KEY);
+    const setState = (v) => localStorage.setItem(STORAGE_KEY, v);
+
+    const hideBanner = () => { if (banner) banner.classList.add('hidden'); };
+    const showBanner = () => { if (banner) banner.classList.remove('hidden'); };
+
+    const mountMap = () => {
+        if (!host || host.dataset.mounted === '1') return;
+
+        const iframe = document.createElement('iframe');
+        iframe.title = 'Mapa restaurace America Pod Věží';
+        iframe.src = 'https://maps.google.com/maps?q=America+Pod+V%C4%9B%C5%BE%C3%AD%2C+Komensk%C3%A9ho+n%C3%A1m%C4%9Bst%C3%AD+61%2C+Mlad%C3%A1+Boleslav&t=&z=17&ie=UTF8&iwloc=&output=embed';
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.style.border = '0';
+        iframe.loading = 'lazy';
+        iframe.allowFullscreen = true;
+
+        host.innerHTML = '';
+        host.appendChild(iframe);
+        host.classList.remove('hidden');
+        host.dataset.mounted = '1';
+
+        if (placeholder) placeholder.classList.add('hidden');
+    };
+
+    const unmountMap = () => {
+        if (!host) return;
+        host.innerHTML = '';
+        host.classList.add('hidden');
+        host.dataset.mounted = '0';
+        if (placeholder) placeholder.classList.remove('hidden');
+    };
+
+    const apply = () => {
+        const state = getState();
+        if (state === 'granted') {
+            mountMap();
+            hideBanner();
+        } else if (state === 'denied') {
+            unmountMap();
+            hideBanner();
+        } else {
+            // No choice yet - show banner, keep placeholder
+            unmountMap();
+            showBanner();
+        }
+    };
+
+    const grant = () => { setState('granted'); apply(); };
+    const deny  = () => { setState('denied');  apply(); };
+
+    if (acceptBtn)     acceptBtn.addEventListener('click', grant);
+    if (rejectBtn)     rejectBtn.addEventListener('click', deny);
+    if (placeholderBtn) placeholderBtn.addEventListener('click', grant);
+
+    if (settingsLink) {
+        settingsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem(STORAGE_KEY);
+            apply();
+            // Smooth scroll to map section so user sees what they're consenting to
+            const contact = document.querySelector('#contact');
+            if (contact) contact.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    apply();
 }

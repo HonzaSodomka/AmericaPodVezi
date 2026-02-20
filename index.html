@@ -408,13 +408,31 @@
                              <span class="text-xs uppercase tracking-widest text-brand-gold font-heading">Mapa</span>
                              <i class="fas fa-map text-gray-500 text-xs"></i>
                         </div>
-                        <div class="relative w-full h-64 lg:h-auto lg:flex-grow border border-white/10 rounded-sm overflow-hidden bg-[#242424]">
-                             <iframe
-                                title="Mapa restaurace America Pod Věží"
-                                src="https://maps.google.com/maps?q=America+Pod+V%C4%9B%C5%BE%C3%AD%2C+Komensk%C3%A9ho+n%C3%A1m%C4%9Bst%C3%AD+61%2C+Mlad%C3%A1+Boleslav&t=&z=17&ie=UTF8&iwloc=&output=embed"
-                                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
-                            </iframe>
+
+                        <!-- Map wrapper: iframe injected by JS only after consent -->
+                        <div class="relative w-full h-64 lg:h-auto lg:flex-grow border border-white/10 rounded-sm overflow-hidden bg-[#242424]" id="map-wrapper">
+
+                            <!-- Placeholder (shown by default, hidden after consent) -->
+                            <div id="map-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 gap-3">
+                                <div class="text-brand-gold text-2xl"><i class="fas fa-map-marked-alt"></i></div>
+                                <p class="text-gray-400 text-xs leading-relaxed">
+                                    Pro zobrazení mapy načteme obsah od Google,<br>který může používat cookies.
+                                </p>
+                                <div class="flex flex-col sm:flex-row gap-2">
+                                    <button id="map-consent-accept" class="bg-brand-gold text-black font-bold font-heading px-4 py-2 rounded-sm uppercase tracking-widest text-xs hover:bg-white transition">
+                                        Povolit mapu
+                                    </button>
+                                    <a href="https://maps.google.com/?q=America+Pod+V%C4%9B%C5%BE%C3%AD" target="_blank" rel="noopener noreferrer"
+                                       class="border border-white/20 text-white font-bold font-heading px-4 py-2 rounded-sm uppercase tracking-widest text-xs hover:bg-white hover:text-black transition text-center">
+                                        Otevřít v aplikaci
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Iframe host: populated by JS after consent -->
+                            <div id="map-iframe-host" class="absolute inset-0 hidden"></div>
                         </div>
+
                         <a href="https://maps.google.com/?q=America+Pod+V%C4%9B%C5%BE%C3%AD" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
                             <i class="fas fa-external-link-alt"></i> Otevřít v aplikaci
                         </a>
@@ -432,8 +450,30 @@
         <p class="mt-4 text-[10px] text-gray-600 font-sans tracking-normal normal-case opacity-80">
             Provozovatel: America Pod Věží s.r.o. | IČO: doplnit <br>
             <span class="mt-1 block uppercase tracking-widest opacity-60">Realizováno <a href="https://webresent.cz" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:underline">Webresent</a></span>
+            &nbsp;|&nbsp;
+            <a href="#" id="cookie-settings" class="hover:text-brand-gold transition normal-case">Změnit souhlas</a>
         </p>
     </footer>
+
+    <!-- GDPR Consent Banner -->
+    <div id="consent-banner" class="fixed bottom-0 left-0 right-0 z-[60] hidden">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 border-t border-white/10 bg-black/95 backdrop-blur-xl shadow-[0_-4px_30px_rgba(0,0,0,0.5)]">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <p class="text-gray-300 text-xs md:text-sm leading-relaxed">
+                    <i class="fas fa-map-marked-alt text-brand-gold mr-2"></i>
+                    Tento web používá vložený obsah od <strong class="text-white">Google Maps</strong>. Povolením souhlasíte s načtením obsahu třetí strany, který může nastavovat cookies.
+                </p>
+                <div class="flex gap-3 shrink-0">
+                    <button id="consent-reject" class="border border-white/20 text-gray-400 px-4 py-2 rounded-sm uppercase tracking-widest text-xs hover:bg-white/10 hover:text-white transition font-heading">
+                        Nepovolit
+                    </button>
+                    <button id="consent-accept" class="bg-brand-gold text-black px-5 py-2 rounded-sm uppercase tracking-widest text-xs font-bold font-heading hover:bg-white transition">
+                        Povolit mapu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="script.js"></script>
