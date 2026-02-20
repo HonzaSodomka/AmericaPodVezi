@@ -78,15 +78,28 @@ function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
     if (!preloader) return;
 
-    // Prevent scroll during preloader
-    document.body.style.overflow = 'hidden';
+    // Lock scroll without causing layout shift when scrollbar appears/disappears (desktop)
+    const lockScroll = () => {
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.overflowY = 'hidden';
+        if (scrollbarWidth > 0) {
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+        }
+    };
+
+    const unlockScroll = () => {
+        document.body.style.overflowY = '';
+        document.body.style.paddingRight = '';
+    };
+
+    lockScroll();
 
     const fadeOut = () => {
         setTimeout(() => {
             preloader.style.opacity = '0';
             setTimeout(() => {
                 preloader.style.display = 'none';
-                document.body.style.overflow = '';
+                unlockScroll();
             }, CONFIG.animation.fadeDuration);
         }, CONFIG.animation.preloaderDelay);
     };
