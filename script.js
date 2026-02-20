@@ -24,8 +24,8 @@ const CONFIG = {
         'menu-page-4.svg'
     ],
     animation: {
-        preloaderDelay: 1800,
-        fadeDuration: 200,
+        preloaderDelay: 1400,
+        fadeDuration: 400,
         menuFadeTime: 150
     },
     swipeThreshold: 50
