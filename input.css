@@ -1,13 +1,6 @@
-@import "tailwindcss";
-
-/* Temy / custom properties pro Tailwind v4 */
-@theme {
-  --color-brand-gold: #d4a373;
-  --color-wolt-blue: #009de0;
-  --color-foodora-pink: #d70f64;
-  --font-sans: 'Inter', sans-serif;
-  --font-heading: 'Oswald', sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Global Typography */
 body { font-family: 'Inter', sans-serif; }
@@ -75,8 +68,10 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
     box-shadow: 0 2px 3px rgba(0,0,0,0.8);
 }
 
-.nav-link:hover { color: #d4a373; }
-.nav-link:hover::after { width: 100%; }
+.nav-link:hover,
+.nav-link:active { color: #d4a373; }
+.nav-link:hover::after,
+.nav-link:active::after { width: 100%; }
 
 /* Animations */
 .scroll-wait { opacity: 0; }
@@ -149,4 +144,62 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
     border-bottom: 1px solid rgba(212, 163, 115, 0.15);
+}
+
+/* --- TOUCH / ACTIVE STAVY PRO MOBILNI TLACITKA --- */
+/* Primarne tlacitko (zlate) */
+a[href='#menu']:active,
+button:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+/* Rezervace tlacitko (border) */
+a[href^='tel']:active {
+    background-color: white;
+    color: black;
+    border-color: white;
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+}
+
+/* Wolt / Foodora linky */
+a[href*='wolt']:active {
+    color: #009de0;
+}
+
+a[href*='foodora']:active {
+    color: #d70f64;
+}
+
+/* Menu strankovaci tlacitka */
+#prev-page:active,
+#next-page:active {
+    background-color: #d4a373;
+    color: black;
+    transform: scale(0.92);
+    transition: transform 0.1s ease;
+}
+
+/* Kontaktni ikony */
+.group:active .group-hover\:bg-brand-gold {
+    background-color: #d4a373;
+    color: black;
+}
+
+/* Google hodnoceni box */
+a[href*='google']:active {
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* Zobrazit denni menu */
+a[href*='menicka']:active {
+    background-color: #d4a373;
+    color: black;
+}
+
+/* Mobilni menu linky */
+#mobile-menu a:active {
+    color: #d4a373;
 }
