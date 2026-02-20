@@ -1,6 +1,4 @@
 node_modules/
-output.css
-fa/
 setup-fa.sh
 tailwindcss.exe
 tailwind.config.js
