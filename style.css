@@ -7,11 +7,16 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
 
 /* Hero Section */
 .hero-section {
-    background-image: url('hero.jpg');
+    background-image: url('hero.webp');
     background-size: cover;
     background-position: center;
     min-height: 100vh; /* Fallback for non-JS / overridden by JS script */
     position: relative;
+}
+
+/* Fallback pro prohlizece bez WebP podpory */
+.no-webp .hero-section {
+    background-image: url('hero.jpg');
 }
 
 /* Darker Overlay for Contrast */
@@ -24,8 +29,12 @@ h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
 }
 
 /* Background Images */
-.bg-zebra { background-image: url('zebra.jpg'); }
-.bg-akce { background-image: url('akce.jpg'); }
+.bg-zebra { background-image: url('zebra.webp'); }
+.bg-akce { background-image: url('akce.webp'); }
+
+/* Fallback pro prohlizece bez WebP podpory */
+.no-webp .bg-zebra { background-image: url('zebra.jpg'); }
+.no-webp .bg-akce { background-image: url('akce.jpg'); }
 
 /* Mobile Menu Transitions */
 #mobile-menu {
