@@ -15,17 +15,17 @@ const CONFIG = {
         pageIndicator: '#page-indicator',
         scrollWait: '.scroll-wait',
         menuLinks: '#mobile-menu a',
-        heroSection: '.hero-section' // Added selector
+        heroSection: '.hero-section'
     },
     menuImages: [
-        'menu-page-1.svg', 
-        'menu-page-2.svg', 
-        'menu-page-3.svg', 
+        'menu-page-1.svg',
+        'menu-page-2.svg',
+        'menu-page-3.svg',
         'menu-page-4.svg'
     ],
     animation: {
-        preloaderDelay: 2200, 
-        fadeDuration: 800,   
+        preloaderDelay: 1400,
+        fadeDuration: 800,
         menuFadeTime: 150
     },
     swipeThreshold: 50
@@ -39,7 +39,7 @@ function initApp() {
     initMenuViewer();
     initScrollAnimations();
     initDynamicYear();
-    initHeroHeightFix(); // Start the fix
+    initHeroHeightFix();
 }
 
 /**
@@ -54,14 +54,11 @@ function initHeroHeightFix() {
     let lastWidth = window.innerWidth;
 
     const setHeight = () => {
-        // Set exact pixel height to lock layout
         hero.style.minHeight = `${window.innerHeight}px`;
     };
 
-    // 1. Set on load
     setHeight();
 
-    // 2. Listen for resize, BUT only act if WIDTH changes (Rotation)
     window.addEventListener('resize', () => {
         if (window.innerWidth !== lastWidth) {
             lastWidth = window.innerWidth;
@@ -69,9 +66,8 @@ function initHeroHeightFix() {
         }
     });
 
-    // 3. Extra safety for orientation change event
     window.addEventListener('orientationchange', () => {
-        setTimeout(setHeight, 100); // Small delay to allow browser layout update
+        setTimeout(setHeight, 100);
     });
 }
 
@@ -81,6 +77,9 @@ function initHeroHeightFix() {
 function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
     if (!preloader) return;
+
+    // Prevent scroll during preloader
+    document.body.style.overflow = 'hidden';
 
     const fadeOut = () => {
         setTimeout(() => {
@@ -95,7 +94,7 @@ function initPreloader() {
     if (document.readyState === 'complete') {
         fadeOut();
     } else {
-        window.addEventListener('load', fadeOut);
+        window.addEventListener('load', fadeOut, { once: true });
     }
 }
 
@@ -115,18 +114,18 @@ function initDynamicYear() {
 function initMobileMenu() {
     const menuBtn = document.querySelector(CONFIG.selectors.menuBtn);
     const mobileMenu = document.querySelector(CONFIG.selectors.mobileMenu);
-    
+
     if (!menuBtn || !mobileMenu) return;
-    
+
     const icon = menuBtn.querySelector('i');
     let isOpen = false;
 
     const toggleMenu = () => {
         isOpen = !isOpen;
-        
+
         mobileMenu.classList.toggle('menu-closed', !isOpen);
         mobileMenu.classList.toggle('menu-open', isOpen);
-        
+
         if (icon) {
             icon.classList.toggle('fa-bars', !isOpen);
             icon.classList.toggle('fa-times', isOpen);
@@ -154,26 +153,28 @@ function initMenuViewer() {
         indicator: document.querySelector(CONFIG.selectors.pageIndicator)
     };
 
-    if (!elements.currentImg) return; 
+    if (!elements.currentImg) return;
 
     let currentIndex = 0;
 
     const updateMenu = () => {
         elements.currentImg.style.opacity = '0';
-        
+
         setTimeout(() => {
             elements.currentImg.src = CONFIG.menuImages[currentIndex];
-            
+
             if (elements.indicator) {
                 elements.indicator.textContent = `STRANA ${currentIndex + 1} / ${CONFIG.menuImages.length}`;
             }
 
-            const fadeIn = () => elements.currentImg.style.opacity = '1';
-            
-            elements.currentImg.onload = fadeIn;
+            const fadeIn = () => {
+                elements.currentImg.style.opacity = '1';
+            };
+
+            elements.currentImg.addEventListener('load', fadeIn, { once: true });
             if (elements.currentImg.complete) fadeIn();
-            
-        }, CONFIG.animation.menuFadeTime); 
+
+        }, CONFIG.animation.menuFadeTime);
     };
 
     const changePage = (direction) => {
@@ -192,17 +193,17 @@ function initMenuViewer() {
 
         elements.container.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
+        }, { passive: true });
 
         elements.container.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].screenX;
             const diff = touchStartX - touchEndX;
 
             if (Math.abs(diff) > CONFIG.swipeThreshold) {
-                if (diff > 0) changePage(1); 
-                else changePage(-1);       
+                if (diff > 0) changePage(1);
+                else changePage(-1);
             }
-        }, {passive: true});
+        }, { passive: true });
     }
 
     updateMenu();
