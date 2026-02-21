@@ -6,20 +6,6 @@
 body { font-family: 'Inter', sans-serif; }
 h1, h2, h3, .font-heading { font-family: 'Oswald', sans-serif; }
 
-/* Hero Section */
-.hero-section {
-    background-image: url('hero.webp');
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh;
-    position: relative;
-}
-
-/* Fallback pro prohlizece bez WebP podpory */
-.no-webp .hero-section {
-    background-image: url('hero.jpg');
-}
-
 /* Darker Overlay for Contrast */
 .hero-overlay {
     background: linear-gradient(to bottom, 
