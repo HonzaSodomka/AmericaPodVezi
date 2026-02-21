@@ -154,7 +154,6 @@
 
     <!-- Hero Section -->
     <section class="hero-section flex flex-col pt-[110px] pb-12 sm:pt-[130px] md:pt-[100px] relative overflow-hidden min-h-screen">
-        <!-- Hero Background Image (Optimized for LCP) -->
         <picture class="absolute inset-0 z-0">
             <source srcset="hero.webp" type="image/webp">
             <img src="hero.jpg" alt="America Pod Věží restaurace" fetchpriority="high" class="w-full h-full object-cover">
@@ -216,30 +215,32 @@
     <!-- DENNÍ MENU SECTION -->
     <section id="denni-menu" class="bg-black py-20 px-8 md:px-12 relative">
         <div class="max-w-7xl mx-auto">
-             <div class="text-center mb-10 scroll-wait">
-                 <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+            <div class="text-center mb-10 scroll-wait">
+                <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
                     Denní <span class="text-brand-gold">Menu</span>
-                 </h2>
-                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
-             </div>
-             
-             <!-- Temporary Placeholder / Call to Action for Daily Menu -->
-             <div class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-3xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden">
-                 <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
-                 <div class="relative z-10">
-                     <div class="text-brand-gold text-4xl md:text-5xl mb-6 transform hover:scale-110 transition duration-300">
-                         <i class="fas fa-calendar-alt"></i>
-                     </div>
-                     <h3 class="text-2xl md:text-3xl font-heading font-bold text-white mb-4 tracking-wider uppercase">Dnešní polední nabídka</h3>
-                     <p class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto">Každý všední den pro vás připravujeme čerstvé obědové menu. Zastavte se na oběd, nebo si objednejte s sebou.</p>
-                     
-                     <div class="flex justify-center">
-                         <a href="https://www.menicka.cz/7509-america-pod-vezi.html" target="_blank" rel="noopener noreferrer" class="bg-brand-gold text-black font-bold font-heading py-4 px-8 rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 flex items-center gap-3">
-                             <i class="fas fa-external-link-alt"></i> Otevřít menu na menicka.cz
-                         </a>
-                     </div>
-                 </div>
-             </div>
+                </h2>
+                <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
+            </div>
+
+            <div class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-3xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="text-brand-gold text-4xl md:text-5xl mb-6">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-heading font-bold text-white mb-4 tracking-wider uppercase">Dnešní polední nabídka</h3>
+                    <p class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto">Každý všední den pro vás připravujeme čerstvé obědové menu. Zastavte se na oběd, nebo si objednejte s sebou.</p>
+
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="tel:326322007" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black border border-brand-gold hover:border-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
+                            <i class="fas fa-phone-alt"></i> Objednat s sebou
+                        </a>
+                        <a href="https://www.menicka.cz/7509-america-pod-vezi.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading uppercase tracking-widest">
+                            <i class="fas fa-external-link-alt"></i> Otevřít na menicka.cz
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -249,16 +250,49 @@
     <!-- STÁLÉ MENU SECTION -->
     <section id="stale-menu" class="bg-[#050505] py-20 px-8 md:px-12 relative">
         <div class="max-w-7xl mx-auto">
-             <div class="text-center mb-10 scroll-wait">
-                 <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+            <div class="text-center mb-10 scroll-wait">
+                <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
                     Stálé <span class="text-brand-gold">Menu</span>
-                 </h2>
-                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
-             </div>
-             
-             <!-- Speciality & Catering Cards -->
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-12">
-                <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-100">
+                </h2>
+                <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
+            </div>
+
+            <!-- Jídelní listek viewer -->
+            <div class="w-full scroll-wait">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 px-2 gap-4">
+                    <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
+                    <a href="menu.pdf" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-brand-gold text-white hover:text-black border border-white/20 hover:border-brand-gold px-4 py-2 rounded-sm transition duration-300 text-sm font-bold tracking-wider uppercase">
+                        <i class="fas fa-file-pdf"></i> Stáhnout Menu
+                    </a>
+                </div>
+                <div class="md:hidden text-gray-500 text-xs flex items-center gap-1 animate-pulse mb-2 px-2">
+                    <i class="fas fa-hand-pointer"></i> Posouvej tahem
+                </div>
+                <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[600px] flex items-center justify-center" id="menu-container">
+                    <button id="prev-page" aria-label="Předchozí strana menu" class="absolute left-2 md:left-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
+                        <i class="fas fa-chevron-left text-lg md:text-xl"></i>
+                    </button>
+                    <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-0 md:p-4 transition duration-300">
+                        <img src="menu-page-1.svg" id="current-menu-image" alt="Jídelní lístek strana 1 - Burgery a předkrmy" width="800" height="600" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
+                        <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
+                            <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
+                            <p class="text-gray-500">Zde se zobrazí jídelní lístek</p>
+                        </div>
+                    </div>
+                    <button id="next-page" aria-label="Další strana menu" class="absolute right-2 md:right-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
+                        <i class="fas fa-chevron-right text-lg md:text-xl"></i>
+                    </button>
+                    <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none">
+                        <span id="page-indicator" class="bg-black/80 px-4 py-1 rounded-full text-xs text-brand-gold font-heading tracking-widest border border-white/10 shadow-lg">
+                            STRANA 1 / 4
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fotokartičky – Speciality & Catering (pod listek) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-10 scroll-wait">
+                <div class="relative h-56 md:h-72 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default delay-100">
                     <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
                     <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6">
@@ -266,7 +300,7 @@
                         <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Burgery, Quesadillas & BBQ</span>
                     </div>
                 </div>
-                <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-200">
+                <div class="relative h-56 md:h-72 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default delay-200">
                     <div class="absolute inset-0 bg-cover bg-center bg-akce" role="img" aria-label="Catering a rauty pro firemní večírky"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
                     <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6">
@@ -274,45 +308,7 @@
                         <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Oslavy & Akce</span>
                     </div>
                 </div>
-             </div>
-             
-             <div class="w-full scroll-wait">
-                 <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 px-2 gap-4">
-                     <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
-                     
-                     <div class="flex flex-col sm:flex-row gap-3">
-                         <a href="tel:326322007" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black border border-brand-gold hover:border-white px-4 py-2 rounded-sm transition duration-300 text-sm font-bold tracking-wider uppercase">
-                            <i class="fas fa-phone-alt"></i> Objednat s sebou
-                         </a>
-                         <a href="menu.pdf" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-brand-gold text-white hover:text-black border border-white/20 hover:border-brand-gold px-4 py-2 rounded-sm transition duration-300 text-sm font-bold tracking-wider uppercase">
-                            <i class="fas fa-file-pdf"></i> Stáhnout Menu
-                         </a>
-                     </div>
-                 </div>
-                 <div class="md:hidden text-gray-500 text-xs flex items-center gap-1 animate-pulse mb-2 px-2">
-                     <i class="fas fa-hand-pointer"></i> Posouvej tahem
-                 </div>
-                 <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[600px] flex items-center justify-center" id="menu-container">
-                     <button id="prev-page" aria-label="Předchozí strana menu" class="absolute left-2 md:left-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
-                         <i class="fas fa-chevron-left text-lg md:text-xl"></i>
-                     </button>
-                     <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-0 md:p-4 transition duration-300">
-                         <img src="menu-page-1.svg" id="current-menu-image" alt="Jídelní lístek strana 1 - Burgery a předkrmy" width="800" height="600" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
-                         <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
-                             <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
-                             <p class="text-gray-500">Zde se zobrazí jídelní lístek</p>
-                         </div>
-                     </div>
-                     <button id="next-page" aria-label="Další strana menu" class="absolute right-2 md:right-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
-                         <i class="fas fa-chevron-right text-lg md:text-xl"></i>
-                     </button>
-                     <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none">
-                         <span id="page-indicator" class="bg-black/80 px-4 py-1 rounded-full text-xs text-brand-gold font-heading tracking-widest border border-white/10 shadow-lg">
-                             STRANA 1 / 4
-                         </span>
-                     </div>
-                 </div>
-             </div>
+            </div>
         </div>
     </section>
 
@@ -560,16 +556,11 @@
         </p>
     </footer>
 
-    <!--
-        GDPR Consent Banner
-    -->
+    <!-- GDPR Consent Banner -->
     <div id="consent-banner" class="fixed bottom-0 left-0 right-0 z-[110] hidden">
-        <!-- Zlatá linka jako rozdělovač, zjemněná -->
         <div class="h-[2px] w-full bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent"></div>
         <div class="bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-white/5">
             <div class="max-w-5xl mx-auto px-6 md:px-12 py-5 flex flex-col md:flex-row md:items-center justify-between gap-5">
-                
-                <!-- Levy blok: text -->
                 <div class="flex-1">
                     <h3 class="font-heading text-white text-lg tracking-wider uppercase mb-1">
                         Nastavení <span class="text-brand-gold">soukromí</span>
@@ -578,8 +569,6 @@
                         Tento web využívá služby třetích stran (Google Mapy), které mohou ukládat soubory cookies do vašeho zařízení za účelem zobrazení interaktivní mapy přímo na stránce.
                     </p>
                 </div>
-
-                <!-- Pravy blok: tlacitka -->
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
                     <button id="consent-reject" class="font-heading uppercase tracking-widest text-xs text-gray-400 border border-white/20 px-6 py-3 hover:text-white hover:border-white/40 transition duration-200 w-full sm:w-auto">
                         Pouze nezbytné
@@ -588,7 +577,6 @@
                         Povolit vše
                     </button>
                 </div>
-
             </div>
         </div>
     </div>
