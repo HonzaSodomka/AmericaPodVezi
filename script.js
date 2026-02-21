@@ -24,7 +24,7 @@ const CONFIG = {
         { src: 'menu-page-4.svg', alt: 'Jídelní lístek strana 4 - Nápojový lístek' }
     ],
     animation: {
-        preloaderDelay: 300,  // Spouští se hned po DOMContentLoaded (čeká jen 0.3s navíc pro smooth efekt)
+        preloaderDelay: 1800,  // Vráceno na původní hodnotu pro plný cinematic efekt
         fadeDuration: 600,    
         menuFadeTime: 150
     },
@@ -103,7 +103,7 @@ function initStickyNavbar() {
 
 /**
  * Preloader Fade Out 
- * Změněno z window.load (blokující u velkých fotek) na DOMContentLoaded
+ * Vráceno na window.load, aby to počkalo na kompletní stažení fotek.
  */
 function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
@@ -123,8 +123,12 @@ function initPreloader() {
         }, CONFIG.animation.preloaderDelay);
     };
 
-    // App init is already triggered by DOMContentLoaded, so we can fade out immediately
-    fadeOut();
+    // Vrácena původní logika čekající na všechny assety a fotky
+    if (document.readyState === 'complete') {
+        fadeOut();
+    } else {
+        window.addEventListener('load', fadeOut, { once: true });
+    }
 }
 
 /**
