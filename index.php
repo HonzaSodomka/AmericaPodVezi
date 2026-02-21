@@ -20,6 +20,9 @@ $woltLink = $delivery['wolt'] ?? '';
 $foodoraLink = $delivery['foodora'] ?? '';
 $boltLink = $delivery['bolt'] ?? '';
 
+$ratingValue = $data['rating']['value'] ?? 4.5;
+$ratingCount = $data['rating']['count'] ?? 900;
+
 $dailyMenuUrl = $data['daily_menu_url'] ?? 'https://www.menicka.cz/7509-america-pod-vezi.html';
 
 $openingHours = $data['opening_hours'] ?? [
@@ -84,8 +87,8 @@ $schema = [
     "acceptsReservations" => true,
     "aggregateRating" => [
         "@type" => "AggregateRating",
-        "ratingValue" => 4.5,
-        "ratingCount" => 900,
+        "ratingValue" => $ratingValue,
+        "ratingCount" => $ratingCount,
         "bestRating" => 5,
         "worstRating" => 1
     ]
@@ -250,12 +253,14 @@ if (!empty($boltLink)) {
         
         <div class="relative z-10 w-full max-w-7xl mx-auto px-8 md:px-12 text-center md:text-left my-auto">
             <div class="animate-enter delay-100">
-                <h1 class="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold font-heading mb-2 leading-none drop-shadow-2xl tracking-tight">
-                    AMERICA
+                <h1 class="mb-6">
+                    <span class="block text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold font-heading mb-2 leading-none drop-shadow-2xl tracking-tight text-white">
+                        AMERICA
+                    </span>
+                    <span class="block text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold font-heading text-brand-gold tracking-widest drop-shadow-lg">
+                        POD VĚŽÍ
+                    </span>
                 </h1>
-                <h2 class="text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold font-heading text-brand-gold tracking-widest mb-6 drop-shadow-lg">
-                    POD VĚŽÍ
-                </h2>
                 <div class="h-1 w-24 bg-brand-gold mb-6 mx-auto md:mx-1 shadow-lg"></div>
             </div>
             <div class="max-w-4xl md:ml-1 animate-enter delay-200">
@@ -451,16 +456,19 @@ if (!empty($boltLink)) {
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 uppercase tracking-wider mb-1">Hodnocení Google</span>
                             <div class="flex items-center gap-2">
-                                <span class="text-2xl font-bold text-white">4.5</span>
+                                <span class="text-2xl font-bold text-white"><?= htmlspecialchars($ratingValue) ?></span>
                                 <div class="flex text-brand-gold text-sm">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
+                                    <?php
+                                    $fullStars = floor($ratingValue);
+                                    $halfStar = ($ratingValue - $fullStars) >= 0.5 ? 1 : 0;
+                                    $emptyStars = 5 - $fullStars - $halfStar;
+                                    for ($i = 0; $i < $fullStars; $i++) echo '<i class="fas fa-star"></i>';
+                                    if ($halfStar) echo '<i class="fas fa-star-half-alt"></i>';
+                                    for ($i = 0; $i < $emptyStars; $i++) echo '<i class="fas fa-star opacity-30"></i>';
+                                    ?>
                                 </div>
                             </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition">900+ recenzí</span>
+                            <span class="text-xs text-gray-400 group-hover:text-white transition"><?= htmlspecialchars($ratingCount) ?>+ recenzí</span>
                         </div>
                         <div class="h-8 w-px bg-white/10 mx-2"></div>
                         <i class="fab fa-google text-2xl text-gray-400 group-hover:text-brand-gold transition"></i>

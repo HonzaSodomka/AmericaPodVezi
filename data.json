@@ -5,6 +5,10 @@
     "email": "info@americapodvezi.cz",
     "address": "Komenského náměstí 61, Mladá Boleslav"
   },
+  "rating": {
+    "value": 4.5,
+    "count": 900
+  },
   "opening_hours": {
     "monday": "11:00 - 14:00",
     "tuesday_friday": "11:00 - 22:00",
