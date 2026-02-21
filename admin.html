@@ -150,6 +150,45 @@
                 </div>
             </section>
 
+            <!-- Sekce: Rozvoz -->
+            <section class="bg-[#111] border border-white/10 rounded-sm p-6 md:p-8 shadow-2xl">
+                <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-full border border-brand-gold/30 bg-brand-gold/10 flex items-center justify-center text-brand-gold">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    <h2 class="text-2xl font-heading font-bold tracking-widest uppercase text-white">Rozvozové služby</h2>
+                </div>
+                
+                <p class="text-gray-400 text-sm mb-6 font-light leading-relaxed">
+                    Pokud pole pro odkaz necháte prázdné, tlačítko dané rozvozové služby se na webu <strong>nebude zobrazovat</strong>.
+                    Pokud smažete oba odkazy, zmizí celá sekce "Rozvoz domů".
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Wolt -->
+                    <div>
+                        <label class="block text-xs font-heading tracking-widest uppercase text-gray-400 mb-2">Wolt (Odkaz)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-bicycle text-gray-500 text-sm"></i>
+                            </div>
+                            <input type="text" id="woltUrl" placeholder="https://wolt.com/..." class="w-full bg-[#1a1a1a] border border-white/20 text-white rounded-sm py-2 pl-10 pr-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition shadow-inner">
+                        </div>
+                    </div>
+                    
+                    <!-- Foodora -->
+                    <div>
+                        <label class="block text-xs font-heading tracking-widest uppercase text-gray-400 mb-2">Foodora (Odkaz)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-shopping-bag text-gray-500 text-sm"></i>
+                            </div>
+                            <input type="text" id="foodoraUrl" placeholder="https://foodora.cz/..." class="w-full bg-[#1a1a1a] border border-white/20 text-white rounded-sm py-2 pl-10 pr-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition shadow-inner">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Ulozit Dole -->
             <div class="flex justify-end pt-4">
                 <button type="submit" class="bg-brand-gold text-black font-heading font-bold uppercase tracking-widest py-3 px-10 rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] transform hover:-translate-y-1">
@@ -195,7 +234,8 @@
 
             let appData = {
                 flexibleHours: [],
-                contacts: {}
+                contacts: {},
+                delivery: {}
             };
 
             let selectedDaysForNewGroup = new Set();
@@ -333,6 +373,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     appData.contacts = data.contacts || {};
+                    appData.delivery = data.delivery || { wolt: '', foodora: '' };
                     
                     if (data.flexibleHours) {
                         appData.flexibleHours = data.flexibleHours;
@@ -341,6 +382,10 @@
                     document.getElementById('phoneMain').value = appData.contacts.phoneMain || '';
                     document.getElementById('phoneAlt').value = appData.contacts.phoneAlt || '';
                     document.getElementById('email').value = appData.contacts.email || '';
+                    
+                    // Load Delivery
+                    document.getElementById('woltUrl').value = appData.delivery.wolt || '';
+                    document.getElementById('foodoraUrl').value = appData.delivery.foodora || '';
 
                     renderBuilder();
                 }
@@ -349,11 +394,13 @@
             }
 
             const saveData = async () => {
-                // ODSTRANĚNA VALIDACE VŠECH DNŮ - backend/frontend se s tím vypořádá tak, že zbytek bude ZAVŘENO
-
                 appData.contacts.phoneMain = document.getElementById('phoneMain').value;
                 appData.contacts.phoneAlt = document.getElementById('phoneAlt').value;
                 appData.contacts.email = document.getElementById('email').value;
+
+                // Save Delivery
+                appData.delivery.wolt = document.getElementById('woltUrl').value;
+                appData.delivery.foodora = document.getElementById('foodoraUrl').value;
 
                 try {
                     const res = await fetch('/api/data', {

@@ -245,12 +245,67 @@ async function fetchDynamicData() {
                     const footerEmail = document.querySelector('footer a[href^="mailto:"]');
                     if(footerEmail) {
                         footerEmail.style.display = 'none';
-                        // Možná chceš schovat i ten oddělovač " | " před emailem ve footeru
-                        // To by vyžadovalo drobnou úpravu HTML struktury footeru.
                     }
                 }
             }
         }
+
+        // 3. Update Delivery Buttons
+        if (data.delivery) {
+            const heroSection = document.querySelector('.hero-section');
+            if(heroSection) {
+                // Hledáme podle href atributu, který obsahuje doménu služby
+                const woltLink = heroSection.querySelector('a[href*="wolt"]');
+                const foodoraLink = heroSection.querySelector('a[href*="foodora"]');
+                
+                let woltVisible = false;
+                let foodoraVisible = false;
+
+                if (woltLink) {
+                    if (data.delivery.wolt && data.delivery.wolt.trim() !== '') {
+                        woltLink.href = data.delivery.wolt;
+                        woltLink.style.display = '';
+                        woltVisible = true;
+                    } else {
+                        woltLink.style.display = 'none';
+                    }
+                }
+
+                if (foodoraLink) {
+                    if (data.delivery.foodora && data.delivery.foodora.trim() !== '') {
+                        foodoraLink.href = data.delivery.foodora;
+                        foodoraLink.style.display = '';
+                        foodoraVisible = true;
+                    } else {
+                        foodoraLink.style.display = 'none';
+                    }
+                }
+
+                // Oddělovač "|"
+                // Předpokládáme strukturu: <a>Wolt</a> <span>|</span> <a>Foodora</a>
+                // Najdeme span mezi nimi. Je to obvykle element hned za woltLinkem.
+                if (woltLink) {
+                    const separator = woltLink.nextElementSibling;
+                    if (separator && separator.tagName === 'SPAN') {
+                        // Zobrazit oddělovač jen pokud jsou vidět OBA odkazy
+                        separator.style.display = (woltVisible && foodoraVisible) ? '' : 'none';
+                    }
+                }
+
+                // Celý kontejner "Rozvoz domů: ..."
+                // Je to rodič rodiče linku, nebo hledáme .bg-black/50 v hero sekci
+                const deliveryContainer = heroSection.querySelector('.bg-black\\/50.backdrop-blur-md');
+                if (deliveryContainer) {
+                    // Pokud není vidět ani jeden, schováme celý box
+                    if (!woltVisible && !foodoraVisible) {
+                        deliveryContainer.style.display = 'none';
+                    } else {
+                        deliveryContainer.style.display = ''; // default (flex)
+                    }
+                }
+            }
+        }
+
     } catch (error) {
         console.error('Error loading dynamic data:', error);
     }

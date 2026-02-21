@@ -20,5 +20,9 @@
     "phoneMain": "326 322 007",
     "phoneAlt": "606 537 469",
     "email": "info@americapodvezi.cz"
+  },
+  "delivery": {
+    "wolt": "https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi",
+    "foodora": "https://www.foodora.cz/restaurant/iqu6/america-pod-vezi"
   }
 }
