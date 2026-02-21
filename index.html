@@ -479,14 +479,12 @@
     </div>
 
     <!-- Promo Popup -->
-    <div id="promo-popup" class="fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-black/85 backdrop-blur-sm transition-opacity duration-500 opacity-0">
-        <div id="promo-popup-content" class="relative bg-[#0a0a0a] rounded-sm transform scale-95 transition-transform duration-500 w-full max-w-[450px] border border-brand-gold/30 shadow-[0_0_50px_rgba(0,0,0,0.9)]">
-            <button id="promo-close" class="absolute -top-4 -right-4 w-10 h-10 z-[130] bg-brand-gold text-black rounded-full flex items-center justify-center font-bold text-xl hover:bg-white transition shadow-[0_4px_10px_rgba(0,0,0,0.5)] cursor-pointer" aria-label="Zavřít akci">
+    <div id="promo-popup" class="fixed inset-0 z-[120] hidden items-center justify-center p-6 bg-black/85 backdrop-blur-sm transition-opacity duration-500 opacity-0">
+        <div id="promo-popup-content" class="relative inline-block transform scale-95 transition-transform duration-500">
+            <button id="promo-close" class="absolute -top-5 -right-5 w-10 h-10 z-[130] bg-brand-gold text-black rounded-full flex items-center justify-center font-bold text-xl hover:bg-white transition shadow-xl cursor-pointer" aria-label="Zavřít akci">
                 <i class="fas fa-times"></i>
             </button>
-            <div class="p-2 flex justify-center items-center">
-                <img id="promo-image" src="" alt="Aktuální akce" class="w-auto max-w-full max-h-[75vh] object-contain rounded-sm block">
-            </div>
+            <img id="promo-image" src="" alt="Aktuální akce" class="w-auto h-auto max-w-[85vw] md:max-w-[75vw] lg:max-w-[900px] max-h-[80vh] rounded block shadow-2xl">
         </div>
     </div>
 
