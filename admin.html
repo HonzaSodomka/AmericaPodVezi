@@ -80,6 +80,7 @@
                 <p class="text-gray-400 text-sm mb-6 font-light leading-relaxed">
                     Zde můžete libovolně slučovat dny, které mají stejnou otevírací dobu. 
                     Kliknutím na dny je vyberete do jedné skupiny. Jakmile skupinu vytvoříte, můžete k ní napsat čas.
+                    <strong class="text-brand-gold block mt-2">Nevyplněné dny se na webu automaticky zobrazí jako ZAVŘENO.</strong>
                 </p>
 
                 <!-- Builder Container -->
@@ -193,7 +194,7 @@
             ];
 
             let appData = {
-                flexibleHours: [], // Array objektů: { days: ['mo', 'tu'], time: '11:00 - 22:00' }
+                flexibleHours: [],
                 contacts: {}
             };
 
@@ -208,24 +209,21 @@
                 setTimeout(() => alertBox.classList.add('hidden'), 4000);
             };
 
-            // Helper pro seřazení a naformátování štítku dnů (např. "Pondělí, Úterý")
             const formatDaysLabel = (dayIds) => {
                 const sortedDays = ALL_DAYS.filter(d => dayIds.includes(d.id));
                 return sortedDays.map(d => d.name).join(', ');
             };
 
-            // Získá pole IDček dnů, které ještě NEJSOU v žádné skupině
             const getAvailableDayIds = () => {
                 const usedDays = appData.flexibleHours.flatMap(g => g.days);
                 return ALL_DAYS.map(d => d.id).filter(id => !usedDays.includes(id));
             };
 
-            // RENDER - Existující skupiny
             const renderGroups = () => {
                 groupsContainer.innerHTML = '';
                 
                 if (appData.flexibleHours.length === 0) {
-                    groupsContainer.innerHTML = '<p class="text-sm text-gray-500 italic">Zatím nejsou nastaveny žádné otevírací hodiny.</p>';
+                    groupsContainer.innerHTML = '<p class="text-sm text-gray-500 italic">Zatím nejsou nastaveny žádné otevírací hodiny. Nevyplněné dny se na webu zobrazí jako ZAVŘENO.</p>';
                 }
 
                 appData.flexibleHours.forEach((group, index) => {
@@ -248,7 +246,6 @@
                     groupsContainer.appendChild(div);
                 });
 
-                // Listenery na smazání
                 document.querySelectorAll('.delete-group-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const idx = e.currentTarget.getAttribute('data-index');
@@ -257,7 +254,6 @@
                     });
                 });
 
-                // Listenery na úpravu existujícího času
                 document.querySelectorAll('.group-time-input').forEach(input => {
                     input.addEventListener('input', (e) => {
                         const idx = e.target.getAttribute('data-index');
@@ -266,14 +262,12 @@
                 });
             };
 
-            // RENDER - Tlačítka pro volné dny k sestavení nové skupiny
             const renderBuilder = () => {
                 renderGroups();
                 
                 const availableIds = getAvailableDayIds();
                 availableDaysContainer.innerHTML = '';
                 
-                // Reset výběru pro novou skupinu jen na ty dny, které jsou opravdu volné
                 selectedDaysForNewGroup = new Set([...selectedDaysForNewGroup].filter(id => availableIds.includes(id)));
 
                 if (availableIds.length === 0) {
@@ -298,14 +292,13 @@
                             } else {
                                 selectedDaysForNewGroup.add(day.id);
                             }
-                            renderBuilder(); // Re-render to update classes and input state
+                            renderBuilder();
                         });
 
                         availableDaysContainer.appendChild(btn);
                     }
                 });
 
-                // Povolit/zakázat input na čas podle toho, jestli je vybrán aspoň 1 den
                 if (selectedDaysForNewGroup.size > 0) {
                     newGroupTimeSection.classList.remove('opacity-50', 'pointer-events-none');
                 } else {
@@ -313,11 +306,9 @@
                 }
             };
 
-            // Přidání nové skupiny (tlačítko Přidat)
             addGroupBtn.addEventListener('click', () => {
                 const timeVal = newGroupTimeInput.value.trim();
                 if (selectedDaysForNewGroup.size > 0 && timeVal !== '') {
-                    // Musíme zachovat správné pořadí dnů podle ALL_DAYS
                     const sortedSelectedDays = ALL_DAYS.filter(d => selectedDaysForNewGroup.has(d.id)).map(d => d.id);
                     
                     appData.flexibleHours.push({
@@ -325,7 +316,6 @@
                         time: timeVal
                     });
                     
-                    // Řazení celých skupin, aby Pondělí bylo první (podle prvního dne ve skupině)
                     appData.flexibleHours.sort((a, b) => {
                         const indexA = ALL_DAYS.findIndex(d => d.id === a.days[0]);
                         const indexB = ALL_DAYS.findIndex(d => d.id === b.days[0]);
@@ -338,29 +328,16 @@
                 }
             });
 
-
-            // Načtení dat při startu
             try {
                 const response = await fetch('/api/data');
                 if (response.ok) {
                     const data = await response.json();
-                    
                     appData.contacts = data.contacts || {};
                     
-                    // Konverze starého fixního formátu na nový flexibilní, pokud je potřeba
                     if (data.flexibleHours) {
                         appData.flexibleHours = data.flexibleHours;
-                    } else if (data.openHours && data.openHoursMode && data.openHours[data.openHoursMode]) {
-                        // Migrace ze staré verze (šablony)
-                        appData.flexibleHours = [];
-                        data.openHours[data.openHoursMode].forEach(item => {
-                            // Toto je jen zjednodušený fallback pro první start, 
-                            // dny by neměly správné id, takže si je aspoň vizuálně ukážeme
-                            // Ale ideální je naplnit data.json čistě hned novým formátem (viz data.json v repu)
-                        });
                     }
 
-                    // Set contacts inputs
                     document.getElementById('phoneMain').value = appData.contacts.phoneMain || '';
                     document.getElementById('phoneAlt').value = appData.contacts.phoneAlt || '';
                     document.getElementById('email').value = appData.contacts.email || '';
@@ -371,14 +348,8 @@
                 showAlert('Chyba při načítání dat ze serveru.', false);
             }
 
-            // Uložení funkce
             const saveData = async () => {
-                // Validace, že jsou využity všechny dny
-                const usedDays = appData.flexibleHours.flatMap(g => g.days);
-                if (usedDays.length < 7) {
-                    showAlert('Pozor: Nemáte vyplněnou otevírací dobu pro všechny dny v týdnu! Doplňte zbývající dny.', false);
-                    return;
-                }
+                // ODSTRANĚNA VALIDACE VŠECH DNŮ - backend/frontend se s tím vypořádá tak, že zbytek bude ZAVŘENO
 
                 appData.contacts.phoneMain = document.getElementById('phoneMain').value;
                 appData.contacts.phoneAlt = document.getElementById('phoneAlt').value;
@@ -401,7 +372,6 @@
                 }
             };
 
-            // Event Listeners pro uložení
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 saveData();
@@ -412,7 +382,6 @@
                 saveData();
             });
 
-            // Allow Enter key to add group
             newGroupTimeInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();

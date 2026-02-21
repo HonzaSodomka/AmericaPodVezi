@@ -55,30 +55,44 @@ function initApp() {
 }
 
 /**
- * Helper pro seřazení a naformátování štítku dnů (např. "Pondělí, Úterý") pro front-end
- * Pokud jsou to dny jdoucí po sobě (např. Po, Út, St), snažíme se vypsat "Pondělí - Středa"
+ * Helper pro chytré formátování dnů.
+ * Vyřeší jak posloupnosti (Pondělí - Středa), tak mezery (Pondělí, Středa).
  */
 function formatDaysLabel(dayIds) {
-    const sortedDays = ALL_DAYS.filter(d => dayIds.includes(d.id));
-    if (sortedDays.length === 1) return sortedDays[0].name;
+    if (!dayIds || dayIds.length === 0) return '';
     
-    // Zjednodušený formát: jen vypíše názvy oddělené čárkou, 
-    // V profi řešení by se dalo zjišťovat, zda tvoří souvislou řadu a napsat "Pondělí - Pátek"
-    // Uděláme to chytře:
-    const indexes = sortedDays.map(d => ALL_DAYS.findIndex(ad => ad.id === d.id));
-    let isSequential = true;
-    for(let i=1; i<indexes.length; i++) {
-        if (indexes[i] !== indexes[i-1] + 1) {
-            isSequential = false;
-            break;
+    // Seřazení podle pořadí v týdnu
+    const sortedIndexes = dayIds
+        .map(id => ALL_DAYS.findIndex(d => d.id === id))
+        .filter(idx => idx !== -1)
+        .sort((a, b) => a - b);
+        
+    if (sortedIndexes.length === 0) return '';
+
+    let streaks = [];
+    let currentStreak = [sortedIndexes[0]];
+
+    for (let i = 1; i < sortedIndexes.length; i++) {
+        if (sortedIndexes[i] === currentStreak[currentStreak.length - 1] + 1) {
+            currentStreak.push(sortedIndexes[i]);
+        } else {
+            streaks.push(currentStreak);
+            currentStreak = [sortedIndexes[i]];
         }
     }
+    streaks.push(currentStreak);
 
-    if (isSequential && sortedDays.length > 2) {
-        return `${sortedDays[0].name} - ${sortedDays[sortedDays.length-1].name}`;
-    }
-    
-    return sortedDays.map(d => d.name).join(', ');
+    const parts = streaks.map(streak => {
+        if (streak.length === 1) {
+            return ALL_DAYS[streak[0]].name;
+        } else {
+            // Délka 2 a více -> např. "Sobota - Neděle" nebo "Pondělí - Pátek"
+            return `${ALL_DAYS[streak[0]].name} - ${ALL_DAYS[streak[streak.length - 1]].name}`;
+        }
+    });
+
+    // Pospojování mezer mezi streaky čárkou
+    return parts.join(', ');
 }
 
 
@@ -94,15 +108,57 @@ async function fetchDynamicData() {
         const data = await response.json();
         
         // 1. Update Flexible Opening Hours
-        if (data.flexibleHours && data.flexibleHours.length > 0) {
-            const hoursContainer = document.querySelector('#contact ul');
+        if (data.flexibleHours) {
+            const hoursContainer = document.querySelector('#contact ul.text-gray-300'); // Přesnější selektor
+            
             if (hoursContainer) {
+                // Uděláme kopii, abychom do ní mohli přidat chybějící dny
+                let activeGroups = [...data.flexibleHours];
+                
+                // Identifikace chybějících dnů
+                const usedDays = activeGroups.flatMap(g => g.days);
+                const missingDays = ALL_DAYS.map(d => d.id).filter(id => !usedDays.includes(id));
+                
+                if (missingDays.length > 0) {
+                    activeGroups.push({
+                        days: missingDays,
+                        time: "ZAVŘENO"
+                    });
+                }
+                
+                // Seřazení celých skupin, aby šly logicky za sebou podle prvního dne ve skupině
+                activeGroups.sort((a, b) => {
+                    const idxA = Math.min(...a.days.map(id => ALL_DAYS.findIndex(d => d.id === id)));
+                    const idxB = Math.min(...b.days.map(id => ALL_DAYS.findIndex(d => d.id === id)));
+                    return idxA - idxB;
+                });
+
+                // Sloučení skupin, které mají absolutně stejný čas (např. vícero ZAVŘENO)
+                // Pro případ, že uživatel vytvořil ZAVŘENO manuálně a my mu teď přidali další pro chybějící dny
+                const mergedGroups = [];
+                activeGroups.forEach(group => {
+                    const existing = mergedGroups.find(g => g.time.toLowerCase() === group.time.toLowerCase());
+                    if (existing) {
+                        existing.days = [...existing.days, ...group.days];
+                    } else {
+                        mergedGroups.push({ days: [...group.days], time: group.time });
+                    }
+                });
+
+                // Znovu seřadit po merge
+                mergedGroups.sort((a, b) => {
+                    const idxA = Math.min(...a.days.map(id => ALL_DAYS.findIndex(d => d.id === id)));
+                    const idxB = Math.min(...b.days.map(id => ALL_DAYS.findIndex(d => d.id === id)));
+                    return idxA - idxB;
+                });
+
                 let htmlContent = '';
                 
-                data.flexibleHours.forEach((group, index) => {
-                    const isLast = index === data.flexibleHours.length - 1;
+                mergedGroups.forEach((group, index) => {
+                    const isLast = index === mergedGroups.length - 1;
                     const liClass = isLast ? "flex justify-between pt-1" : "flex justify-between border-b border-white/10 pb-2";
-                    const timeClass = (group.time.toUpperCase() === "ZAVŘENO") ? "text-brand-gold font-bold" : "";
+                    const isClosed = group.time.toUpperCase() === "ZAVŘENO" || group.time.toLowerCase().includes("zavřeno");
+                    const timeClass = isClosed ? "text-brand-gold font-bold" : "";
                     const label = formatDaysLabel(group.days);
 
                     htmlContent += `
