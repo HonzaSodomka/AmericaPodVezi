@@ -306,6 +306,55 @@ async function fetchDynamicData() {
             }
         }
 
+        // 4. Promo Popup
+        if (data.promoPopup) {
+            const popup = document.getElementById('promo-popup');
+            const popupContent = document.getElementById('promo-popup-content');
+            const closeBtn = document.getElementById('promo-close');
+            const img = document.getElementById('promo-image');
+
+            if (popup && data.promoPopup.active && data.promoPopup.imageData) {
+                const today = new Date().toISOString().split('T')[0];
+                let show = true;
+
+                if (data.promoPopup.dateFrom && today < data.promoPopup.dateFrom) show = false;
+                if (data.promoPopup.dateTo && today > data.promoPopup.dateTo) show = false;
+
+                const isClosed = sessionStorage.getItem('promo_closed_v1');
+
+                if (show && !isClosed) {
+                    img.src = data.promoPopup.imageData;
+                    
+                    setTimeout(() => {
+                        popup.classList.remove('hidden');
+                        popup.classList.add('flex');
+                        void popup.offsetWidth; // Reflow
+                        popup.classList.remove('opacity-0');
+                        popup.classList.add('opacity-100');
+                        popupContent.classList.remove('scale-95');
+                        popupContent.classList.add('scale-100');
+                    }, 2500);
+
+                    const closePopup = () => {
+                        popup.classList.remove('opacity-100');
+                        popup.classList.add('opacity-0');
+                        popupContent.classList.remove('scale-100');
+                        popupContent.classList.add('scale-95');
+                        setTimeout(() => {
+                            popup.classList.remove('flex');
+                            popup.classList.add('hidden');
+                        }, 500);
+                        sessionStorage.setItem('promo_closed_v1', 'true');
+                    };
+
+                    closeBtn.addEventListener('click', closePopup);
+                    popup.addEventListener('click', (e) => {
+                        if (e.target === popup) closePopup();
+                    });
+                }
+            }
+        }
+
     } catch (error) {
         console.error('Error loading dynamic data:', error);
     }

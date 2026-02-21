@@ -484,6 +484,18 @@
         </div>
     </div>
 
+    <!-- Promo Popup -->
+    <div id="promo-popup" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/90 backdrop-blur-md p-4 transition-opacity duration-500 opacity-0">
+        <div id="promo-popup-content" class="relative max-w-md w-full bg-[#0a0a0a] border border-brand-gold/30 rounded-sm shadow-2xl transform scale-95 transition-transform duration-500">
+            <button id="promo-close" class="absolute -top-4 -right-4 md:-top-5 md:-right-5 w-10 h-10 md:w-12 md:h-12 bg-brand-gold text-black rounded-full flex items-center justify-center font-bold text-xl hover:bg-white transition shadow-lg z-10" aria-label="Zavřít akci">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="p-2">
+                <img id="promo-image" src="" alt="Aktuální akce" class="w-full h-auto rounded-sm block max-h-[80vh] object-contain mx-auto">
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="script.js"></script>
 </body>

@@ -189,6 +189,59 @@
                 </div>
             </section>
 
+            <!-- Sekce: Akce / Popup -->
+            <section class="bg-[#111] border border-white/10 rounded-sm p-6 md:p-8 shadow-2xl">
+                <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-full border border-brand-gold/30 bg-brand-gold/10 flex items-center justify-center text-brand-gold">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h2 class="text-2xl font-heading font-bold tracking-widest uppercase text-white">Vyskakovací okno (Akce)</h2>
+                </div>
+                
+                <p class="text-gray-400 text-sm mb-6 font-light leading-relaxed">
+                    Nahrajte leták (např. Vánoční otevírací doba, Denní menu apod.) a nastavte, odkdy dokdy má na webu vyskakovat. Zobrazí se návštěvníkovi vždy jen <strong>jednou za návštěvu</strong>, aby neotravovalo při procházení webu.
+                </p>
+
+                <div class="space-y-8">
+                    <!-- Aktivní přepínač -->
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="promoActive" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-gold"></div>
+                        <span class="ml-3 text-sm font-heading tracking-widest uppercase text-white">Zobrazit leták na webu</span>
+                    </label>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Data -->
+                        <div>
+                            <label class="block text-xs font-heading tracking-widest uppercase text-gray-400 mb-2">Zobrazovat OD</label>
+                            <div class="relative">
+                                <input type="date" id="promoDateFrom" class="w-full bg-[#1a1a1a] border border-white/20 text-white rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition [color-scheme:dark]">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-heading tracking-widest uppercase text-gray-400 mb-2">Zobrazovat DO (včetně)</label>
+                            <div class="relative">
+                                <input type="date" id="promoDateTo" class="w-full bg-[#1a1a1a] border border-white/20 text-white rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition [color-scheme:dark]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div>
+                        <label class="block text-xs font-heading tracking-widest uppercase text-gray-400 mb-2">Obrázek (Leták)</label>
+                        <input type="file" id="promoImageInput" accept="image/png, image/jpeg, image/webp" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-bold file:bg-brand-gold file:text-black hover:file:bg-white transition cursor-pointer bg-[#1a1a1a] border border-white/20 rounded-sm">
+                        <p class="text-xs text-gray-500 mt-2">Doporučený formát: na výšku nebo čtverec. Velké obrázky budou automaticky zmenšeny pro rychlé načítání.</p>
+                        
+                        <div class="mt-4 relative hidden w-48 border border-white/20 rounded-sm overflow-hidden" id="promoPreviewContainer">
+                            <img id="promoPreview" src="" alt="Náhled akce" class="w-full h-auto">
+                            <button type="button" id="promoRemoveImg" class="absolute top-1 right-1 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-600 transition shadow-lg">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Ulozit Dole -->
             <div class="flex justify-end pt-4">
                 <button type="submit" class="bg-brand-gold text-black font-heading font-bold uppercase tracking-widest py-3 px-10 rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] transform hover:-translate-y-1">
@@ -222,6 +275,15 @@
             const newGroupTimeInput = document.getElementById('new-group-time');
             const addGroupBtn = document.getElementById('add-group-btn');
             
+            // Promo Popup Elements
+            const promoActive = document.getElementById('promoActive');
+            const promoDateFrom = document.getElementById('promoDateFrom');
+            const promoDateTo = document.getElementById('promoDateTo');
+            const promoImageInput = document.getElementById('promoImageInput');
+            const promoPreviewContainer = document.getElementById('promoPreviewContainer');
+            const promoPreview = document.getElementById('promoPreview');
+            const promoRemoveImg = document.getElementById('promoRemoveImg');
+
             const ALL_DAYS = [
                 { id: 'mo', name: 'Pondělí' },
                 { id: 'tu', name: 'Úterý' },
@@ -235,7 +297,8 @@
             let appData = {
                 flexibleHours: [],
                 contacts: {},
-                delivery: {}
+                delivery: {},
+                promoPopup: { active: false, dateFrom: '', dateTo: '', imageData: '' }
             };
 
             let selectedDaysForNewGroup = new Set();
@@ -368,12 +431,63 @@
                 }
             });
 
+            // --- Image resize & base64 logic ---
+            promoImageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxDim = 1000; // max resolution
+
+                        if (width > height) {
+                            if (width > maxDim) {
+                                height *= maxDim / width;
+                                width = maxDim;
+                            }
+                        } else {
+                            if (height > maxDim) {
+                                width *= maxDim / height;
+                                height = maxDim;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Zkonvertovat na base64 (s kompresí 80% pro zmenšení velikosti souboru)
+                        const base64 = canvas.toDataURL('image/jpeg', 0.8);
+                        appData.promoPopup.imageData = base64;
+                        promoPreview.src = base64;
+                        promoPreviewContainer.classList.remove('hidden');
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            promoRemoveImg.addEventListener('click', () => {
+                appData.promoPopup.imageData = '';
+                promoPreview.src = '';
+                promoPreviewContainer.classList.add('hidden');
+                promoImageInput.value = '';
+            });
+
+            // --- Fetch initial data ---
             try {
                 const response = await fetch('/api/data');
                 if (response.ok) {
                     const data = await response.json();
                     appData.contacts = data.contacts || {};
                     appData.delivery = data.delivery || { wolt: '', foodora: '' };
+                    appData.promoPopup = data.promoPopup || { active: false, dateFrom: '', dateTo: '', imageData: '' };
                     
                     if (data.flexibleHours) {
                         appData.flexibleHours = data.flexibleHours;
@@ -383,9 +497,17 @@
                     document.getElementById('phoneAlt').value = appData.contacts.phoneAlt || '';
                     document.getElementById('email').value = appData.contacts.email || '';
                     
-                    // Load Delivery
                     document.getElementById('woltUrl').value = appData.delivery.wolt || '';
                     document.getElementById('foodoraUrl').value = appData.delivery.foodora || '';
+
+                    // Load Promo Popup config
+                    promoActive.checked = appData.promoPopup.active;
+                    promoDateFrom.value = appData.promoPopup.dateFrom || '';
+                    promoDateTo.value = appData.promoPopup.dateTo || '';
+                    if (appData.promoPopup.imageData) {
+                        promoPreview.src = appData.promoPopup.imageData;
+                        promoPreviewContainer.classList.remove('hidden');
+                    }
 
                     renderBuilder();
                 }
@@ -393,14 +515,18 @@
                 showAlert('Chyba při načítání dat ze serveru.', false);
             }
 
+            // --- Save logic ---
             const saveData = async () => {
                 appData.contacts.phoneMain = document.getElementById('phoneMain').value;
                 appData.contacts.phoneAlt = document.getElementById('phoneAlt').value;
                 appData.contacts.email = document.getElementById('email').value;
 
-                // Save Delivery
                 appData.delivery.wolt = document.getElementById('woltUrl').value;
                 appData.delivery.foodora = document.getElementById('foodoraUrl').value;
+
+                appData.promoPopup.active = promoActive.checked;
+                appData.promoPopup.dateFrom = promoDateFrom.value;
+                appData.promoPopup.dateTo = promoDateTo.value;
 
                 try {
                     const res = await fetch('/api/data', {

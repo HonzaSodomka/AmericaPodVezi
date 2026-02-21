@@ -24,5 +24,11 @@
   "delivery": {
     "wolt": "https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi",
     "foodora": "https://www.foodora.cz/restaurant/iqu6/america-pod-vezi"
+  },
+  "promoPopup": {
+    "active": false,
+    "dateFrom": "",
+    "dateTo": "",
+    "imageData": ""
   }
 }
