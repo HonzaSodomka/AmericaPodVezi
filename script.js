@@ -24,7 +24,7 @@ const CONFIG = {
         { src: 'menu-page-4.svg', alt: 'Jídelní lístek strana 4 - Nápojový lístek' }
     ],
     animation: {
-        preloaderDelay: 1800,  // Vráceno na původní hodnotu pro plný cinematic efekt
+        preloaderDelay: 1800,  // Minimální garantovaný čas zobrazení
         fadeDuration: 600,    
         menuFadeTime: 150
     },
@@ -103,7 +103,7 @@ function initStickyNavbar() {
 
 /**
  * Preloader Fade Out 
- * Vráceno na window.load, aby to počkalo na kompletní stažení fotek.
+ * Kombinovaná logika: Čeká se buď 1.8s, NEBO na load obrázků - podle toho, CO NASTANE POZDĚJI.
  */
 function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
@@ -113,21 +113,35 @@ function initPreloader() {
         return;
     }
 
-    const fadeOut = () => {
-        setTimeout(() => {
+    let isTimerDone = false;
+    let isLoadDone = false;
+
+    // Funkce spustí mizení pouze pokud jsou splněny OBĚ podmínky
+    const checkAndFade = () => {
+        if (isTimerDone && isLoadDone) {
             preloader.style.opacity = '0';
             setTimeout(() => {
                 preloader.style.display = 'none';
                 initConsentAndMaps();
             }, CONFIG.animation.fadeDuration);
-        }, CONFIG.animation.preloaderDelay);
+        }
     };
 
-    // Vrácena původní logika čekající na všechny assety a fotky
+    // Podmínka 1: Garantujeme, že animace poběží minimálně 1.8 sekundy
+    setTimeout(() => {
+        isTimerDone = true;
+        checkAndFade();
+    }, CONFIG.animation.preloaderDelay);
+
+    // Podmínka 2: Čekáme na úplné stažení stránky (včetně hero fotky)
     if (document.readyState === 'complete') {
-        fadeOut();
+        isLoadDone = true;
+        checkAndFade();
     } else {
-        window.addEventListener('load', fadeOut, { once: true });
+        window.addEventListener('load', () => {
+            isLoadDone = true;
+            checkAndFade();
+        }, { once: true });
     }
 }
 
