@@ -209,14 +209,6 @@ if (!empty($boltLink)) {
 
     <!-- Změna pro čistý Scroll a GPU výkon navigace -->
     <style>
-        html {
-            scroll-padding-top: 100px; /* Zabránění překrytí sekcí fixní hlavičkou */
-        }
-        @media (min-width: 768px) {
-            html {
-                scroll-padding-top: 110px;
-            }
-        }
         .nav-backdrop {
             position: absolute;
             inset: 0;
