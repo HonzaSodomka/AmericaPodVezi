@@ -380,23 +380,23 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div class="flex flex-col">
                         <label for="res-name" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Jméno a příjmení</label>
-                        <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="Např. Jan Novák">
+                        <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="Např. Jan Novák">
                     </div>
                     <div class="flex flex-col">
                         <label for="res-phone" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Telefon</label>
-                        <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="+420 777 777 777">
+                        <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="+420 777 777 777">
                     </div>
                     <div class="flex flex-col">
                         <label for="res-email" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">E-mail</label>
-                        <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="jan@novak.cz">
+                        <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="jan@novak.cz">
                     </div>
                 </div>
                 <div class="flex flex-col mb-6">
                     <label for="res-note" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Vaše představa (termín, počet osob, typ akce...)</label>
-                    <textarea id="res-note" name="note" rows="3" required class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm resize-none" placeholder="Dobrý den, rádi bychom u vás uspořádali narozeninovou oslavu pro cca 20 lidí..."></textarea>
+                    <textarea id="res-note" name="note" rows="3" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm resize-none" placeholder="Dobrý den, rádi bychom u vás uspořádali narozeninovou oslavu pro cca 20 lidí..."></textarea>
                 </div>
                 <div class="text-center">
-                    <button type="submit" onclick="event.preventDefault(); alert('Formulář zatím není napojen na backend. Brzy jej zprovozníme!');" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-base rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
+                    <button type="submit" onclick="event.preventDefault(); alert('Formulář zatím není napojen na backend. Brzy jej zprovozníme!');" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-sm md:text-base rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
                         Odeslat nezávaznou poptávku
                     </button>
                     <p class="text-gray-500 text-[10px] mt-3 font-light">Odesláním formuláře souhlasíte se zpracováním údajů pro vyřízení rezervace.</p>
