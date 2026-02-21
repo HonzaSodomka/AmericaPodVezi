@@ -376,47 +376,30 @@
                  </p>
             </div>
             
-            <form id="reservation-form" class="bg-white/5 border border-white/10 p-6 md:p-10 rounded-sm shadow-2xl scroll-wait delay-100">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <form id="reservation-form" class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-sm shadow-xl scroll-wait delay-100 max-w-3xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div class="flex flex-col">
-                        <label for="res-name" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Jméno a příjmení</label>
-                        <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600" placeholder="Např. Jan Novák">
+                        <label for="res-name" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Jméno a příjmení</label>
+                        <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="Např. Jan Novák">
                     </div>
                     <div class="flex flex-col">
-                        <label for="res-email" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">E-mail</label>
-                        <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600" placeholder="jan@novak.cz">
+                        <label for="res-phone" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Telefon</label>
+                        <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="+420 777 777 777">
                     </div>
                     <div class="flex flex-col">
-                        <label for="res-phone" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Telefon</label>
-                        <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600" placeholder="+420 777 777 777">
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="res-date" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Předpokládaný termín</label>
-                        <input type="date" id="res-date" name="date" class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition text-gray-400 [color-scheme:dark]">
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="res-guests" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Počet osob (odhad)</label>
-                        <input type="number" id="res-guests" name="guests" min="1" max="100" class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600" placeholder="Např. 20">
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="res-type" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Typ akce</label>
-                        <select id="res-type" name="type" class="bg-black/50 border border-white/20 text-gray-300 px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition appearance-none cursor-pointer">
-                            <option value="oslava">Narozeninová oslava</option>
-                            <option value="vecirek">Firemní večírek</option>
-                            <option value="svatba">Svatební hostina</option>
-                            <option value="jine">Jiné / Nechci specifikovat</option>
-                        </select>
+                        <label for="res-email" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">E-mail</label>
+                        <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="jan@novak.cz">
                     </div>
                 </div>
-                <div class="flex flex-col mb-8">
-                    <label for="res-note" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Další přání / Specifikace rautu (volitelné)</label>
-                    <textarea id="res-note" name="note" rows="4" class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 resize-none" placeholder="Máme zájem o teplý i studený raut. Bude mezi námi 5 vegetariánů..."></textarea>
+                <div class="flex flex-col mb-6">
+                    <label for="res-note" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Vaše představa (termín, počet osob, typ akce...)</label>
+                    <textarea id="res-note" name="note" rows="3" required class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm resize-none" placeholder="Dobrý den, rádi bychom u vás uspořádali narozeninovou oslavu pro cca 20 lidí..."></textarea>
                 </div>
                 <div class="text-center">
-                    <button type="submit" onclick="event.preventDefault(); alert('Formulář zatím není napojen na backend. Brzy jej zprovozníme!');" class="bg-brand-gold text-black font-bold font-heading py-4 px-10 text-lg rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
+                    <button type="submit" onclick="event.preventDefault(); alert('Formulář zatím není napojen na backend. Brzy jej zprovozníme!');" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-base rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
                         Odeslat nezávaznou poptávku
                     </button>
-                    <p class="text-gray-500 text-xs mt-4 font-light">Odesláním formuláře souhlasíte se zpracováním osobních údajů pro vyřízení rezervace.</p>
+                    <p class="text-gray-500 text-[10px] mt-3 font-light">Odesláním formuláře souhlasíte se zpracováním údajů pro vyřízení rezervace.</p>
                 </div>
             </form>
         </div>
