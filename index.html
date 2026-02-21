@@ -43,7 +43,7 @@
         "email": "info@americapodvezi.cz",
         "servesCuisine": ["American", "BBQ", "Burgers", "Steaks"],
         "priceRange": "$$",
-        "hasMenu": "https://www.menicka.cz/7509-america-pod-vezi.html",
+        "hasMenu": "https://americapodvezi.cz/#menu",
         "acceptsReservations": true,
         "openingHoursSpecification": [
             {
@@ -185,39 +185,46 @@
     <!-- MENU SECTION -->
     <section id="menu" class="bg-black py-20 px-8 md:px-12 relative">
         <div class="max-w-7xl mx-auto">
-             <div class="text-center mb-10 scroll-wait">
+             <div class="text-center mb-12 scroll-wait">
                  <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
                     Naše <span class="text-brand-gold">Menu</span>
                  </h2>
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
              </div>
-             <div class="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 mb-12">
-                <div class="col-span-2 lg:col-span-1 border border-white/10 bg-white/5 p-4 md:p-6 flex flex-col items-center justify-center text-center hover:bg-white/10 transition duration-300 group rounded-sm shadow-xl h-40 md:h-auto scroll-wait">
-                    <div class="text-brand-gold text-3xl md:text-4xl mb-2 md:mb-4 transform group-hover:scale-110 transition duration-300">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h3 class="text-xl md:text-2xl font-heading font-bold text-white mb-1 md:mb-2 tracking-wider uppercase">Denní Nabídka</h3>
-                    <a href="https://www.menicka.cz/7509-america-pod-vezi.html" target="_blank" rel="noopener noreferrer" class="border border-brand-gold text-brand-gold font-heading font-bold py-2 px-6 text-xs md:text-sm hover:bg-brand-gold hover:text-black transition duration-300 uppercase tracking-widest mt-2">
-                        Zobrazit
-                    </a>
-                </div>
-                <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-100">
+             
+             <!-- DENNI MENU -->
+             <div id="daily-menu-wrapper" class="mb-12 scroll-wait hidden">
+                 <div class="flex items-center justify-between mb-4 px-2">
+                     <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-calendar-alt text-brand-gold mr-3"></i> Denní Nabídka <span id="daily-menu-date" class="text-sm md:text-lg text-gray-400 ml-2 normal-case tracking-normal"></span></h3>
+                 </div>
+                 <div class="bg-white/5 border border-white/10 rounded-sm shadow-2xl p-4 md:p-8">
+                     <div id="daily-menu-list" class="flex flex-col gap-4">
+                        <!-- Polozky se načtou dynamicky přes JS -->
+                     </div>
+                 </div>
+             </div>
+
+             <!-- SPECIALITY & CATERING (2 Photos) -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-12">
+                <div class="col-span-1 relative h-48 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-100">
                     <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
-                    <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6">
-                        <span class="block text-brand-gold font-heading text-xs md:text-lg tracking-widest uppercase mb-0 md:mb-1">Speciality</span>
-                        <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Burgery, Quesadillas & BBQ</span>
+                    <div class="absolute bottom-4 left-4 md:bottom-6 md:left-6">
+                        <span class="block text-brand-gold font-heading text-sm md:text-lg tracking-widest uppercase mb-1">Speciality</span>
+                        <span class="block text-white/70 text-xs md:text-sm font-light leading-tight">Burgery, Quesadillas & BBQ</span>
                     </div>
                 </div>
-                <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-200">
+                <div class="col-span-1 relative h-48 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-200">
                     <div class="absolute inset-0 bg-cover bg-center bg-akce" role="img" aria-label="Catering a rauty pro firemní večírky"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
-                    <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6">
-                        <span class="block text-brand-gold font-heading text-xs md:text-lg tracking-widest uppercase mb-0 md:mb-1">Catering</span>
-                        <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Oslavy & Akce</span>
+                    <div class="absolute bottom-4 left-4 md:bottom-6 md:left-6">
+                        <span class="block text-brand-gold font-heading text-sm md:text-lg tracking-widest uppercase mb-1">Catering</span>
+                        <span class="block text-white/70 text-xs md:text-sm font-light leading-tight">Oslavy & Akce</span>
                     </div>
                 </div>
              </div>
+
+             <!-- STÁLÝ LÍSTEK -->
              <div class="w-full scroll-wait">
                  <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 px-2 gap-4">
                      <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
@@ -386,21 +393,14 @@
                         </div>
                         <h4 class="text-white font-heading text-lg tracking-widest uppercase">Otevírací Doba</h4>
                     </div>
-                    <ul class="text-gray-300 text-sm space-y-3 w-full">
+                    <ul class="text-gray-300 text-sm space-y-3 w-full" id="opening-hours-list">
+                        <!-- Generovano JS - fallback: -->
                         <li class="flex justify-between border-b border-white/10 pb-2">
-                            <span class="font-bold text-white">Pondělí</span>
-                            <span>11:00 - 14:00</span>
-                        </li>
-                        <li class="flex justify-between border-b border-white/10 pb-2">
-                            <span class="font-bold text-white">Úterý - Pátek</span>
+                            <span class="font-bold text-white">Úterý - Sobota</span>
                             <span>11:00 - 22:00</span>
                         </li>
-                        <li class="flex justify-between border-b border-white/10 pb-2">
-                            <span class="font-bold text-white">Sobota</span>
-                            <span>11:30 - 22:00</span>
-                        </li>
                         <li class="flex justify-between pt-1">
-                            <span class="font-bold text-white">Neděle</span>
+                            <span class="font-bold text-white">Neděle - Pondělí</span>
                             <span class="text-brand-gold">ZAVŘENO</span>
                         </li>
                     </ul>
