@@ -185,6 +185,7 @@ async function fetchDynamicData() {
 
         // 2. Update Contacts
         if (data.contacts) {
+            // Update Hero Phone
             const heroPhone = document.querySelector('.hero-section a[href^="tel:"]');
             if (heroPhone && data.contacts.phoneMain) {
                 const rawPhone = data.contacts.phoneMain.replace(/\s/g, '');
@@ -192,22 +193,57 @@ async function fetchDynamicData() {
                 heroPhone.querySelector('span:last-child').innerHTML = `<i class="fas fa-phone-alt text-xs mr-1"></i> ${data.contacts.phoneMain}`;
             }
 
+            // V Kontaktni sekci najdeme kontejnery pro telefony a email
             const contactPhones = document.querySelectorAll('#contact a[href^="tel:"]');
-            if (contactPhones.length >= 2) {
-                if (data.contacts.phoneMain) {
+            const contactEmail = document.querySelector('#contact a[href^="mailto:"]');
+
+            // Zpracování hlavního telefonu
+            if (contactPhones.length > 0) {
+                if (data.contacts.phoneMain && data.contacts.phoneMain.trim() !== '') {
                     contactPhones[0].href = `tel:${data.contacts.phoneMain.replace(/\s/g, '')}`;
                     contactPhones[0].textContent = data.contacts.phoneMain;
-                }
-                if (data.contacts.phoneAlt) {
-                    contactPhones[1].href = `tel:${data.contacts.phoneAlt.replace(/\s/g, '')}`;
-                    contactPhones[1].textContent = data.contacts.phoneAlt;
+                    contactPhones[0].style.display = ''; // ujisti se, že je vidět
+                } else {
+                    contactPhones[0].style.display = 'none'; // schovej, pokud je prázdný
                 }
             }
 
-            const contactEmail = document.querySelector('#contact a[href^="mailto:"]');
-            if (contactEmail && data.contacts.email) {
-                contactEmail.href = `mailto:${data.contacts.email}`;
-                contactEmail.textContent = data.contacts.email;
+            // Zpracování alternativního telefonu
+            if (contactPhones.length > 1) {
+                if (data.contacts.phoneAlt && data.contacts.phoneAlt.trim() !== '') {
+                    contactPhones[1].href = `tel:${data.contacts.phoneAlt.replace(/\s/g, '')}`;
+                    contactPhones[1].textContent = data.contacts.phoneAlt;
+                    contactPhones[1].style.display = ''; // ujisti se, že je vidět
+                } else {
+                    contactPhones[1].style.display = 'none'; // schovej, pokud je prázdný
+                }
+            }
+
+            // Zpracování emailu
+            if (contactEmail) {
+                if (data.contacts.email && data.contacts.email.trim() !== '') {
+                    contactEmail.href = `mailto:${data.contacts.email}`;
+                    contactEmail.textContent = data.contacts.email;
+                    contactEmail.style.display = ''; // ujisti se, že je vidět
+                    
+                    // Update emailu v footeru
+                    const footerEmail = document.querySelector('footer a[href^="mailto:"]');
+                    if(footerEmail) {
+                        footerEmail.href = `mailto:${data.contacts.email}`;
+                        footerEmail.textContent = data.contacts.email;
+                        footerEmail.style.display = '';
+                    }
+                } else {
+                    contactEmail.style.display = 'none'; // schovej, pokud je prázdný
+                    
+                    // Skryj i z footeru
+                    const footerEmail = document.querySelector('footer a[href^="mailto:"]');
+                    if(footerEmail) {
+                        footerEmail.style.display = 'none';
+                        // Možná chceš schovat i ten oddělovač " | " před emailem ve footeru
+                        // To by vyžadovalo drobnou úpravu HTML struktury footeru.
+                    }
+                }
             }
         }
     } catch (error) {
