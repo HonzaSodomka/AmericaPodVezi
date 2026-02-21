@@ -68,6 +68,65 @@
 
         <form id="admin-form" class="space-y-10">
             
+            <!-- Sekce: Denní Menu -->
+            <section class="bg-[#111] border border-white/10 rounded-sm p-6 md:p-8 shadow-2xl">
+                <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                    <div class="w-8 h-8 rounded-full border border-brand-gold/30 bg-brand-gold/10 flex items-center justify-center text-brand-gold">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h2 class="text-2xl font-heading font-bold tracking-widest uppercase text-white">Denní Menu</h2>
+                </div>
+
+                <p class="text-gray-400 text-sm mb-6 font-light leading-relaxed">
+                    Zde můžete přidávat položky denního menu. Vyberte datum a přidejte konkrétní jídla. Stará menu se na webu automaticky přestanou zobrazovat (web zobrazuje vždy to nejbližší dostupné nebo dnešní).
+                </p>
+
+                <!-- Formulář pro přidání jídla do denního menu -->
+                <div class="bg-black border border-brand-gold/30 rounded-sm p-5 shadow-[0_0_15px_rgba(212,163,115,0.1)] mb-8">
+                    <h3 class="font-heading uppercase tracking-widest text-xs text-brand-gold mb-4">Přidat položku do menu:</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-heading tracking-widest uppercase text-gray-400 mb-1">Datum</label>
+                            <input type="date" id="menu-date" class="w-full bg-[#1a1a1a] border border-white/20 text-white text-sm rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition [color-scheme:dark]">
+                        </div>
+                        <div class="md:col-span-2 flex gap-2">
+                            <div class="w-2/3">
+                                <label class="block text-[10px] font-heading tracking-widest uppercase text-gray-400 mb-1">Množství</label>
+                                <input type="number" id="menu-amount" placeholder="např. 150" class="w-full bg-[#1a1a1a] border border-white/20 text-white text-sm rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold transition">
+                            </div>
+                            <div class="w-1/3">
+                                <label class="block text-[10px] font-heading tracking-widest uppercase text-gray-400 mb-1">Jednotka</label>
+                                <select id="menu-unit" class="w-full bg-[#1a1a1a] border border-white/20 text-white text-sm rounded-sm py-2 px-1 focus:outline-none focus:border-brand-gold transition appearance-none">
+                                    <option value="g">g</option>
+                                    <option value="ks">ks</option>
+                                    <option value="ml">ml</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="md:col-span-5">
+                            <label class="block text-[10px] font-heading tracking-widest uppercase text-gray-400 mb-1">Název jídla / Popis</label>
+                            <input type="text" id="menu-desc" placeholder="např. Hovězí burger s hranolky" class="w-full bg-[#1a1a1a] border border-white/20 text-white text-sm rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold transition">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-heading tracking-widest uppercase text-gray-400 mb-1">Cena (Kč)</label>
+                            <input type="number" id="menu-price" placeholder="189" class="w-full bg-[#1a1a1a] border border-white/20 text-white text-sm rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold transition">
+                        </div>
+                        <div class="md:col-span-1">
+                            <button type="button" id="add-menu-item-btn" class="w-full bg-white/10 hover:bg-brand-gold text-white hover:text-black border border-white/20 hover:border-brand-gold py-2 rounded-sm transition duration-300 text-sm font-bold tracking-wider uppercase">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Výpis existujících menu položek (seskupeno podle data) -->
+                <div id="daily-menu-container" class="space-y-6">
+                    <!-- Zde se vykreslí menu položky z JS -->
+                </div>
+
+            </section>
+
             <!-- Sekce: Flexibilní Otevírací doba -->
             <section class="bg-[#111] border border-white/10 rounded-sm p-6 md:p-8 shadow-2xl">
                 <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
@@ -268,7 +327,7 @@
             const alertText = document.getElementById('alert-text');
             const topSaveBtn = document.getElementById('save-btn-top');
 
-            // Builder elements
+            // Builder elements (Oteviraci doba)
             const groupsContainer = document.getElementById('hours-groups-container');
             const availableDaysContainer = document.getElementById('available-days');
             const newGroupTimeSection = document.getElementById('new-group-time-section');
@@ -284,6 +343,18 @@
             const promoPreview = document.getElementById('promoPreview');
             const promoRemoveImg = document.getElementById('promoRemoveImg');
 
+            // Daily Menu Elements
+            const menuDateInput = document.getElementById('menu-date');
+            const menuAmountInput = document.getElementById('menu-amount');
+            const menuUnitInput = document.getElementById('menu-unit');
+            const menuDescInput = document.getElementById('menu-desc');
+            const menuPriceInput = document.getElementById('menu-price');
+            const addMenuItemBtn = document.getElementById('add-menu-item-btn');
+            const dailyMenuContainer = document.getElementById('daily-menu-container');
+
+            // Set today as default date for daily menu
+            menuDateInput.valueAsDate = new Date();
+
             const ALL_DAYS = [
                 { id: 'mo', name: 'Pondělí' },
                 { id: 'tu', name: 'Úterý' },
@@ -298,7 +369,8 @@
                 flexibleHours: [],
                 contacts: {},
                 delivery: {},
-                promoPopup: { active: false, dateFrom: '', dateTo: '', imageData: '' }
+                promoPopup: { active: false, dateFrom: '', dateTo: '', imageData: '' },
+                dailyMenu: [] // Format: { id: number, date: 'YYYY-MM-DD', amount: '150', unit: 'g', desc: 'Burger', price: '189' }
             };
 
             let selectedDaysForNewGroup = new Set();
@@ -312,6 +384,139 @@
                 setTimeout(() => alertBox.classList.add('hidden'), 4000);
             };
 
+            // --- Daily Menu Logic ---
+            const formatDate = (dateStr) => {
+                if (!dateStr) return '';
+                const parts = dateStr.split('-');
+                if (parts.length !== 3) return dateStr;
+                return `${parts[2]}.${parts[1]}.${parts[0]}`;
+            };
+
+            const renderDailyMenu = () => {
+                dailyMenuContainer.innerHTML = '';
+                
+                if (!appData.dailyMenu || appData.dailyMenu.length === 0) {
+                    dailyMenuContainer.innerHTML = '<p class="text-sm text-gray-500 italic">Zatím nebyly přidány žádné položky denního menu.</p>';
+                    return;
+                }
+
+                // Group by date
+                const grouped = appData.dailyMenu.reduce((acc, item) => {
+                    if (!acc[item.date]) acc[item.date] = [];
+                    acc[item.date].push(item);
+                    return acc;
+                }, {});
+
+                // Sort dates (newest first or upcoming first)
+                const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+
+                sortedDates.forEach(date => {
+                    const dateGroup = document.createElement('div');
+                    dateGroup.className = 'bg-black border border-white/5 rounded-sm overflow-hidden';
+                    
+                    const header = document.createElement('div');
+                    header.className = 'bg-white/5 border-b border-white/5 px-4 py-2 flex justify-between items-center';
+                    
+                    const isToday = date === new Date().toISOString().split('T')[0];
+                    
+                    header.innerHTML = `
+                        <h4 class="font-heading tracking-widest text-sm text-brand-gold uppercase">
+                            ${formatDate(date)} ${isToday ? '<span class="ml-2 text-[10px] bg-brand-gold text-black px-2 py-0.5 rounded-sm">DNES</span>' : ''}
+                        </h4>
+                        <button type="button" class="delete-date-btn text-xs text-red-500 hover:text-red-400 transition" data-date="${date}">
+                            <i class="fas fa-trash-alt mr-1"></i> Smazat celý den
+                        </button>
+                    `;
+                    dateGroup.appendChild(header);
+
+                    const itemsList = document.createElement('div');
+                    itemsList.className = 'p-4 space-y-3';
+
+                    grouped[date].forEach(item => {
+                        const row = document.createElement('div');
+                        row.className = 'flex items-center justify-between gap-4 text-sm';
+                        row.innerHTML = `
+                            <div class="flex-grow flex items-center gap-3">
+                                <span class="text-gray-400 w-16 text-right font-mono text-xs">${item.amount ? item.amount + item.unit : ''}</span>
+                                <span class="text-white">${item.desc}</span>
+                            </div>
+                            <div class="flex items-center gap-4 shrink-0">
+                                <span class="text-brand-gold font-bold">${item.price} Kč</span>
+                                <button type="button" class="delete-item-btn text-gray-500 hover:text-red-500 transition" data-id="${item.id}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                        itemsList.appendChild(row);
+                    });
+
+                    dateGroup.appendChild(itemsList);
+                    dailyMenuContainer.appendChild(dateGroup);
+                });
+
+                // Attach events
+                document.querySelectorAll('.delete-item-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                        appData.dailyMenu = appData.dailyMenu.filter(item => item.id !== id);
+                        renderDailyMenu();
+                    });
+                });
+
+                document.querySelectorAll('.delete-date-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const date = e.currentTarget.getAttribute('data-date');
+                        if (confirm(`Opravdu chcete smazat celé menu pro den ${formatDate(date)}?`)) {
+                            appData.dailyMenu = appData.dailyMenu.filter(item => item.date !== date);
+                            renderDailyMenu();
+                        }
+                    });
+                });
+            };
+
+            addMenuItemBtn.addEventListener('click', () => {
+                const date = menuDateInput.value;
+                const amount = menuAmountInput.value.trim();
+                const unit = menuUnitInput.value;
+                const desc = menuDescInput.value.trim();
+                const price = menuPriceInput.value.trim();
+
+                if (!date || !desc || !price) {
+                    alert('Vyplňte prosím datum, název jídla a cenu.');
+                    return;
+                }
+
+                if (!appData.dailyMenu) appData.dailyMenu = [];
+
+                appData.dailyMenu.push({
+                    id: Date.now(), // simple unique ID
+                    date,
+                    amount,
+                    unit,
+                    desc,
+                    price
+                });
+
+                menuAmountInput.value = '';
+                menuDescInput.value = '';
+                menuPriceInput.value = '';
+                menuAmountInput.focus();
+
+                renderDailyMenu();
+            });
+
+            // Enter klávesa pro přidání jídla
+            [menuAmountInput, menuDescInput, menuPriceInput].forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addMenuItemBtn.click();
+                    }
+                });
+            });
+
+
+            // --- Builder (Oteviraci Doba) Logic ---
             const formatDaysLabel = (dayIds) => {
                 const sortedDays = ALL_DAYS.filter(d => dayIds.includes(d.id));
                 return sortedDays.map(d => d.name).join(', ');
@@ -431,7 +636,7 @@
                 }
             });
 
-            // --- Image resize & base64 logic ---
+            // --- Image resize & base64 logic ---\
             promoImageInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -488,6 +693,7 @@
                     appData.contacts = data.contacts || {};
                     appData.delivery = data.delivery || { wolt: '', foodora: '' };
                     appData.promoPopup = data.promoPopup || { active: false, dateFrom: '', dateTo: '', imageData: '' };
+                    appData.dailyMenu = data.dailyMenu || [];
                     
                     if (data.flexibleHours) {
                         appData.flexibleHours = data.flexibleHours;
@@ -510,6 +716,7 @@
                     }
 
                     renderBuilder();
+                    renderDailyMenu();
                 }
             } catch (err) {
                 showAlert('Chyba při načítání dat ze serveru.', false);
@@ -553,13 +760,6 @@
             topSaveBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 saveData();
-            });
-
-            newGroupTimeInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addGroupBtn.click();
-                }
             });
         });
     </script>
