@@ -149,7 +149,7 @@ a[href^='tel']:active {
     transition: transform 0.1s ease;
 }
 
-/* Wolt / Foodora linky */
+/* Wolt / Foodora / Bolt linky */
 a[href*='wolt']:active {
     color: #009de0;
 }
@@ -157,6 +157,15 @@ a[href*='wolt']:active {
 a[href*='foodora']:active {
     color: #d70f64;
 }
+
+a[href*='bolt']:active {
+    color: #2ebc6a;
+}
+
+/* Custom barvy pro hover */
+.hover\:text-wolt-blue:hover { color: #009de0; }
+.hover\:text-foodora-pink:hover { color: #d70f64; }
+.hover\:text-bolt-green:hover { color: #2ebc6a; }
 
 /* Menu strankovaci tlacitka */
 #prev-page:active,
