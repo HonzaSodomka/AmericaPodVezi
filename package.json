@@ -1,0 +1,13 @@
+{
+  "name": "america-pod-vezi",
+  "version": "1.0.0",
+  "description": "Restaurant website and admin demo",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build:css": "./tailwindcss -i ./input.css -o ./output.css --minify"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

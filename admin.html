@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portál | America Pod Věží</title>
+    <!-- Opět využijeme Tailwind CLI build -->
+    <link rel="stylesheet" href="output.css">
+    <link rel="stylesheet" href="fa/css/fontawesome.min.css">
+    <link rel="stylesheet" href="fa/css/solid.min.css">
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen">
+    <nav class="bg-black text-brand-gold p-4 shadow-md">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <h1 class="font-heading font-bold text-xl tracking-widest uppercase">Admin Portál</h1>
+            <a href="/" class="text-white hover:text-brand-gold text-sm transition">Zpět na web</a>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-md shadow-lg">
+        <div id="alert" class="hidden mb-4 p-4 rounded text-sm font-bold"></div>
+
+        <form id="admin-form" class="space-y-8">
+            <!-- Sekce: Otevírací doba -->
+            <section>
+                <h2 class="text-2xl font-bold border-b pb-2 mb-4">Otevírací doba</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Pondělí</label>
+                        <input type="text" id="monday" class="w-full border rounded p-2 focus:ring focus:ring-brand-gold">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Úterý - Pátek</label>
+                        <input type="text" id="tuesdayToFriday" class="w-full border rounded p-2 focus:ring focus:ring-brand-gold">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Sobota</label>
+                        <input type="text" id="saturday" class="w-full border rounded p-2 focus:ring focus:ring-brand-gold">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Neděle</label>
+                        <input type="text" id="sunday" class="w-full border rounded p-2 focus:ring focus:ring-brand-gold">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sekce: Kontakty -->
+            <section>
+                <h2 class="text-2xl font-bold border-b pb-2 mb-4">Kontakty</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Hlavní telefon</label>
+                        <input type="text" id="phoneMain" class="w-full border rounded p-2 focus:ring focus:ring-brand-gold">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">Alternativní telefon</label>
+                        <input type="text" id="phoneAlt" class="w-full border rounded p-2 focus:ring focus:ring-brand-gold">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">E-mail</label>
+                        <input type="email" id="email" class="w-full border rounded p-2 focus:ring focus:ring-brand-gold">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold mb-1">Adresa (HTML povolen)</label>
+                        <textarea id="address" rows="2" class="w-full border rounded p-2 focus:ring focus:ring-brand-gold"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <button type="submit" class="w-full bg-black text-brand-gold font-bold uppercase tracking-widest py-3 rounded hover:bg-gray-800 transition shadow-lg">
+                Uložit změny
+            </button>
+        </form>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const form = document.getElementById('admin-form');
+            const alertBox = document.getElementById('alert');
+            
+            const showAlert = (msg, isSuccess) => {
+                alertBox.textContent = msg;
+                alertBox.className = `mb-4 p-4 rounded text-sm font-bold block ${isSuccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+                setTimeout(() => alertBox.classList.add('hidden'), 3000);
+            };
+
+            // Načtení dat při startu
+            try {
+                const response = await fetch('/api/data');
+                if(response.ok) {
+                    const data = await response.json();
+                    document.getElementById('monday').value = data.openHours.monday || '';
+                    document.getElementById('tuesdayToFriday').value = data.openHours.tuesdayToFriday || '';
+                    document.getElementById('saturday').value = data.openHours.saturday || '';
+                    document.getElementById('sunday').value = data.openHours.sunday || '';
+                    document.getElementById('phoneMain').value = data.contacts.phoneMain || '';
+                    document.getElementById('phoneAlt').value = data.contacts.phoneAlt || '';
+                    document.getElementById('email').value = data.contacts.email || '';
+                    document.getElementById('address').value = data.contacts.address || '';
+                }
+            } catch (err) {
+                showAlert('Chyba při načítání dat ze serveru.', false);
+            }
+
+            // Odeslání formuláře
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const newData = {
+                    openHours: {
+                        monday: document.getElementById('monday').value,
+                        tuesdayToFriday: document.getElementById('tuesdayToFriday').value,
+                        saturday: document.getElementById('saturday').value,
+                        sunday: document.getElementById('sunday').value
+                    },
+                    contacts: {
+                        phoneMain: document.getElementById('phoneMain').value,
+                        phoneAlt: document.getElementById('phoneAlt').value,
+                        email: document.getElementById('email').value,
+                        address: document.getElementById('address').value
+                    }
+                };
+
+                try {
+                    const res = await fetch('/api/data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newData)
+                    });
+                    
+                    if(res.ok) {
+                        showAlert('Úspěšně uloženo!', true);
+                    } else {
+                        showAlert('Nepodařilo se uložit data.', false);
+                    }
+                } catch (err) {
+                    showAlert('Kritická chyba při ukládání.', false);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

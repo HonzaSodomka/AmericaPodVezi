@@ -1,0 +1,14 @@
+{
+  "openHours": {
+    "monday": "11:00 - 14:00",
+    "tuesdayToFriday": "11:00 - 22:00",
+    "saturday": "11:30 - 22:00",
+    "sunday": "ZAVŘENO"
+  },
+  "contacts": {
+    "phoneMain": "326 322 007",
+    "phoneAlt": "606 537 469",
+    "email": "info@americapodvezi.cz",
+    "address": "Komenského náměstí 61<br>Mladá Boleslav"
+  }
+}
