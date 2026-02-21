@@ -24,8 +24,8 @@ const CONFIG = {
         'menu-page-4.svg'
     ],
     animation: {
-        preloaderDelay: 1800, // Zrychleno, celá animace teď dojede za 1.4s
-        fadeDuration: 600,    // Zrychlen odjezd do ztracena
+        preloaderDelay: 1800, 
+        fadeDuration: 600,    
         menuFadeTime: 150
     },
     swipeThreshold: 50
@@ -41,13 +41,87 @@ function initApp() {
     initDynamicYear();
     initHeroHeightFix();
     initStickyNavbar();
-    // initConsentAndMaps() is now called AFTER preloader finishes
+    fetchDynamicData(); // <-- Přidáno volání pro načtení dat z backendu
+}
+
+/**
+ * Fetch dynamic data from Node.js backend
+ * Aktualizuje otevírací dobu a kontakty v patičce z data.json
+ */
+async function fetchDynamicData() {
+    try {
+        const response = await fetch('/api/data');
+        if (!response.ok) throw new Error('Failed to fetch data');
+        
+        const data = await response.json();
+        
+        // Update Opening Hours
+        if (data.openHours) {
+            const hoursContainer = document.querySelector('#contact ul');
+            if (hoursContainer) {
+                hoursContainer.innerHTML = `
+                    <li class="flex justify-between border-b border-white/10 pb-2">
+                        <span class="font-bold text-white">Pondělí</span>
+                        <span>${data.openHours.monday}</span>
+                    </li>
+                    <li class="flex justify-between border-b border-white/10 pb-2">
+                        <span class="font-bold text-white">Úterý - Pátek</span>
+                        <span>${data.openHours.tuesdayToFriday}</span>
+                    </li>
+                    <li class="flex justify-between border-b border-white/10 pb-2">
+                        <span class="font-bold text-white">Sobota</span>
+                        <span>${data.openHours.saturday}</span>
+                    </li>
+                    <li class="flex justify-between pt-1">
+                        <span class="font-bold text-white">Neděle</span>
+                        <span class="text-brand-gold">${data.openHours.sunday}</span>
+                    </li>
+                `;
+            }
+        }
+
+        // Update Contacts
+        if (data.contacts) {
+            // Update phone numbers in hero
+            const heroPhone = document.querySelector('.hero-section a[href^="tel:"]');
+            if (heroPhone && data.contacts.phoneMain) {
+                const rawPhone = data.contacts.phoneMain.replace(/\s/g, '');
+                heroPhone.href = `tel:${rawPhone}`;
+                heroPhone.querySelector('span:last-child').innerHTML = `<i class="fas fa-phone-alt text-xs mr-1"></i> ${data.contacts.phoneMain}`;
+            }
+
+            // Update contacts in footer/contact section
+            const contactPhones = document.querySelectorAll('#contact a[href^="tel:"]');
+            if (contactPhones.length >= 2) {
+                if (data.contacts.phoneMain) {
+                    contactPhones[0].href = `tel:${data.contacts.phoneMain.replace(/\s/g, '')}`;
+                    contactPhones[0].textContent = data.contacts.phoneMain;
+                }
+                if (data.contacts.phoneAlt) {
+                    contactPhones[1].href = `tel:${data.contacts.phoneAlt.replace(/\s/g, '')}`;
+                    contactPhones[1].textContent = data.contacts.phoneAlt;
+                }
+            }
+
+            const contactEmail = document.querySelector('#contact a[href^="mailto:"]');
+            if (contactEmail && data.contacts.email) {
+                contactEmail.href = `mailto:${data.contacts.email}`;
+                contactEmail.textContent = data.contacts.email;
+            }
+
+            const contactAddress = document.querySelector('#contact p.text-gray-300');
+            if (contactAddress && data.contacts.address) {
+                contactAddress.innerHTML = data.contacts.address;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading dynamic data:', error);
+        // Pokud backend neběží nebo chybí data, necháme tam původní statické HTML jako fallback
+    }
 }
 
 /**
  * FIXED HERO HEIGHT (Prevents jump on mobile scroll)
- * Sets exact pixel height and only updates on rotation (width change),
- * ignoring address bar show/hide events.
  */
 function initHeroHeightFix() {
     const hero = document.querySelector(CONFIG.selectors.heroSection);
@@ -75,9 +149,6 @@ function initHeroHeightFix() {
 
 /**
  * Sticky Navbar
- * On scroll past hero, navbar becomes fixed with dark background.
- * On scroll back to top, returns to absolute/transparent.
- * Uses requestAnimationFrame to prevent scroll thrashing.
  */
 function initStickyNavbar() {
     const navbar = document.querySelector('#navbar');
@@ -104,16 +175,12 @@ function initStickyNavbar() {
     }, { passive: true });
 }
 
-
 /**
  * Preloader Fade Out (Cinematic Timing)
- * No scroll lock needed - preloader is fixed/fullscreen and covers the page.
- * Scrollbar gutter is reserved permanently via CSS (html { overflow-y: scroll }).
  */
 function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
     
-    // Fallback: If no preloader exists, just init consent immediately
     if (!preloader) {
         initConsentAndMaps();
         return;
@@ -124,7 +191,6 @@ function initPreloader() {
             preloader.style.opacity = '0';
             setTimeout(() => {
                 preloader.style.display = 'none';
-                // Only initialize and show consent banner AFTER preloader is completely gone
                 initConsentAndMaps();
             }, CONFIG.animation.fadeDuration);
         }, CONFIG.animation.preloaderDelay);
@@ -165,7 +231,6 @@ function initMobileMenu() {
         mobileMenu.classList.toggle('menu-closed', !isOpen);
         mobileMenu.classList.toggle('menu-open', isOpen);
 
-        // Accessibility: sync aria-expanded with menu state
         menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 
         if (icon) {
@@ -185,7 +250,6 @@ function initMobileMenu() {
 
 /**
  * Static Menu Viewer (Image Gallery) with Touch Swipe
- * Skips initial updateMenu() call - first image is already set in HTML.
  */
 function initMenuViewer() {
     const elements = {
@@ -200,7 +264,6 @@ function initMenuViewer() {
 
     let currentIndex = 0;
 
-    // Image preloader
     const preloadImage = (index) => {
         if (index >= 0 && index < CONFIG.menuImages.length) {
             const img = new Image();
@@ -220,7 +283,6 @@ function initMenuViewer() {
 
             const fadeIn = () => { 
                 elements.currentImg.style.opacity = '1'; 
-                // Preload adjacent images
                 preloadImage(currentIndex + 1);
                 preloadImage(currentIndex - 1);
             };
@@ -278,12 +340,9 @@ function initScrollAnimations() {
 
 /**
  * GDPR Consent - Google Maps
- * Iframe is injected only after user grants consent.
- * Choice is persisted in localStorage.
- * User can revoke consent via 'Změnit souhlas' link in footer.
  */
 function initConsentAndMaps() {
-    const STORAGE_KEY = 'consent_google_maps'; // 'granted' | 'denied'
+    const STORAGE_KEY = 'consent_google_maps';
 
     const banner = document.querySelector('#consent-banner');
     const acceptBtn = document.querySelector('#consent-accept');
@@ -336,7 +395,6 @@ function initConsentAndMaps() {
             unmountMap();
             hideBanner();
         } else {
-            // No choice yet - show banner, keep placeholder
             unmountMap();
             showBanner();
         }
@@ -354,7 +412,6 @@ function initConsentAndMaps() {
             e.preventDefault();
             localStorage.removeItem(STORAGE_KEY);
             apply();
-            // Smooth scroll to map section so user sees what they're consenting to
             const contact = document.querySelector('#contact');
             if (contact) contact.scrollIntoView({ behavior: 'smooth' });
         });
