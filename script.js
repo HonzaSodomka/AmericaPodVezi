@@ -18,14 +18,14 @@ const CONFIG = {
         heroSection: '.hero-section'
     },
     menuImages: [
-        'menu-page-1.svg',
-        'menu-page-2.svg',
-        'menu-page-3.svg',
-        'menu-page-4.svg'
+        { src: 'menu-page-1.svg', alt: 'Jídelní lístek strana 1 - Burgery a předkrmy' },
+        { src: 'menu-page-2.svg', alt: 'Jídelní lístek strana 2 - Hlavní chody a steaky' },
+        { src: 'menu-page-3.svg', alt: 'Jídelní lístek strana 3 - Saláty a dezerty' },
+        { src: 'menu-page-4.svg', alt: 'Jídelní lístek strana 4 - Nápojový lístek' }
     ],
     animation: {
-        preloaderDelay: 1800, // Zrychleno, celá animace teď dojede za 1.4s
-        fadeDuration: 600,    // Zrychlen odjezd do ztracena
+        preloaderDelay: 300,  // Spouští se hned po DOMContentLoaded (čeká jen 0.3s navíc pro smooth efekt)
+        fadeDuration: 600,    
         menuFadeTime: 150
     },
     swipeThreshold: 50
@@ -41,13 +41,10 @@ function initApp() {
     initDynamicYear();
     initHeroHeightFix();
     initStickyNavbar();
-    // initConsentAndMaps() is now called AFTER preloader finishes
 }
 
 /**
- * FIXED HERO HEIGHT (Prevents jump on mobile scroll)
- * Sets exact pixel height and only updates on rotation (width change),
- * ignoring address bar show/hide events.
+ * FIXED HERO HEIGHT
  */
 function initHeroHeightFix() {
     const hero = document.querySelector(CONFIG.selectors.heroSection);
@@ -74,14 +71,12 @@ function initHeroHeightFix() {
 }
 
 /**
- * Sticky Navbar
- * On scroll past hero, navbar becomes fixed with dark background.
- * On scroll back to top, returns to absolute/transparent.
- * Uses requestAnimationFrame to prevent scroll thrashing.
+ * Sticky Navbar (GPU Optimized with opacity instead of blur recalculation)
  */
 function initStickyNavbar() {
     const navbar = document.querySelector('#navbar');
-    if (!navbar) return;
+    const backdrop = document.querySelector('.nav-backdrop');
+    if (!navbar || !backdrop) return;
 
     const hero = document.querySelector(CONFIG.selectors.heroSection);
     let ticking = false;
@@ -91,12 +86,14 @@ function initStickyNavbar() {
             window.requestAnimationFrame(() => {
                 const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
                 const progress = Math.min(window.scrollY / (heroHeight * 0.5), 1);
-                const alpha = Math.round(progress * 230);
-                navbar.style.backgroundColor = `rgba(0,0,0,${(alpha/255).toFixed(2)})`;
-                navbar.style.backdropFilter = progress > 0.1 ? `blur(${(progress * 12).toFixed(1)}px)` : '';
-                navbar.style.webkitBackdropFilter = navbar.style.backdropFilter;
+                
+                // Mění se pouze GPU-friendly opacity, blur() je fixní v CSS
+                backdrop.style.opacity = progress.toFixed(2);
+                
+                navbar.style.backgroundColor = `rgba(0,0,0,${(Math.round(progress * 230)/255).toFixed(2)})`;
                 navbar.style.boxShadow = progress > 0.5 ? `0 2px 20px rgba(0,0,0,${(progress * 0.8).toFixed(2)})` : '';
-                navbar.style.borderBottom = progress > 0.5 ? `1px solid rgba(212,163,115,${(progress * 0.15).toFixed(2)})` : '';
+                navbar.style.borderBottom = progress > 0.5 ? `1px solid rgba(212,163,115,${(progress * 0.15).toFixed(2)})` : '1px solid transparent';
+                
                 ticking = false;
             });
             ticking = true;
@@ -104,16 +101,13 @@ function initStickyNavbar() {
     }, { passive: true });
 }
 
-
 /**
- * Preloader Fade Out (Cinematic Timing)
- * No scroll lock needed - preloader is fixed/fullscreen and covers the page.
- * Scrollbar gutter is reserved permanently via CSS (html { overflow-y: scroll }).
+ * Preloader Fade Out 
+ * Změněno z window.load (blokující u velkých fotek) na DOMContentLoaded
  */
 function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
     
-    // Fallback: If no preloader exists, just init consent immediately
     if (!preloader) {
         initConsentAndMaps();
         return;
@@ -124,17 +118,13 @@ function initPreloader() {
             preloader.style.opacity = '0';
             setTimeout(() => {
                 preloader.style.display = 'none';
-                // Only initialize and show consent banner AFTER preloader is completely gone
                 initConsentAndMaps();
             }, CONFIG.animation.fadeDuration);
         }, CONFIG.animation.preloaderDelay);
     };
 
-    if (document.readyState === 'complete') {
-        fadeOut();
-    } else {
-        window.addEventListener('load', fadeOut, { once: true });
-    }
+    // App init is already triggered by DOMContentLoaded, so we can fade out immediately
+    fadeOut();
 }
 
 /**
@@ -148,7 +138,7 @@ function initDynamicYear() {
 }
 
 /**
- * Mobile Navigation Toggle
+ * Mobile Navigation Toggle (Accessibility fixed)
  */
 function initMobileMenu() {
     const menuBtn = document.querySelector(CONFIG.selectors.menuBtn);
@@ -159,18 +149,30 @@ function initMobileMenu() {
     const icon = menuBtn.querySelector('i');
     let isOpen = false;
 
+    // A11y: Schovat před čtečkami zavřené menu
+    mobileMenu.style.visibility = 'hidden';
+
     const toggleMenu = () => {
         isOpen = !isOpen;
 
         mobileMenu.classList.toggle('menu-closed', !isOpen);
         mobileMenu.classList.toggle('menu-open', isOpen);
+        
+        // A11y: Zamknutí pozadí a přepnutí viditelnosti
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+        mobileMenu.style.visibility = isOpen ? 'visible' : 'hidden';
 
-        // Accessibility: sync aria-expanded with menu state
         menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 
         if (icon) {
             icon.classList.toggle('fa-bars', !isOpen);
             icon.classList.toggle('fa-times', isOpen);
+        }
+        
+        // A11y: Zamknutí focusu dovnitř (focus na první odkaz)
+        if (isOpen) {
+            const firstLink = mobileMenu.querySelector('a');
+            if (firstLink) setTimeout(() => firstLink.focus(), 300);
         }
     };
 
@@ -184,8 +186,7 @@ function initMobileMenu() {
 }
 
 /**
- * Static Menu Viewer (Image Gallery) with Touch Swipe
- * Skips initial updateMenu() call - first image is already set in HTML.
+ * Static Menu Viewer (Image Gallery)
  */
 function initMenuViewer() {
     const elements = {
@@ -200,11 +201,10 @@ function initMenuViewer() {
 
     let currentIndex = 0;
 
-    // Image preloader
     const preloadImage = (index) => {
         if (index >= 0 && index < CONFIG.menuImages.length) {
             const img = new Image();
-            img.src = CONFIG.menuImages[index];
+            img.src = CONFIG.menuImages[index].src;
         }
     };
 
@@ -212,20 +212,24 @@ function initMenuViewer() {
         elements.currentImg.style.opacity = '0';
 
         setTimeout(() => {
-            elements.currentImg.src = CONFIG.menuImages[currentIndex];
+            elements.currentImg.src = CONFIG.menuImages[currentIndex].src;
+            elements.currentImg.alt = CONFIG.menuImages[currentIndex].alt;
 
             if (elements.indicator) {
                 elements.indicator.textContent = `STRANA ${currentIndex + 1} / ${CONFIG.menuImages.length}`;
             }
 
-            const fadeIn = () => { 
+            // Fix zbytečného odpálení fadeIn kvůli { once: true }
+            elements.currentImg.onload = () => { 
                 elements.currentImg.style.opacity = '1'; 
-                // Preload adjacent images
                 preloadImage(currentIndex + 1);
                 preloadImage(currentIndex - 1);
             };
-            elements.currentImg.addEventListener('load', fadeIn, { once: true });
-            if (elements.currentImg.complete) fadeIn();
+            
+            // Pojistka, kdyby load neproběhl (např. cache)
+            if (elements.currentImg.complete) {
+                elements.currentImg.onload();
+            }
 
         }, CONFIG.animation.menuFadeTime);
     };
@@ -260,7 +264,7 @@ function initMenuViewer() {
 }
 
 /**
- * Scroll Animations (Intersection Observer)
+ * Scroll Animations
  */
 function initScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
@@ -278,12 +282,9 @@ function initScrollAnimations() {
 
 /**
  * GDPR Consent - Google Maps
- * Iframe is injected only after user grants consent.
- * Choice is persisted in localStorage.
- * User can revoke consent via 'Změnit souhlas' link in footer.
  */
 function initConsentAndMaps() {
-    const STORAGE_KEY = 'consent_google_maps'; // 'granted' | 'denied'
+    const STORAGE_KEY = 'consent_google_maps'; 
 
     const banner = document.querySelector('#consent-banner');
     const acceptBtn = document.querySelector('#consent-accept');
@@ -336,7 +337,6 @@ function initConsentAndMaps() {
             unmountMap();
             hideBanner();
         } else {
-            // No choice yet - show banner, keep placeholder
             unmountMap();
             showBanner();
         }
@@ -354,7 +354,6 @@ function initConsentAndMaps() {
             e.preventDefault();
             localStorage.removeItem(STORAGE_KEY);
             apply();
-            // Smooth scroll to map section so user sees what they're consenting to
             const contact = document.querySelector('#contact');
             if (contact) contact.scrollIntoView({ behavior: 'smooth' });
         });

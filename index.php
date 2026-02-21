@@ -15,16 +15,25 @@ $phoneAltClean = preg_replace('/\s+/', '', $phoneAlt);
 $email = $data['contact']['email'] ?? 'info@americapodvezi.cz';
 $address = $data['contact']['address'] ?? 'Komenského náměstí 61, Mladá Boleslav';
 
-$delivery = $data['delivery'] ?? [];
-$woltLink = $delivery['wolt'] ?? '';
-$foodoraLink = $delivery['foodora'] ?? '';
-$boltLink = $delivery['bolt'] ?? '';
-
-// Bezpečné přetypování dat z JSONu (Admin by mohl poslat string)
+// Zajištění datových typů a výchozích hodnot
 $ratingValue = (float) ($data['rating']['value'] ?? 4.5);
 $ratingCount = (int) ($data['rating']['count'] ?? 900);
 
-$dailyMenuUrl = $data['daily_menu_url'] ?? 'https://www.menicka.cz/7509-america-pod-vezi.html';
+// Helper pro bezpečné odkazy (ochrana proti javascript:alert() apod.)
+function safeUrl($url) {
+    if (empty($url)) return '';
+    $url = filter_var($url, FILTER_SANITIZE_URL);
+    if (filter_var($url, FILTER_VALIDATE_URL) && preg_match('#^https?://#i', $url)) {
+        return htmlspecialchars($url);
+    }
+    return '';
+}
+
+$delivery = $data['delivery'] ?? [];
+$woltLink = safeUrl($delivery['wolt'] ?? '');
+$foodoraLink = safeUrl($delivery['foodora'] ?? '');
+$boltLink = safeUrl($delivery['bolt'] ?? '');
+$dailyMenuUrl = safeUrl($data['daily_menu_url'] ?? 'https://www.menicka.cz/7509-america-pod-vezi.html');
 
 $openingHours = $data['opening_hours'] ?? [
     'monday' => '11:00 - 14:00',
@@ -70,7 +79,7 @@ $schema = [
     "description" => "Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.",
     "address" => [
         "@type" => "PostalAddress",
-        "streetAddress" => "Komenského náměstí 61",
+        "streetAddress" => $address, // Využití dynamické adresy z JSON
         "addressLocality" => "Mladá Boleslav",
         "postalCode" => "293 01",
         "addressCountry" => "CZ"
@@ -144,13 +153,13 @@ $schemaJson = json_encode(
 // Delivery HTML logic
 $activeDeliveries = [];
 if (!empty($woltLink)) {
-    $activeDeliveries[] = '<a href="'.htmlspecialchars($woltLink).'" target="_blank" rel="noopener noreferrer" class="font-bold text-sm sm:text-base text-white hover:text-wolt-blue transition flex items-center gap-1.5"><i class="fas fa-bicycle"></i> Wolt</a>';
+    $activeDeliveries[] = '<a href="'.$woltLink.'" target="_blank" rel="noopener noreferrer" class="font-bold text-sm sm:text-base text-white hover:text-wolt-blue transition flex items-center gap-1.5"><i class="fas fa-bicycle"></i> Wolt</a>';
 }
 if (!empty($foodoraLink)) {
-    $activeDeliveries[] = '<a href="'.htmlspecialchars($foodoraLink).'" target="_blank" rel="noopener noreferrer" class="font-bold text-sm sm:text-base text-white hover:text-foodora-pink transition flex items-center gap-1.5"><i class="fas fa-shopping-bag"></i> Foodora</a>';
+    $activeDeliveries[] = '<a href="'.$foodoraLink.'" target="_blank" rel="noopener noreferrer" class="font-bold text-sm sm:text-base text-white hover:text-foodora-pink transition flex items-center gap-1.5"><i class="fas fa-shopping-bag"></i> Foodora</a>';
 }
 if (!empty($boltLink)) {
-    $activeDeliveries[] = '<a href="'.htmlspecialchars($boltLink).'" target="_blank" rel="noopener noreferrer" class="font-bold text-sm sm:text-base text-white hover:text-bolt-green transition flex items-center gap-1.5"><i class="fas fa-car"></i> Bolt</a>';
+    $activeDeliveries[] = '<a href="'.$boltLink.'" target="_blank" rel="noopener noreferrer" class="font-bold text-sm sm:text-base text-white hover:text-bolt-green transition flex items-center gap-1.5"><i class="fas fa-car"></i> Bolt</a>';
 }
 ?>
 <!DOCTYPE html>
@@ -198,6 +207,21 @@ if (!empty($boltLink)) {
     <!-- Tailwind CSS (build) -->
     <link rel="stylesheet" href="output.css">
 
+    <!-- Změna pro čistý Scroll a GPU výkon navigace -->
+    <style>
+        .nav-backdrop {
+            position: absolute;
+            inset: 0;
+            background-color: transparent;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            opacity: 0;
+            transition: opacity 0s; /* Zvládáno přes JS */
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+
     <!-- JS Fallback for content visibility -->
     <noscript>
         <style>
@@ -220,8 +244,9 @@ if (!empty($boltLink)) {
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 top-0 left-0 p-6 md:px-12" id="navbar">
-        <div class="flex justify-between items-center max-w-7xl mx-auto">
+    <nav class="fixed w-full z-50 top-0 left-0 p-6 md:px-12 transition-all duration-300 border-b border-transparent" id="navbar">
+        <div class="nav-backdrop"></div>
+        <div class="flex justify-between items-center max-w-7xl mx-auto relative z-10">
             <div class="flex items-center gap-3 animate-enter">
                 <span class="text-white font-heading font-bold tracking-[0.2em] text-xl border-2 border-white/80 px-4 py-1 bg-black/20 backdrop-blur-sm shadow-lg">AMERICA</span>
             </div>
@@ -234,19 +259,19 @@ if (!empty($boltLink)) {
                 <a href="#contact" class="nav-link font-heading">KONTAKT</a>
             </div>
             <button id="menu-btn" aria-label="Otevřít menu" aria-expanded="false" aria-controls="mobile-menu" class="text-white text-3xl focus:outline-none z-50 relative md:hidden animate-enter">
-                <i class="fas fa-bars"></i>
+                <i class="fas fa-bars pointer-events-none"></i>
             </button>
         </div>
     </nav>
 
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-6 menu-closed backdrop-blur-xl md:hidden" role="dialog" aria-modal="true" aria-label="Navigační menu">
-        <a href="#" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">DOMŮ</a>
-        <a href="#denni-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">DENNÍ MENU</a>
-        <a href="#stale-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">STÁLÉ MENU</a>
-        <a href="#about" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">O NÁS</a>
-        <a href="#reservation" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">REZERVACE</a>
-        <a href="#contact" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">KONTAKT</a>
+        <a href="#" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">DOMŮ</a>
+        <a href="#denni-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">DENNÍ MENU</a>
+        <a href="#stale-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">STÁLÉ MENU</a>
+        <a href="#about" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">O NÁS</a>
+        <a href="#reservation" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">REZERVACE</a>
+        <a href="#contact" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">KONTAKT</a>
     </div>
 
     <!-- Hero Section -->
@@ -276,10 +301,12 @@ if (!empty($boltLink)) {
                 </p>
                 <div class="flex flex-col xl:flex-row gap-4 items-center xl:items-stretch animate-enter delay-300">
                     <div class="flex flex-row gap-3 w-full xl:w-auto">
-                        <a href="<?= htmlspecialchars($dailyMenuUrl) ?>" class="flex-1 xl:flex-none bg-brand-gold text-black font-bold font-heading py-3 px-2 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-1 whitespace-nowrap min-w-[140px]">
+                        <?php if ($dailyMenuUrl): ?>
+                        <a href="<?= $dailyMenuUrl ?>" class="flex-1 xl:flex-none bg-brand-gold text-black font-bold font-heading py-3 px-2 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-1 whitespace-nowrap min-w-[140px]">
                             <span class="text-base sm:text-lg">DENNÍ MENU</span>
                             <span class="text-[10px] sm:text-xs font-sans font-normal opacity-80"><i class="fas fa-utensils text-xs mr-1"></i> Dnešní nabídka</span>
                         </a>
+                        <?php endif; ?>
                         <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="flex-1 xl:flex-none border-2 border-white/80 text-white font-bold font-heading py-3 px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
                             <span class="text-base sm:text-lg">REZERVACE</span>
                             <span class="text-[10px] sm:text-xs font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> <?= htmlspecialchars($phone) ?></span>
@@ -324,9 +351,11 @@ if (!empty($boltLink)) {
                         <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black border border-brand-gold hover:border-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
                             <i class="fas fa-phone-alt"></i> Objednat s sebou
                         </a>
-                        <a href="<?= htmlspecialchars($dailyMenuUrl) ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading uppercase tracking-widest">
+                        <?php if ($dailyMenuUrl): ?>
+                        <a href="<?= $dailyMenuUrl ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading uppercase tracking-widest">
                             <i class="fas fa-external-link-alt"></i> Otevřít na menicka.cz
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -549,7 +578,7 @@ if (!empty($boltLink)) {
                         </div>
                         <div>
                             <h3 class="text-white font-heading text-lg tracking-widest uppercase">Adresa</h3>
-                            <p class="text-gray-300">Komenského náměstí 61<br>Mladá Boleslav</p>
+                            <p class="text-gray-300"><?= htmlspecialchars(explode(',', $address)[0] ?? '') ?><br><?= htmlspecialchars(explode(',', $address)[1] ?? '') ?></p>
                             <p class="text-gray-500 text-xs mt-1">Přímo pod věží</p>
                         </div>
                     </div>
@@ -652,7 +681,7 @@ if (!empty($boltLink)) {
     <!-- Footer -->
     <footer class="bg-black text-gray-500 py-6 text-center text-xs tracking-widest uppercase border-t border-white/10">
         <p>
-            &copy; <span id="current-year"><?= date('Y') ?></span> America Pod Věží | Komenského náměstí 61 | <a href="mailto:<?= htmlspecialchars($email) ?>" class="hover:text-brand-gold transition"><?= htmlspecialchars($email) ?></a>
+            &copy; <span id="current-year"><?= date('Y') ?></span> America Pod Věží | <?= htmlspecialchars(str_replace(', ', ' | ', $address)) ?> | <a href="mailto:<?= htmlspecialchars($email) ?>" class="hover:text-brand-gold transition"><?= htmlspecialchars($email) ?></a>
         </p>
         <p class="mt-4 text-[10px] text-gray-600 font-sans tracking-normal normal-case opacity-80">
             Provozovatel: America Pod Věží s.r.o. | IČO: doplnit <br>
