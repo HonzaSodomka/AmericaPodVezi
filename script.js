@@ -363,20 +363,23 @@ async function fetchDynamicData() {
                 closestDateObj.setHours(0, 0, 0, 0);
                 const isToday = closestDateObj.getTime() === today.getTime();
 
-                document.getElementById('daily-menu-date').innerHTML = isToday ? `(Dnes ${formattedDate})` : `(${formattedDate})`;
+                document.getElementById('daily-menu-date').innerHTML = isToday ? `PLATÍ PRO DNES <span class="text-white/50 mx-2">|</span> ${formattedDate}` : `PLATNÉ PRO <span class="text-white/50 mx-2">|</span> ${formattedDate}`;
 
                 const menuListContainer = document.getElementById('daily-menu-list');
                 let menuHtml = '';
 
                 closestMenu.forEach(item => {
                     menuHtml += `
-                        <div class="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0 gap-4">
-                            <div class="flex items-start md:items-center gap-3 md:gap-4 flex-grow">
-                                <span class="text-brand-gold font-mono text-xs md:text-sm whitespace-nowrap min-w-[50px] md:min-w-[60px] text-right">${item.amount ? item.amount + item.unit : ''}</span>
-                                <span class="text-white text-sm md:text-base leading-tight">${item.desc}</span>
+                        <div class="flex items-end justify-between gap-2 md:gap-4 group relative py-2">
+                            <div class="text-brand-gold/70 font-mono text-xs md:text-sm whitespace-nowrap w-12 md:w-16 text-right shrink-0 mb-1">
+                                ${item.amount ? item.amount + item.unit : ''}
                             </div>
-                            <div class="text-brand-gold font-heading font-bold text-lg whitespace-nowrap">
-                                ${item.price} Kč
+                            <div class="text-white text-lg md:text-xl font-light mb-0.5 shrink-0 max-w-[60%] md:max-w-[70%]">
+                                ${item.desc}
+                            </div>
+                            <div class="flex-grow border-b-2 border-dotted border-white/20 mb-2 opacity-30 group-hover:border-brand-gold/50 group-hover:opacity-100 transition duration-300"></div>
+                            <div class="text-brand-gold font-heading font-bold text-xl md:text-2xl whitespace-nowrap shrink-0">
+                                ${item.price} <span class="text-sm md:text-base opacity-80 font-normal">Kč</span>
                             </div>
                         </div>
                     `;
