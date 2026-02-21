@@ -1,0 +1,24 @@
+{
+  "contact": {
+    "phone": "326 322 007",
+    "phone_alt": "606 537 469",
+    "email": "info@americapodvezi.cz",
+    "address": "Komenského náměstí 61, Mladá Boleslav"
+  },
+  "opening_hours": {
+    "monday": "11:00 - 14:00",
+    "tuesday_friday": "11:00 - 22:00",
+    "saturday": "11:30 - 22:00",
+    "sunday": "ZAVŘENO"
+  },
+  "exceptions": {
+    "1.5. Svátek práce": "ZAVŘENO",
+    "8.5. Den vítězství": "11:00 - 20:00"
+  },
+  "delivery": {
+    "wolt": "https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi",
+    "foodora": "https://www.foodora.cz/restaurant/iqu6/america-pod-vezi",
+    "bolt": "https://food.bolt.eu/cs-cz/1011-mlada%20boleslav/p/150979-america-pod-vezi/"
+  },
+  "daily_menu_url": "https://www.menicka.cz/7509-america-pod-vezi.html"
+}
