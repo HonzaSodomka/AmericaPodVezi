@@ -299,22 +299,22 @@ if (!empty($boltLink)) {
                     <span class="font-bold text-white block mb-1 text-base md:text-lg">Naší pýchou jsou burgery z čerstvě mletého hovězího masa.</span>
                     Nabízíme BBQ speciality připravované rovnou z grilu, steaky, saláty a dezerty.
                 </p>
-                <!-- ZMĚNA LAYOUTU PRO IPAD: md:w-auto a flex-wrap namísto xl:flex-col -->
-                <div class="flex flex-wrap gap-4 items-center justify-center md:justify-start animate-enter delay-300">
-                    <div class="flex flex-row gap-3 w-full md:w-auto">
+                <!-- ZMĚNA LAYOUTU PRO IPAD: Stejná výška přes items-stretch a h-full -->
+                <div class="flex flex-wrap gap-4 items-stretch justify-center md:justify-start animate-enter delay-300">
+                    <div class="flex flex-row gap-3 w-full md:w-auto flex-1 md:flex-none h-full">
                         <?php if ($dailyMenuUrl): ?>
-                        <a href="<?= $dailyMenuUrl ?>" class="flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading py-3 px-2 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-1 whitespace-nowrap min-w-[140px]">
+                        <a href="<?= $dailyMenuUrl ?>" class="h-full flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading py-3 px-2 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-1 whitespace-nowrap min-w-[140px]">
                             <span class="text-base sm:text-lg">DENNÍ MENU</span>
                             <span class="text-[10px] sm:text-xs font-sans font-normal opacity-80"><i class="fas fa-utensils text-xs mr-1"></i> Dnešní nabídka</span>
                         </a>
                         <?php endif; ?>
-                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading py-3 px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
+                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="h-full flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading py-3 px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
                             <span class="text-base sm:text-lg">REZERVACE</span>
                             <span class="text-[10px] sm:text-xs font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> <?= htmlspecialchars($phone) ?></span>
                         </a>
                     </div>
                     <?php if (!empty($activeDeliveries)): ?>
-                    <div class="bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col sm:flex-row items-center justify-center px-4 md:px-6 py-3 gap-2 md:gap-4 shadow-xl w-full md:w-auto overflow-hidden">
+                    <div class="h-full bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col sm:flex-row items-center justify-center px-4 md:px-6 py-3 gap-2 md:gap-4 shadow-xl w-full md:w-auto overflow-hidden flex-1 md:flex-none">
                         <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-300 font-heading font-bold whitespace-nowrap">Rozvoz domů:</span>
                         <div class="flex items-center justify-center gap-3 sm:gap-4 whitespace-nowrap">
                             <?= implode(' <span class="text-gray-500 text-xs sm:text-sm">|</span> ', $activeDeliveries) ?>
