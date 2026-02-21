@@ -97,9 +97,6 @@
     <link rel="stylesheet" href="fa/css/solid.min.css">
     <link rel="stylesheet" href="fa/css/brands.min.css">
 
-    <!-- Preload hero image for faster LCP -->
-    <link rel="preload" as="image" href="hero.webp" type="image/webp">
-
     <!-- Tailwind CSS (build) -->
     <link rel="stylesheet" href="output.css">
 
@@ -151,8 +148,14 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="hero-section flex flex-col pt-[110px] pb-12 sm:pt-[130px] md:pt-[100px]">
-        <div class="absolute inset-0 hero-overlay"></div>
+    <section class="hero-section flex flex-col pt-[110px] pb-12 sm:pt-[130px] md:pt-[100px] relative overflow-hidden min-h-screen">
+        <!-- Hero Background Image (Optimized for LCP) -->
+        <picture class="absolute inset-0 z-0">
+            <source srcset="hero.webp" type="image/webp">
+            <img src="hero.jpg" alt="America Pod Věží restaurace" fetchpriority="high" class="w-full h-full object-cover">
+        </picture>
+        <div class="absolute inset-0 hero-overlay z-0"></div>
+        
         <div class="relative z-10 w-full max-w-7xl mx-auto px-8 md:px-12 text-center md:text-left my-auto">
             <div class="animate-enter delay-100">
                 <h1 class="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold font-heading mb-2 leading-none drop-shadow-2xl tracking-tight">
