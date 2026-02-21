@@ -128,9 +128,10 @@
             <div class="flex items-center gap-3 animate-enter">
                 <span class="text-white font-heading font-bold tracking-[0.2em] text-xl border-2 border-white/80 px-4 py-1 bg-black/20 backdrop-blur-sm shadow-lg">AMERICA</span>
             </div>
-            <div class="hidden md:flex gap-12 items-center animate-enter delay-100">
+            <div class="hidden md:flex gap-10 lg:gap-12 items-center animate-enter delay-100">
                 <a href="#" class="nav-link font-heading">DOMŮ</a>
-                <a href="#menu" class="nav-link font-heading">MENU</a>
+                <a href="#denni-menu" class="nav-link font-heading">DENNÍ MENU</a>
+                <a href="#stale-menu" class="nav-link font-heading">STÁLÉ MENU</a>
                 <a href="#about" class="nav-link font-heading">O NÁS</a>
                 <a href="#reservation" class="nav-link font-heading">REZERVACE</a>
                 <a href="#contact" class="nav-link font-heading">KONTAKT</a>
@@ -142,12 +143,13 @@
     </nav>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-8 menu-closed backdrop-blur-xl md:hidden" role="dialog" aria-modal="true" aria-label="Navigační menu">
-        <a href="#" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">DOMŮ</a>
-        <a href="#menu" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">MENU</a>
-        <a href="#about" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">O NÁS</a>
-        <a href="#reservation" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">REZERVACE</a>
-        <a href="#contact" class="text-4xl font-heading font-bold tracking-widest hover:text-brand-gold transition">KONTAKT</a>
+    <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-6 menu-closed backdrop-blur-xl md:hidden" role="dialog" aria-modal="true" aria-label="Navigační menu">
+        <a href="#" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">DOMŮ</a>
+        <a href="#denni-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">DENNÍ MENU</a>
+        <a href="#stale-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">STÁLÉ MENU</a>
+        <a href="#about" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">O NÁS</a>
+        <a href="#reservation" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">REZERVACE</a>
+        <a href="#contact" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition">KONTAKT</a>
     </div>
 
     <!-- Hero Section -->
@@ -175,10 +177,15 @@
                     Nabízíme BBQ speciality připravované rovnou z grilu, steaky, saláty a dezerty.
                 </p>
                 <div class="flex flex-col md:flex-row gap-4 items-center md:items-stretch animate-enter delay-300">
-                    <a href="#menu" class="bg-brand-gold text-black font-bold font-heading py-4 px-6 text-xl rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 min-w-[160px]">
-                        Naše Menu
-                    </a>
-                    <a href="tel:326322007" class="border-2 border-white/80 text-white font-bold font-heading py-3 px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 min-w-[180px] leading-none gap-1">
+                    <div class="flex flex-row gap-2 md:gap-4 w-full md:w-auto">
+                        <a href="#denni-menu" class="flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading py-3 md:py-4 px-4 md:px-6 text-sm md:text-lg rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 text-center">
+                            Denní Menu
+                        </a>
+                        <a href="#stale-menu" class="flex-1 md:flex-none bg-black/50 border border-brand-gold text-brand-gold font-bold font-heading py-3 md:py-4 px-4 md:px-6 text-sm md:text-lg rounded hover:bg-brand-gold hover:text-black transition uppercase tracking-widest flex items-center justify-center transform hover:scale-105 duration-200 backdrop-blur-sm text-center">
+                            Stálé Menu
+                        </a>
+                    </div>
+                    <a href="tel:326322007" class="border-2 border-white/80 text-white font-bold font-heading py-3 px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 min-w-[180px] leading-none gap-1 w-full md:w-auto">
                         <span class="text-lg">REZERVACE</span>
                         <span class="text-sm font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> 326 322 007</span>
                     </a>
@@ -206,25 +213,51 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- MENU SECTION -->
-    <section id="menu" class="bg-black py-20 px-8 md:px-12 relative">
+    <!-- DENNÍ MENU SECTION -->
+    <section id="denni-menu" class="bg-black py-20 px-8 md:px-12 relative">
         <div class="max-w-7xl mx-auto">
              <div class="text-center mb-10 scroll-wait">
                  <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
-                    Naše <span class="text-brand-gold">Menu</span>
+                    Denní <span class="text-brand-gold">Menu</span>
                  </h2>
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
              </div>
-             <div class="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 mb-12">
-                <div class="col-span-2 lg:col-span-1 border border-white/10 bg-white/5 p-4 md:p-6 flex flex-col items-center justify-center text-center hover:bg-white/10 transition duration-300 group rounded-sm shadow-xl h-40 md:h-auto scroll-wait">
-                    <div class="text-brand-gold text-3xl md:text-4xl mb-2 md:mb-4 transform group-hover:scale-110 transition duration-300">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h3 class="text-xl md:text-2xl font-heading font-bold text-white mb-1 md:mb-2 tracking-wider uppercase">Denní Nabídka</h3>
-                    <a href="https://www.menicka.cz/7509-america-pod-vezi.html" target="_blank" rel="noopener noreferrer" class="border border-brand-gold text-brand-gold font-heading font-bold py-2 px-6 text-xs md:text-sm hover:bg-brand-gold hover:text-black transition duration-300 uppercase tracking-widest mt-2">
-                        Zobrazit
-                    </a>
-                </div>
+             
+             <!-- Temporary Placeholder / Call to Action for Daily Menu -->
+             <div class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-3xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden">
+                 <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+                 <div class="relative z-10">
+                     <div class="text-brand-gold text-4xl md:text-5xl mb-6 transform hover:scale-110 transition duration-300">
+                         <i class="fas fa-calendar-alt"></i>
+                     </div>
+                     <h3 class="text-2xl md:text-3xl font-heading font-bold text-white mb-4 tracking-wider uppercase">Dnešní polední nabídka</h3>
+                     <p class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto">Každý všední den pro vás připravujeme čerstvé obědové menu. Zastavte se na oběd, nebo si objednejte s sebou.</p>
+                     
+                     <div class="flex justify-center">
+                         <a href="https://www.menicka.cz/7509-america-pod-vezi.html" target="_blank" rel="noopener noreferrer" class="bg-brand-gold text-black font-bold font-heading py-4 px-8 rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 flex items-center gap-3">
+                             <i class="fas fa-external-link-alt"></i> Otevřít menu na menicka.cz
+                         </a>
+                     </div>
+                 </div>
+             </div>
+        </div>
+    </section>
+
+    <!-- SECTION SEPARATOR -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
+
+    <!-- STÁLÉ MENU SECTION -->
+    <section id="stale-menu" class="bg-[#050505] py-20 px-8 md:px-12 relative">
+        <div class="max-w-7xl mx-auto">
+             <div class="text-center mb-10 scroll-wait">
+                 <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+                    Stálé <span class="text-brand-gold">Menu</span>
+                 </h2>
+                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
+             </div>
+             
+             <!-- Speciality & Catering Cards -->
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-12">
                 <div class="col-span-1 relative h-40 md:h-80 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default scroll-wait delay-100">
                     <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
@@ -242,6 +275,7 @@
                     </div>
                 </div>
              </div>
+             
              <div class="w-full scroll-wait">
                  <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 px-2 gap-4">
                      <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
@@ -286,7 +320,7 @@
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
     <!-- ABOUT SECTION -->
-    <section id="about" class="bg-[#050505] py-20 px-8 md:px-12 overflow-hidden relative">
+    <section id="about" class="bg-black py-20 px-8 md:px-12 overflow-hidden relative">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 scroll-wait">
                  <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
