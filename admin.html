@@ -14,10 +14,10 @@
     <link rel="stylesheet" href="fa/css/fontawesome.min.css">
     <link rel="stylesheet" href="fa/css/solid.min.css">
 </head>
-<body class="bg-black text-white min-h-screen flex flex-col font-sans">
+<body class="bg-[#0a0a0a] text-white min-h-screen flex flex-col font-sans">
     
     <!-- Header -->
-    <header class="bg-[#050505] border-b border-white/10 sticky top-0 z-50">
+    <header class="bg-black border-b border-white/10 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <span class="text-white font-heading font-bold tracking-[0.2em] text-lg border border-brand-gold/50 px-3 py-1 bg-brand-gold/10 shadow-[0_0_10px_rgba(212,163,115,0.2)]">
@@ -48,78 +48,49 @@
 
         <form id="admin-form" class="space-y-10">
             
-            <!-- Sekce: Režim Otevírací doby -->
-            <section class="bg-white/5 border border-white/10 rounded-sm p-6 md:p-8 shadow-xl">
+            <!-- Sekce: Flexibilní Otevírací doba -->
+            <section class="bg-[#111] border border-white/10 rounded-sm p-6 md:p-8 shadow-2xl">
                 <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
                     <div class="w-8 h-8 rounded-full border border-brand-gold/30 bg-brand-gold/10 flex items-center justify-center text-brand-gold">
                         <i class="fas fa-clock"></i>
                     </div>
-                    <h2 class="text-2xl font-heading font-bold tracking-widest uppercase text-white">Režim otevírací doby</h2>
+                    <h2 class="text-2xl font-heading font-bold tracking-widest uppercase text-white">Otevírací doba</h2>
                 </div>
 
-                <p class="text-gray-400 text-sm mb-6 font-light">
-                    Vyberte šablonu otevírací doby. Podle vybraného režimu se na webu vygenerují příslušné řádky.
+                <p class="text-gray-400 text-sm mb-6 font-light leading-relaxed">
+                    Zde můžete libovolně slučovat dny, které mají stejnou otevírací dobu. 
+                    Kliknutím na dny je vyberete do jedné skupiny. Jakmile skupinu vytvoříte, můžete k ní napsat čas.
                 </p>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <!-- Mode 1 -->
-                    <label class="relative cursor-pointer group">
-                        <input type="radio" name="hoursMode" value="mode1" class="peer sr-only">
-                        <div class="h-full bg-[#111] border border-white/10 rounded-sm p-4 peer-checked:border-brand-gold peer-checked:bg-brand-gold/5 transition">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-heading font-bold uppercase tracking-wider text-sm text-white">Jednotný týden</span>
-                                <i class="fas fa-check-circle text-brand-gold opacity-0 peer-checked:opacity-100 transition"></i>
-                            </div>
-                            <div class="text-xs text-gray-500 flex flex-col gap-1">
-                                <span>Po-Pá: Stejný čas</span>
-                                <span>So: Zvlášť</span>
-                                <span>Ne: Zvlášť</span>
-                            </div>
-                        </div>
-                    </label>
-
-                    <!-- Mode 2 -->
-                    <label class="relative cursor-pointer group">
-                        <input type="radio" name="hoursMode" value="mode2" class="peer sr-only">
-                        <div class="h-full bg-[#111] border border-white/10 rounded-sm p-4 peer-checked:border-brand-gold peer-checked:bg-brand-gold/5 transition">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-heading font-bold uppercase tracking-wider text-sm text-white">Standard (Nyní)</span>
-                                <i class="fas fa-check-circle text-brand-gold opacity-0 peer-checked:opacity-100 transition"></i>
-                            </div>
-                            <div class="text-xs text-gray-500 flex flex-col gap-1">
-                                <span>Po: Zvlášť</span>
-                                <span>Út-Pá: Stejný čas</span>
-                                <span>So, Ne: Zvlášť</span>
-                            </div>
-                        </div>
-                    </label>
-
-                    <!-- Mode 3 -->
-                    <label class="relative cursor-pointer group">
-                        <input type="radio" name="hoursMode" value="mode3" class="peer sr-only">
-                        <div class="h-full bg-[#111] border border-white/10 rounded-sm p-4 peer-checked:border-brand-gold peer-checked:bg-brand-gold/5 transition">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-heading font-bold uppercase tracking-wider text-sm text-white">Celý týden</span>
-                                <i class="fas fa-check-circle text-brand-gold opacity-0 peer-checked:opacity-100 transition"></i>
-                            </div>
-                            <div class="text-xs text-gray-500 flex flex-col gap-1">
-                                <span>Po-Ne: Stejný čas</span>
-                            </div>
-                        </div>
-                    </label>
-                </div>
-
-                <!-- Editor aktuálně vybraného režimu -->
-                <div class="bg-black border border-white/5 p-4 rounded-sm">
-                    <h3 class="font-heading uppercase tracking-widest text-xs text-brand-gold mb-4">Editace vybraného režimu:</h3>
-                    <div id="hours-editor" class="flex flex-col gap-3">
-                        <!-- Dynamicky generováno pomocí JS -->
+                <!-- Builder Container -->
+                <div class="space-y-6">
+                    
+                    <!-- Existující skupiny -->
+                    <div id="hours-groups-container" class="space-y-4">
+                        <!-- Zde se vykreslí aktuální skupiny z JS -->
                     </div>
+
+                    <!-- Přidání nové skupiny -->
+                    <div id="new-group-builder" class="bg-black border border-brand-gold/30 rounded-sm p-5 shadow-[0_0_15px_rgba(212,163,115,0.1)]">
+                        <h3 class="font-heading uppercase tracking-widest text-xs text-brand-gold mb-4">Vytvořit novou skupinu dnů:</h3>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4" id="available-days">
+                            <!-- Tlačítka pro volné dny vygeneruje JS -->
+                        </div>
+
+                        <div class="flex gap-3 items-center opacity-50 pointer-events-none transition-opacity duration-300" id="new-group-time-section">
+                            <input type="text" id="new-group-time" placeholder="např. 11:00 - 22:00 nebo ZAVŘENO" class="flex-grow bg-[#1a1a1a] border border-white/20 text-white text-sm rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 placeholder-gray-600">
+                            <button type="button" id="add-group-btn" class="bg-white/10 hover:bg-brand-gold text-white hover:text-black border border-white/20 hover:border-brand-gold px-4 py-2 rounded-sm transition duration-300 text-sm font-bold tracking-wider uppercase whitespace-nowrap">
+                                <i class="fas fa-plus mr-1"></i> Přidat
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
             <!-- Sekce: Kontakty -->
-            <section class="bg-white/5 border border-white/10 rounded-sm p-6 md:p-8 shadow-xl">
+            <section class="bg-[#111] border border-white/10 rounded-sm p-6 md:p-8 shadow-2xl">
                 <div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
                     <div class="w-8 h-8 rounded-full border border-brand-gold/30 bg-brand-gold/10 flex items-center justify-center text-brand-gold">
                         <i class="fas fa-address-book"></i>
@@ -132,43 +103,43 @@
                         <label class="block text-xs font-heading tracking-widest uppercase text-gray-400 mb-2">Hlavní telefon</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-phone text-gray-600 text-sm"></i>
+                                <i class="fas fa-phone text-gray-500 text-sm"></i>
                             </div>
-                            <input type="text" id="phoneMain" class="w-full bg-[#111] border border-white/10 text-white rounded-sm py-2 pl-10 pr-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition">
+                            <input type="text" id="phoneMain" class="w-full bg-[#1a1a1a] border border-white/20 text-white rounded-sm py-2 pl-10 pr-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition shadow-inner">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-heading tracking-widest uppercase text-gray-400 mb-2">Alternativní telefon</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-mobile-alt text-gray-600 text-sm pl-0.5"></i>
+                                <i class="fas fa-mobile-alt text-gray-500 text-sm pl-0.5"></i>
                             </div>
-                            <input type="text" id="phoneAlt" class="w-full bg-[#111] border border-white/10 text-white rounded-sm py-2 pl-10 pr-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition">
+                            <input type="text" id="phoneAlt" class="w-full bg-[#1a1a1a] border border-white/20 text-white rounded-sm py-2 pl-10 pr-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition shadow-inner">
                         </div>
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs font-heading tracking-widest uppercase text-gray-400 mb-2">E-mailová adresa</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-envelope text-gray-600 text-sm"></i>
+                                <i class="fas fa-envelope text-gray-500 text-sm"></i>
                             </div>
-                            <input type="email" id="email" class="w-full bg-[#111] border border-white/10 text-white rounded-sm py-2 pl-10 pr-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition">
+                            <input type="email" id="email" class="w-full bg-[#1a1a1a] border border-white/20 text-white rounded-sm py-2 pl-10 pr-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition shadow-inner">
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- Ulozit Dole -->
-            <div class="flex justify-end">
-                <button type="submit" class="bg-brand-gold text-black font-heading font-bold uppercase tracking-widest py-3 px-8 rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]">
-                    Uložit všechny změny
+            <div class="flex justify-end pt-4">
+                <button type="submit" class="bg-brand-gold text-black font-heading font-bold uppercase tracking-widest py-3 px-10 rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] transform hover:-translate-y-1">
+                    Uložit změny
                 </button>
             </div>
         </form>
     </main>
 
     <!-- Patička -->
-    <footer class="bg-[#050505] text-center py-6 border-t border-white/10 mt-auto">
+    <footer class="bg-black text-center py-6 border-t border-white/10 mt-auto">
         <p class="text-[10px] uppercase tracking-widest text-gray-600">
             America Pod Věží &copy; <span id="year"></span> | Admin Modul
         </p>
@@ -182,14 +153,31 @@
             const alertBox = document.getElementById('alert');
             const alertIcon = document.getElementById('alert-icon');
             const alertText = document.getElementById('alert-text');
-            const hoursEditor = document.getElementById('hours-editor');
             const topSaveBtn = document.getElementById('save-btn-top');
+
+            // Builder elements
+            const groupsContainer = document.getElementById('hours-groups-container');
+            const availableDaysContainer = document.getElementById('available-days');
+            const newGroupTimeSection = document.getElementById('new-group-time-section');
+            const newGroupTimeInput = document.getElementById('new-group-time');
+            const addGroupBtn = document.getElementById('add-group-btn');
             
+            const ALL_DAYS = [
+                { id: 'mo', name: 'Pondělí' },
+                { id: 'tu', name: 'Úterý' },
+                { id: 'we', name: 'Středa' },
+                { id: 'th', name: 'Čtvrtek' },
+                { id: 'fr', name: 'Pátek' },
+                { id: 'sa', name: 'Sobota' },
+                { id: 'su', name: 'Neděle' }
+            ];
+
             let appData = {
-                openHoursMode: 'mode2',
-                openHours: {},
+                flexibleHours: [], // Array objektů: { days: ['mo', 'tu'], time: '11:00 - 22:00' }
                 contacts: {}
             };
+
+            let selectedDaysForNewGroup = new Set();
 
             const showAlert = (msg, isSuccess) => {
                 alertText.textContent = msg;
@@ -200,61 +188,164 @@
                 setTimeout(() => alertBox.classList.add('hidden'), 4000);
             };
 
-            // Vykreslí inputy podle zvoleného režimu
-            const renderHoursEditor = (mode) => {
-                hoursEditor.innerHTML = '';
-                if (!appData.openHours[mode]) return;
+            // Helper pro seřazení a naformátování štítku dnů (např. "Pondělí, Úterý")
+            const formatDaysLabel = (dayIds) => {
+                const sortedDays = ALL_DAYS.filter(d => dayIds.includes(d.id));
+                return sortedDays.map(d => d.name).join(', ');
+            };
 
-                appData.openHours[mode].forEach((item, index) => {
-                    const row = document.createElement('div');
-                    row.className = "flex flex-col sm:flex-row sm:items-center gap-2 p-2 hover:bg-white/5 rounded transition border border-transparent hover:border-white/5";
+            // Získá pole IDček dnů, které ještě NEJSOU v žádné skupině
+            const getAvailableDayIds = () => {
+                const usedDays = appData.flexibleHours.flatMap(g => g.days);
+                return ALL_DAYS.map(d => d.id).filter(id => !usedDays.includes(id));
+            };
+
+            // RENDER - Existující skupiny
+            const renderGroups = () => {
+                groupsContainer.innerHTML = '';
+                
+                if (appData.flexibleHours.length === 0) {
+                    groupsContainer.innerHTML = '<p class="text-sm text-gray-500 italic">Zatím nejsou nastaveny žádné otevírací hodiny.</p>';
+                }
+
+                appData.flexibleHours.forEach((group, index) => {
+                    const div = document.createElement('div');
+                    div.className = "bg-black border border-white/10 rounded-sm p-4 flex flex-col sm:flex-row sm:items-center gap-4 group";
                     
-                    row.innerHTML = `
+                    const label = formatDaysLabel(group.days);
+                    
+                    div.innerHTML = `
                         <div class="sm:w-1/3">
-                            <span class="text-sm text-gray-300 font-bold">${item.label}</span>
+                            <span class="text-sm text-brand-gold font-bold tracking-wider uppercase">${label}</span>
                         </div>
-                        <div class="sm:w-2/3">
-                            <input type="text" value="${item.time}" data-mode="${mode}" data-index="${index}" class="hours-input w-full bg-[#111] border border-white/20 text-white text-sm rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition">
+                        <div class="sm:w-2/3 flex items-center gap-2">
+                            <input type="text" value="${group.time}" class="flex-grow bg-[#1a1a1a] border border-white/20 text-white text-sm rounded-sm py-2 px-3 focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/50 transition group-time-input" data-index="${index}">
+                            <button type="button" class="delete-group-btn w-10 h-10 bg-red-900/20 text-red-500 border border-red-500/30 rounded-sm hover:bg-red-500 hover:text-white transition flex items-center justify-center" data-index="${index}" title="Smazat skupinu">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     `;
-                    hoursEditor.appendChild(row);
+                    groupsContainer.appendChild(div);
                 });
 
-                // Přidání listenerů pro průběžný update dat v paměti
-                document.querySelectorAll('.hours-input').forEach(input => {
+                // Listenery na smazání
+                document.querySelectorAll('.delete-group-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const idx = e.currentTarget.getAttribute('data-index');
+                        appData.flexibleHours.splice(idx, 1);
+                        renderBuilder();
+                    });
+                });
+
+                // Listenery na úpravu existujícího času
+                document.querySelectorAll('.group-time-input').forEach(input => {
                     input.addEventListener('input', (e) => {
-                        const iMode = e.target.getAttribute('data-mode');
                         const idx = e.target.getAttribute('data-index');
-                        appData.openHours[iMode][idx].time = e.target.value;
+                        appData.flexibleHours[idx].time = e.target.value;
                     });
                 });
             };
 
-            // Posluchače na radio buttony změny režimu
-            document.querySelectorAll('input[name="hoursMode"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    appData.openHoursMode = e.target.value;
-                    renderHoursEditor(e.target.value);
+            // RENDER - Tlačítka pro volné dny k sestavení nové skupiny
+            const renderBuilder = () => {
+                renderGroups();
+                
+                const availableIds = getAvailableDayIds();
+                availableDaysContainer.innerHTML = '';
+                
+                // Reset výběru pro novou skupinu jen na ty dny, které jsou opravdu volné
+                selectedDaysForNewGroup = new Set([...selectedDaysForNewGroup].filter(id => availableIds.includes(id)));
+
+                if (availableIds.length === 0) {
+                    availableDaysContainer.innerHTML = '<span class="text-sm text-green-500"><i class="fas fa-check mr-1"></i> Všechny dny v týdnu jsou již přiřazeny.</span>';
+                    newGroupTimeSection.classList.add('opacity-50', 'pointer-events-none');
+                    newGroupTimeInput.value = '';
+                    return;
+                }
+
+                ALL_DAYS.forEach(day => {
+                    if (availableIds.includes(day.id)) {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        const isSelected = selectedDaysForNewGroup.has(day.id);
+                        
+                        btn.className = `px-3 py-1.5 text-sm font-bold rounded-sm border transition duration-200 ${isSelected ? 'bg-brand-gold text-black border-brand-gold' : 'bg-white/5 text-gray-400 border-white/20 hover:border-white/50 hover:text-white'}`;
+                        btn.textContent = day.name;
+                        
+                        btn.addEventListener('click', () => {
+                            if (selectedDaysForNewGroup.has(day.id)) {
+                                selectedDaysForNewGroup.delete(day.id);
+                            } else {
+                                selectedDaysForNewGroup.add(day.id);
+                            }
+                            renderBuilder(); // Re-render to update classes and input state
+                        });
+
+                        availableDaysContainer.appendChild(btn);
+                    }
                 });
+
+                // Povolit/zakázat input na čas podle toho, jestli je vybrán aspoň 1 den
+                if (selectedDaysForNewGroup.size > 0) {
+                    newGroupTimeSection.classList.remove('opacity-50', 'pointer-events-none');
+                } else {
+                    newGroupTimeSection.classList.add('opacity-50', 'pointer-events-none');
+                }
+            };
+
+            // Přidání nové skupiny (tlačítko Přidat)
+            addGroupBtn.addEventListener('click', () => {
+                const timeVal = newGroupTimeInput.value.trim();
+                if (selectedDaysForNewGroup.size > 0 && timeVal !== '') {
+                    // Musíme zachovat správné pořadí dnů podle ALL_DAYS
+                    const sortedSelectedDays = ALL_DAYS.filter(d => selectedDaysForNewGroup.has(d.id)).map(d => d.id);
+                    
+                    appData.flexibleHours.push({
+                        days: sortedSelectedDays,
+                        time: timeVal
+                    });
+                    
+                    // Řazení celých skupin, aby Pondělí bylo první (podle prvního dne ve skupině)
+                    appData.flexibleHours.sort((a, b) => {
+                        const indexA = ALL_DAYS.findIndex(d => d.id === a.days[0]);
+                        const indexB = ALL_DAYS.findIndex(d => d.id === b.days[0]);
+                        return indexA - indexB;
+                    });
+
+                    selectedDaysForNewGroup.clear();
+                    newGroupTimeInput.value = '';
+                    renderBuilder();
+                }
             });
+
 
             // Načtení dat při startu
             try {
                 const response = await fetch('/api/data');
                 if (response.ok) {
-                    appData = await response.json();
+                    const data = await response.json();
                     
-                    // Set radio mode
-                    const activeRadio = document.querySelector(`input[name="hoursMode"][value="${appData.openHoursMode}"]`);
-                    if (activeRadio) activeRadio.checked = true;
+                    appData.contacts = data.contacts || {};
+                    
+                    // Konverze starého fixního formátu na nový flexibilní, pokud je potřeba
+                    if (data.flexibleHours) {
+                        appData.flexibleHours = data.flexibleHours;
+                    } else if (data.openHours && data.openHoursMode && data.openHours[data.openHoursMode]) {
+                        // Migrace ze staré verze (šablony)
+                        appData.flexibleHours = [];
+                        data.openHours[data.openHoursMode].forEach(item => {
+                            // Toto je jen zjednodušený fallback pro první start, 
+                            // dny by neměly správné id, takže si je aspoň vizuálně ukážeme
+                            // Ale ideální je naplnit data.json čistě hned novým formátem (viz data.json v repu)
+                        });
+                    }
 
-                    // Vykreslení editoru hodin
-                    renderHoursEditor(appData.openHoursMode);
-
-                    // Set contacts
+                    // Set contacts inputs
                     document.getElementById('phoneMain').value = appData.contacts.phoneMain || '';
                     document.getElementById('phoneAlt').value = appData.contacts.phoneAlt || '';
                     document.getElementById('email').value = appData.contacts.email || '';
+
+                    renderBuilder();
                 }
             } catch (err) {
                 showAlert('Chyba při načítání dat ze serveru.', false);
@@ -262,6 +353,13 @@
 
             // Uložení funkce
             const saveData = async () => {
+                // Validace, že jsou využity všechny dny
+                const usedDays = appData.flexibleHours.flatMap(g => g.days);
+                if (usedDays.length < 7) {
+                    showAlert('Pozor: Nemáte vyplněnou otevírací dobu pro všechny dny v týdnu! Doplňte zbývající dny.', false);
+                    return;
+                }
+
                 appData.contacts.phoneMain = document.getElementById('phoneMain').value;
                 appData.contacts.phoneAlt = document.getElementById('phoneAlt').value;
                 appData.contacts.email = document.getElementById('email').value;
@@ -292,6 +390,14 @@
             topSaveBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 saveData();
+            });
+
+            // Allow Enter key to add group
+            newGroupTimeInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addGroupBtn.click();
+                }
             });
         });
     </script>
