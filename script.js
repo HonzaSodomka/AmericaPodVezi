@@ -34,7 +34,6 @@ const CONFIG = {
 document.addEventListener('DOMContentLoaded', initApp);
 
 function initApp() {
-    checkWebPSupport();
     initPreloader();
     initMobileMenu();
     initMenuViewer();
@@ -43,21 +42,6 @@ function initApp() {
     initHeroHeightFix();
     initStickyNavbar();
     // initConsentAndMaps() is now called AFTER preloader finishes
-}
-
-/**
- * WebP Support Detection
- * Adds 'no-webp' class to <html> if browser doesn't support WebP.
- * CSS fallbacks use .no-webp selector to serve JPG instead.
- */
-function checkWebPSupport() {
-    const img = new Image();
-    img.onload = img.onerror = function () {
-        if (img.height !== 1) {
-            document.documentElement.classList.add('no-webp');
-        }
-    };
-    img.src = 'data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAUAmJZACdAEO/gHOAAA=';
 }
 
 /**
@@ -93,22 +77,30 @@ function initHeroHeightFix() {
  * Sticky Navbar
  * On scroll past hero, navbar becomes fixed with dark background.
  * On scroll back to top, returns to absolute/transparent.
+ * Uses requestAnimationFrame to prevent scroll thrashing.
  */
 function initStickyNavbar() {
     const navbar = document.querySelector('#navbar');
     if (!navbar) return;
 
     const hero = document.querySelector(CONFIG.selectors.heroSection);
+    let ticking = false;
 
     window.addEventListener('scroll', () => {
-        const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
-        const progress = Math.min(window.scrollY / (heroHeight * 0.5), 1);
-        const alpha = Math.round(progress * 230);
-        navbar.style.backgroundColor = `rgba(0,0,0,${(alpha/255).toFixed(2)})`;
-        navbar.style.backdropFilter = progress > 0.1 ? `blur(${(progress * 12).toFixed(1)}px)` : '';
-        navbar.style.webkitBackdropFilter = navbar.style.backdropFilter;
-        navbar.style.boxShadow = progress > 0.5 ? `0 2px 20px rgba(0,0,0,${(progress * 0.8).toFixed(2)})` : '';
-        navbar.style.borderBottom = progress > 0.5 ? `1px solid rgba(212,163,115,${(progress * 0.15).toFixed(2)})` : '';
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
+                const progress = Math.min(window.scrollY / (heroHeight * 0.5), 1);
+                const alpha = Math.round(progress * 230);
+                navbar.style.backgroundColor = `rgba(0,0,0,${(alpha/255).toFixed(2)})`;
+                navbar.style.backdropFilter = progress > 0.1 ? `blur(${(progress * 12).toFixed(1)}px)` : '';
+                navbar.style.webkitBackdropFilter = navbar.style.backdropFilter;
+                navbar.style.boxShadow = progress > 0.5 ? `0 2px 20px rgba(0,0,0,${(progress * 0.8).toFixed(2)})` : '';
+                navbar.style.borderBottom = progress > 0.5 ? `1px solid rgba(212,163,115,${(progress * 0.15).toFixed(2)})` : '';
+                ticking = false;
+            });
+            ticking = true;
+        }
     }, { passive: true });
 }
 
@@ -208,6 +200,14 @@ function initMenuViewer() {
 
     let currentIndex = 0;
 
+    // Image preloader
+    const preloadImage = (index) => {
+        if (index >= 0 && index < CONFIG.menuImages.length) {
+            const img = new Image();
+            img.src = CONFIG.menuImages[index];
+        }
+    };
+
     const updateMenu = () => {
         elements.currentImg.style.opacity = '0';
 
@@ -218,7 +218,12 @@ function initMenuViewer() {
                 elements.indicator.textContent = `STRANA ${currentIndex + 1} / ${CONFIG.menuImages.length}`;
             }
 
-            const fadeIn = () => { elements.currentImg.style.opacity = '1'; };
+            const fadeIn = () => { 
+                elements.currentImg.style.opacity = '1'; 
+                // Preload adjacent images
+                preloadImage(currentIndex + 1);
+                preloadImage(currentIndex - 1);
+            };
             elements.currentImg.addEventListener('load', fadeIn, { once: true });
             if (elements.currentImg.complete) fadeIn();
 
