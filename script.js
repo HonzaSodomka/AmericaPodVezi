@@ -98,7 +98,7 @@ function formatDaysLabel(dayIds) {
 
 /**
  * Fetch dynamic data from Node.js backend
- * Aktualizuje otevírací dobu (flexibilní režim) a kontakty z data.json
+ * Aktualizuje otevírací dobu, kontakty, rozvoz, akce a denní menu
  */
 async function fetchDynamicData() {
     try {
@@ -112,14 +112,11 @@ async function fetchDynamicData() {
             const hoursContainer = document.querySelector('#contact ul.text-gray-300'); 
             
             if (hoursContainer) {
-                // Uděláme kopii, abychom do ní mohli přidat chybějící dny
                 let activeGroups = [...data.flexibleHours];
                 
-                // Identifikace chybějících dnů
                 const usedDays = activeGroups.flatMap(g => g.days);
                 const missingDays = ALL_DAYS.map(d => d.id).filter(id => !usedDays.includes(id));
                 
-                // Pro každý chybějící den vytvoříme samostatný záznam ZAVŘENO
                 missingDays.forEach(dayId => {
                     activeGroups.push({
                         days: [dayId],
@@ -127,7 +124,6 @@ async function fetchDynamicData() {
                     });
                 });
                 
-                // Rozsekání skupin s čárkou (např. "Pondělí, Čtvrtek") na samostatné dny pro správné chronologické řazení
                 let expandedDays = [];
                 activeGroups.forEach(group => {
                    group.days.forEach(dayId => {
@@ -138,15 +134,12 @@ async function fetchDynamicData() {
                    });
                 });
 
-                // Seřazení chronologicky (Po-Ne)
                 expandedDays.sort((a, b) => {
                     const idxA = ALL_DAYS.findIndex(d => d.id === a.dayId);
                     const idxB = ALL_DAYS.findIndex(d => d.id === b.dayId);
                     return idxA - idxB;
                 });
 
-                // Sloučení zpět podle stejného času tak, aby šly logicky za sebou a spojovaly se stejné sousední dny,
-                // ALE chceme, aby výsledek byl například: Pondělí (čas), Úterý - Středa (Zavřeno), Čtvrtek (čas), Pátek - Neděle (Zavřeno)
                 let finalGroups = [];
                 if(expandedDays.length > 0) {
                     let currentGroup = { days: [expandedDays[0].dayId], time: expandedDays[0].time };
@@ -185,53 +178,47 @@ async function fetchDynamicData() {
 
         // 2. Update Contacts
         if (data.contacts) {
-            // Update Hero Phone Button (nahoře u menu)
             const heroPhone = document.querySelector('.hero-section a[href^="tel:"]');
             if (heroPhone) {
                 if (data.contacts.phoneMain && data.contacts.phoneMain.trim() !== '') {
                     const rawPhone = data.contacts.phoneMain.replace(/\s/g, '');
                     heroPhone.href = `tel:${rawPhone}`;
                     heroPhone.querySelector('span:last-child').innerHTML = `<i class="fas fa-phone-alt text-xs mr-1"></i> ${data.contacts.phoneMain}`;
-                    heroPhone.style.display = ''; // ukaž
+                    heroPhone.style.display = ''; 
                 } else {
-                    heroPhone.style.display = 'none'; // schovej celé tlačítko
+                    heroPhone.style.display = 'none'; 
                 }
             }
 
-            // V Kontaktni sekci najdeme kontejnery pro telefony a email
             const contactPhones = document.querySelectorAll('#contact a[href^="tel:"]');
             const contactEmail = document.querySelector('#contact a[href^="mailto:"]');
 
-            // Zpracování hlavního telefonu
             if (contactPhones.length > 0) {
                 if (data.contacts.phoneMain && data.contacts.phoneMain.trim() !== '') {
                     contactPhones[0].href = `tel:${data.contacts.phoneMain.replace(/\s/g, '')}`;
                     contactPhones[0].textContent = data.contacts.phoneMain;
-                    contactPhones[0].style.display = ''; // ujisti se, že je vidět
+                    contactPhones[0].style.display = ''; 
                 } else {
-                    contactPhones[0].style.display = 'none'; // schovej, pokud je prázdný
+                    contactPhones[0].style.display = 'none'; 
                 }
             }
 
-            // Zpracování alternativního telefonu
             if (contactPhones.length > 1) {
                 if (data.contacts.phoneAlt && data.contacts.phoneAlt.trim() !== '') {
                     contactPhones[1].href = `tel:${data.contacts.phoneAlt.replace(/\s/g, '')}`;
                     contactPhones[1].textContent = data.contacts.phoneAlt;
-                    contactPhones[1].style.display = ''; // ujisti se, že je vidět
+                    contactPhones[1].style.display = ''; 
                 } else {
-                    contactPhones[1].style.display = 'none'; // schovej, pokud je prázdný
+                    contactPhones[1].style.display = 'none'; 
                 }
             }
 
-            // Zpracování emailu
             if (contactEmail) {
                 if (data.contacts.email && data.contacts.email.trim() !== '') {
                     contactEmail.href = `mailto:${data.contacts.email}`;
                     contactEmail.textContent = data.contacts.email;
-                    contactEmail.style.display = ''; // ujisti se, že je vidět
+                    contactEmail.style.display = ''; 
                     
-                    // Update emailu v footeru
                     const footerEmail = document.querySelector('footer a[href^="mailto:"]');
                     if(footerEmail) {
                         footerEmail.href = `mailto:${data.contacts.email}`;
@@ -239,9 +226,7 @@ async function fetchDynamicData() {
                         footerEmail.style.display = '';
                     }
                 } else {
-                    contactEmail.style.display = 'none'; // schovej, pokud je prázdný
-                    
-                    // Skryj i z footeru
+                    contactEmail.style.display = 'none'; 
                     const footerEmail = document.querySelector('footer a[href^="mailto:"]');
                     if(footerEmail) {
                         footerEmail.style.display = 'none';
@@ -254,7 +239,6 @@ async function fetchDynamicData() {
         if (data.delivery) {
             const heroSection = document.querySelector('.hero-section');
             if(heroSection) {
-                // Hledáme podle href atributu, který obsahuje doménu služby
                 const woltLink = heroSection.querySelector('a[href*="wolt"]');
                 const foodoraLink = heroSection.querySelector('a[href*="foodora"]');
                 
@@ -281,26 +265,19 @@ async function fetchDynamicData() {
                     }
                 }
 
-                // Oddělovač "|"
-                // Předpokládáme strukturu: <a>Wolt</a> <span>|</span> <a>Foodora</a>
-                // Najdeme span mezi nimi. Je to obvykle element hned za woltLinkem.
                 if (woltLink) {
                     const separator = woltLink.nextElementSibling;
                     if (separator && separator.tagName === 'SPAN') {
-                        // Zobrazit oddělovač jen pokud jsou vidět OBA odkazy
                         separator.style.display = (woltVisible && foodoraVisible) ? '' : 'none';
                     }
                 }
 
-                // Celý kontejner "Rozvoz domů: ..."
-                // Je to rodič rodiče linku, nebo hledáme .bg-black/50 v hero sekci
                 const deliveryContainer = heroSection.querySelector('.bg-black\\/50.backdrop-blur-md');
                 if (deliveryContainer) {
-                    // Pokud není vidět ani jeden, schováme celý box
                     if (!woltVisible && !foodoraVisible) {
                         deliveryContainer.style.display = 'none';
                     } else {
-                        deliveryContainer.style.display = ''; // default (flex)
+                        deliveryContainer.style.display = ''; 
                     }
                 }
             }
@@ -328,7 +305,7 @@ async function fetchDynamicData() {
                     setTimeout(() => {
                         popup.classList.remove('hidden');
                         popup.classList.add('flex');
-                        void popup.offsetWidth; // Reflow
+                        void popup.offsetWidth; 
                         popup.classList.remove('opacity-0');
                         popup.classList.add('opacity-100');
                         popupContent.classList.remove('scale-95');
@@ -355,12 +332,65 @@ async function fetchDynamicData() {
             }
         }
 
+        // 5. Update Daily Menu
+        if (data.dailyMenu && data.dailyMenu.length > 0) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Získáme všechny menu, která jsou dnes nebo v budoucnu
+            const validMenus = data.dailyMenu.filter(item => {
+                const itemDate = new Date(item.date);
+                itemDate.setHours(0, 0, 0, 0);
+                return itemDate >= today;
+            });
+
+            if (validMenus.length > 0) {
+                // Seskupit podle data
+                const groupedByDate = validMenus.reduce((acc, item) => {
+                    if (!acc[item.date]) acc[item.date] = [];
+                    acc[item.date].push(item);
+                    return acc;
+                }, {});
+
+                // Najít nejbližší datum
+                const closestDateStr = Object.keys(groupedByDate).sort()[0];
+                const closestMenu = groupedByDate[closestDateStr];
+
+                const dateParts = closestDateStr.split('-');
+                const formattedDate = `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}`;
+                
+                const closestDateObj = new Date(closestDateStr);
+                closestDateObj.setHours(0, 0, 0, 0);
+                const isToday = closestDateObj.getTime() === today.getTime();
+
+                document.getElementById('daily-menu-date').innerHTML = isToday ? `(Dnes ${formattedDate})` : `(${formattedDate})`;
+
+                const menuListContainer = document.getElementById('daily-menu-list');
+                let menuHtml = '';
+
+                closestMenu.forEach(item => {
+                    menuHtml += `
+                        <div class="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0 gap-4">
+                            <div class="flex items-start md:items-center gap-3 md:gap-4 flex-grow">
+                                <span class="text-brand-gold font-mono text-xs md:text-sm whitespace-nowrap min-w-[50px] md:min-w-[60px] text-right">${item.amount ? item.amount + item.unit : ''}</span>
+                                <span class="text-white text-sm md:text-base leading-tight">${item.desc}</span>
+                            </div>
+                            <div class="text-brand-gold font-heading font-bold text-lg whitespace-nowrap">
+                                ${item.price} Kč
+                            </div>
+                        </div>
+                    `;
+                });
+
+                menuListContainer.innerHTML = menuHtml;
+                document.getElementById('daily-menu-wrapper').classList.remove('hidden');
+            }
+        }
+
     } catch (error) {
         console.error('Error loading dynamic data:', error);
     }
 }
-
-// ... Zbytek (initHeroHeightFix atd.) zůstává stejný ...
 
 function initHeroHeightFix() {
     const hero = document.querySelector(CONFIG.selectors.heroSection);
