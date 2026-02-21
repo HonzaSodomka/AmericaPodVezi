@@ -15,7 +15,8 @@ const CONFIG = {
         pageIndicator: '#page-indicator',
         scrollWait: '.scroll-wait',
         menuLinks: '#mobile-menu a',
-        heroSection: '.hero-section'
+        heroSection: '.hero-section',
+        navbar: '#navbar'
     },
     menuImages: [
         { src: 'menu-page-1.svg', alt: 'Jídelní lístek strana 1 - Burgery a předkrmy' },
@@ -41,6 +42,7 @@ function initApp() {
     initDynamicYear();
     initHeroHeightFix();
     initStickyNavbar();
+    initDynamicScrollPadding();
 }
 
 /**
@@ -71,10 +73,34 @@ function initHeroHeightFix() {
 }
 
 /**
+ * Dynamic Scroll Padding (pro přesné scrollování pod hlavičku)
+ */
+function initDynamicScrollPadding() {
+    const navbar = document.querySelector(CONFIG.selectors.navbar);
+    if (!navbar) return;
+
+    const updateScrollPadding = () => {
+        // Získáme přesnou fyzickou výšku hlavičky v danou chvíli
+        const headerHeight = navbar.offsetHeight;
+        // Nastavíme ji na <html> element, takže přesně o tolik prohlížeč uskočí
+        document.documentElement.style.scrollPaddingTop = `${headerHeight}px`;
+    };
+
+    // Spustit ihned při načtení
+    updateScrollPadding();
+
+    // Přepočítat vždy, když uživatel změní velikost okna nebo otočí mobil
+    window.addEventListener('resize', updateScrollPadding, { passive: true });
+    window.addEventListener('orientationchange', () => {
+        setTimeout(updateScrollPadding, 100);
+    });
+}
+
+/**
  * Sticky Navbar (GPU Optimized with opacity instead of blur recalculation)
  */
 function initStickyNavbar() {
-    const navbar = document.querySelector('#navbar');
+    const navbar = document.querySelector(CONFIG.selectors.navbar);
     const backdrop = document.querySelector('.nav-backdrop');
     if (!navbar || !backdrop) return;
 
