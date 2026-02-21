@@ -20,8 +20,9 @@ $woltLink = $delivery['wolt'] ?? '';
 $foodoraLink = $delivery['foodora'] ?? '';
 $boltLink = $delivery['bolt'] ?? '';
 
-$ratingValue = $data['rating']['value'] ?? 4.5;
-$ratingCount = $data['rating']['count'] ?? 900;
+// Bezpečné přetypování dat z JSONu (Admin by mohl poslat string)
+$ratingValue = (float) ($data['rating']['value'] ?? 4.5);
+$ratingCount = (int) ($data['rating']['count'] ?? 900);
 
 $dailyMenuUrl = $data['daily_menu_url'] ?? 'https://www.menicka.cz/7509-america-pod-vezi.html';
 
@@ -133,7 +134,12 @@ foreach ($openingHours as $key => $val) {
 if (!empty($schemaHours)) {
     $schema['openingHoursSpecification'] = $schemaHours;
 }
-$schemaJson = json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+
+// BEZPEČNOSTNÍ OPRAVA: Ochrana proti XSS uvnitř JSON-LD script tagu
+$schemaJson = json_encode(
+    $schema, 
+    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+);
 
 // Delivery HTML logic
 $activeDeliveries = [];
@@ -542,7 +548,7 @@ if (!empty($boltLink)) {
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <div>
-                            <h4 class="text-white font-heading text-lg tracking-widest uppercase">Adresa</h4>
+                            <h3 class="text-white font-heading text-lg tracking-widest uppercase">Adresa</h3>
                             <p class="text-gray-300">Komenského náměstí 61<br>Mladá Boleslav</p>
                             <p class="text-gray-500 text-xs mt-1">Přímo pod věží</p>
                         </div>
@@ -552,7 +558,7 @@ if (!empty($boltLink)) {
                             <i class="fas fa-phone-alt"></i>
                         </div>
                         <div>
-                            <h4 class="text-white font-heading text-lg tracking-widest uppercase">Rezervace & Akce</h4>
+                            <h3 class="text-white font-heading text-lg tracking-widest uppercase">Rezervace & Akce</h3>
                             <div class="flex flex-col">
                                 <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="text-gray-300 text-lg font-bold hover:text-white transition"><?= htmlspecialchars($phone) ?></a>
                                 <a href="tel:+420<?= htmlspecialchars($phoneAltClean) ?>" class="text-brand-gold text-base font-bold hover:text-white transition"><?= htmlspecialchars($phoneAlt) ?></a>
@@ -565,7 +571,7 @@ if (!empty($boltLink)) {
                             <i class="fab fa-facebook-f"></i>
                         </div>
                         <div>
-                            <h4 class="text-white font-heading text-lg tracking-widest uppercase">Sledujte Nás</h4>
+                            <h3 class="text-white font-heading text-lg tracking-widest uppercase">Sledujte Nás</h3>
                             <p class="text-gray-400 text-sm">Novinky & Akce na Facebooku</p>
                         </div>
                     </a>
@@ -575,7 +581,7 @@ if (!empty($boltLink)) {
                         <div class="w-10 h-10 rounded-full border border-brand-gold/30 bg-brand-gold/5 flex items-center justify-center text-brand-gold text-lg shrink-0">
                             <i class="fas fa-clock"></i>
                         </div>
-                        <h4 class="text-white font-heading text-lg tracking-widest uppercase">Otevírací Doba</h4>
+                        <h3 class="text-white font-heading text-lg tracking-widest uppercase">Otevírací Doba</h3>
                     </div>
                     <ul class="text-gray-300 text-sm space-y-3 w-full">
                         <?php
