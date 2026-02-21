@@ -4,8 +4,11 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware pro parsování JSON a obsluhu statických souborů z root složky
-app.use(express.json());
+// Zvýšení limitu pro JSON payload (kvůli base64 obrázkům z adminu)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+// Middleware pro obsluhu statických souborů z root složky
 app.use(express.static(__dirname));
 
 const dataFilePath = path.join(__dirname, 'data.json');
