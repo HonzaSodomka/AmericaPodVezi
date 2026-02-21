@@ -185,12 +185,17 @@ async function fetchDynamicData() {
 
         // 2. Update Contacts
         if (data.contacts) {
-            // Update Hero Phone
+            // Update Hero Phone Button (nahoře u menu)
             const heroPhone = document.querySelector('.hero-section a[href^="tel:"]');
-            if (heroPhone && data.contacts.phoneMain) {
-                const rawPhone = data.contacts.phoneMain.replace(/\s/g, '');
-                heroPhone.href = `tel:${rawPhone}`;
-                heroPhone.querySelector('span:last-child').innerHTML = `<i class="fas fa-phone-alt text-xs mr-1"></i> ${data.contacts.phoneMain}`;
+            if (heroPhone) {
+                if (data.contacts.phoneMain && data.contacts.phoneMain.trim() !== '') {
+                    const rawPhone = data.contacts.phoneMain.replace(/\s/g, '');
+                    heroPhone.href = `tel:${rawPhone}`;
+                    heroPhone.querySelector('span:last-child').innerHTML = `<i class="fas fa-phone-alt text-xs mr-1"></i> ${data.contacts.phoneMain}`;
+                    heroPhone.style.display = ''; // ukaž
+                } else {
+                    heroPhone.style.display = 'none'; // schovej celé tlačítko
+                }
             }
 
             // V Kontaktni sekci najdeme kontejnery pro telefony a email
