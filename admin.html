@@ -11,6 +11,26 @@
     
     <!-- Tailwind CSS (build) -->
     <link rel="stylesheet" href="output.css">
+    <!-- Tailwind CDN jako fallback pro admin -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                gold: '#D4A373',
+                black: '#0a0a0a'
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['Oswald', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
     <link rel="stylesheet" href="fa/css/fontawesome.min.css">
     <link rel="stylesheet" href="fa/css/solid.min.css">
 </head>
