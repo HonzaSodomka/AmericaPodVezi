@@ -109,7 +109,7 @@ async function fetchDynamicData() {
         
         // 1. Update Flexible Opening Hours
         if (data.flexibleHours) {
-            const hoursContainer = document.querySelector('#contact ul.text-gray-300'); // Přesnější selektor
+            const hoursContainer = document.querySelector('#contact ul.text-gray-300'); 
             
             if (hoursContainer) {
                 // Uděláme kopii, abychom do ní mohli přidat chybějící dny
@@ -119,43 +119,53 @@ async function fetchDynamicData() {
                 const usedDays = activeGroups.flatMap(g => g.days);
                 const missingDays = ALL_DAYS.map(d => d.id).filter(id => !usedDays.includes(id));
                 
-                if (missingDays.length > 0) {
+                // Pro každý chybějící den vytvoříme samostatný záznam ZAVŘENO
+                missingDays.forEach(dayId => {
                     activeGroups.push({
-                        days: missingDays,
+                        days: [dayId],
                         time: "ZAVŘENO"
                     });
-                }
+                });
                 
-                // Seřazení celých skupin, aby šly logicky za sebou podle prvního dne ve skupině
-                activeGroups.sort((a, b) => {
-                    const idxA = Math.min(...a.days.map(id => ALL_DAYS.findIndex(d => d.id === id)));
-                    const idxB = Math.min(...b.days.map(id => ALL_DAYS.findIndex(d => d.id === id)));
-                    return idxA - idxB;
-                });
-
-                // Sloučení skupin, které mají absolutně stejný čas (např. vícero ZAVŘENO)
-                // Pro případ, že uživatel vytvořil ZAVŘENO manuálně a my mu teď přidali další pro chybějící dny
-                const mergedGroups = [];
+                // Rozsekání skupin s čárkou (např. "Pondělí, Čtvrtek") na samostatné dny pro správné chronologické řazení
+                let expandedDays = [];
                 activeGroups.forEach(group => {
-                    const existing = mergedGroups.find(g => g.time.toLowerCase() === group.time.toLowerCase());
-                    if (existing) {
-                        existing.days = [...existing.days, ...group.days];
-                    } else {
-                        mergedGroups.push({ days: [...group.days], time: group.time });
-                    }
+                   group.days.forEach(dayId => {
+                       expandedDays.push({
+                           dayId: dayId,
+                           time: group.time
+                       });
+                   });
                 });
 
-                // Znovu seřadit po merge
-                mergedGroups.sort((a, b) => {
-                    const idxA = Math.min(...a.days.map(id => ALL_DAYS.findIndex(d => d.id === id)));
-                    const idxB = Math.min(...b.days.map(id => ALL_DAYS.findIndex(d => d.id === id)));
+                // Seřazení chronologicky (Po-Ne)
+                expandedDays.sort((a, b) => {
+                    const idxA = ALL_DAYS.findIndex(d => d.id === a.dayId);
+                    const idxB = ALL_DAYS.findIndex(d => d.id === b.dayId);
                     return idxA - idxB;
                 });
+
+                // Sloučení zpět podle stejného času tak, aby šly logicky za sebou a spojovaly se stejné sousední dny,
+                // ALE chceme, aby výsledek byl například: Pondělí (čas), Úterý - Středa (Zavřeno), Čtvrtek (čas), Pátek - Neděle (Zavřeno)
+                let finalGroups = [];
+                if(expandedDays.length > 0) {
+                    let currentGroup = { days: [expandedDays[0].dayId], time: expandedDays[0].time };
+                    
+                    for(let i = 1; i < expandedDays.length; i++) {
+                        if(expandedDays[i].time.toLowerCase() === currentGroup.time.toLowerCase()) {
+                            currentGroup.days.push(expandedDays[i].dayId);
+                        } else {
+                            finalGroups.push(currentGroup);
+                            currentGroup = { days: [expandedDays[i].dayId], time: expandedDays[i].time };
+                        }
+                    }
+                    finalGroups.push(currentGroup);
+                }
 
                 let htmlContent = '';
                 
-                mergedGroups.forEach((group, index) => {
-                    const isLast = index === mergedGroups.length - 1;
+                finalGroups.forEach((group, index) => {
+                    const isLast = index === finalGroups.length - 1;
                     const liClass = isLast ? "flex justify-between pt-1" : "flex justify-between border-b border-white/10 pb-2";
                     const isClosed = group.time.toUpperCase() === "ZAVŘENO" || group.time.toLowerCase().includes("zavřeno");
                     const timeClass = isClosed ? "text-brand-gold font-bold" : "";
