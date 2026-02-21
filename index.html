@@ -363,6 +363,68 @@
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
+    <!-- RESERVATION / EVENTS SECTION -->
+    <section id="reservation" class="bg-[#050505] py-20 px-8 md:px-12 relative">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-10 scroll-wait">
+                 <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+                    Rezervace <span class="text-brand-gold">Akcí</span>
+                 </h2>
+                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg mb-6"></div>
+                 <p class="text-gray-300 text-lg font-light leading-relaxed max-w-2xl mx-auto">
+                     Ať už chystáte narozeninovou oslavu, firemní večírek, nebo rodinné setkání, naše salonky jsou vám plně k dispozici. Vyplňte nezávaznou poptávku a my se vám co nejdříve ozveme s nabídkou rautu a termínu na míru.
+                 </p>
+            </div>
+            
+            <form id="reservation-form" class="bg-white/5 border border-white/10 p-6 md:p-10 rounded-sm shadow-2xl scroll-wait delay-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="flex flex-col">
+                        <label for="res-name" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Jméno a příjmení</label>
+                        <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600" placeholder="Např. Jan Novák">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="res-email" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">E-mail</label>
+                        <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600" placeholder="jan@novak.cz">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="res-phone" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Telefon</label>
+                        <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600" placeholder="+420 777 777 777">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="res-date" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Předpokládaný termín</label>
+                        <input type="date" id="res-date" name="date" class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition text-gray-400 [color-scheme:dark]">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="res-guests" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Počet osob (odhad)</label>
+                        <input type="number" id="res-guests" name="guests" min="1" max="100" class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600" placeholder="Např. 20">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="res-type" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Typ akce</label>
+                        <select id="res-type" name="type" class="bg-black/50 border border-white/20 text-gray-300 px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition appearance-none cursor-pointer">
+                            <option value="oslava">Narozeninová oslava</option>
+                            <option value="vecirek">Firemní večírek</option>
+                            <option value="svatba">Svatební hostina</option>
+                            <option value="jine">Jiné / Nechci specifikovat</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col mb-8">
+                    <label for="res-note" class="text-brand-gold text-xs font-heading tracking-widest uppercase mb-2">Další přání / Specifikace rautu (volitelné)</label>
+                    <textarea id="res-note" name="note" rows="4" class="bg-black/50 border border-white/20 text-white px-4 py-3 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 resize-none" placeholder="Máme zájem o teplý i studený raut. Bude mezi námi 5 vegetariánů..."></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" onclick="event.preventDefault(); alert('Formulář zatím není napojen na backend. Brzy jej zprovozníme!');" class="bg-brand-gold text-black font-bold font-heading py-4 px-10 text-lg rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
+                        Odeslat nezávaznou poptávku
+                    </button>
+                    <p class="text-gray-500 text-xs mt-4 font-light">Odesláním formuláře souhlasíte se zpracováním osobních údajů pro vyřízení rezervace.</p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- SECTION SEPARATOR -->
+    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
+
     <!-- CONTACT SECTION -->
     <section id="contact" class="bg-black py-16 px-8 md:px-12">
         <div class="max-w-7xl mx-auto">
