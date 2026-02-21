@@ -46,7 +46,7 @@ function initApp() {
 
 /**
  * Fetch dynamic data from Node.js backend
- * Aktualizuje otevírací dobu a kontakty v patičce z data.json
+ * Aktualizuje otevírací dobu a kontakty z data.json dle zvoleného režimu
  */
 async function fetchDynamicData() {
     try {
@@ -55,32 +55,33 @@ async function fetchDynamicData() {
         
         const data = await response.json();
         
-        // Update Opening Hours
-        if (data.openHours) {
+        // 1. Update Opening Hours (based on active mode)
+        if (data.openHoursMode && data.openHours && data.openHours[data.openHoursMode]) {
             const hoursContainer = document.querySelector('#contact ul');
             if (hoursContainer) {
-                hoursContainer.innerHTML = `
-                    <li class="flex justify-between border-b border-white/10 pb-2">
-                        <span class="font-bold text-white">Pondělí</span>
-                        <span>${data.openHours.monday}</span>
-                    </li>
-                    <li class="flex justify-between border-b border-white/10 pb-2">
-                        <span class="font-bold text-white">Úterý - Pátek</span>
-                        <span>${data.openHours.tuesdayToFriday}</span>
-                    </li>
-                    <li class="flex justify-between border-b border-white/10 pb-2">
-                        <span class="font-bold text-white">Sobota</span>
-                        <span>${data.openHours.saturday}</span>
-                    </li>
-                    <li class="flex justify-between pt-1">
-                        <span class="font-bold text-white">Neděle</span>
-                        <span class="text-brand-gold">${data.openHours.sunday}</span>
-                    </li>
-                `;
+                const activeHours = data.openHours[data.openHoursMode];
+                
+                // Vygenerování HTML pro zvolený režim dnů
+                let htmlContent = '';
+                activeHours.forEach((item, index) => {
+                    // Poslední položka (často neděle/zavřeno) nemá border-b, ale pt-1
+                    const isLast = index === activeHours.length - 1;
+                    const liClass = isLast ? "flex justify-between pt-1" : "flex justify-between border-b border-white/10 pb-2";
+                    const timeClass = (item.time.toUpperCase() === "ZAVŘENO") ? "text-brand-gold font-bold" : "";
+                    
+                    htmlContent += `
+                        <li class="${liClass}">
+                            <span class="font-bold text-white">${item.label}</span>
+                            <span class="${timeClass}">${item.time}</span>
+                        </li>
+                    `;
+                });
+                
+                hoursContainer.innerHTML = htmlContent;
             }
         }
 
-        // Update Contacts
+        // 2. Update Contacts
         if (data.contacts) {
             // Update phone numbers in hero
             const heroPhone = document.querySelector('.hero-section a[href^="tel:"]');
@@ -107,11 +108,6 @@ async function fetchDynamicData() {
             if (contactEmail && data.contacts.email) {
                 contactEmail.href = `mailto:${data.contacts.email}`;
                 contactEmail.textContent = data.contacts.email;
-            }
-
-            const contactAddress = document.querySelector('#contact p.text-gray-300');
-            if (contactAddress && data.contacts.address) {
-                contactAddress.innerHTML = data.contacts.address;
             }
         }
     } catch (error) {

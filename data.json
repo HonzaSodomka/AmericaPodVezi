@@ -1,14 +1,24 @@
 {
+  "openHoursMode": "mode2",
   "openHours": {
-    "monday": "11:00 - 14:00",
-    "tuesdayToFriday": "11:00 - 22:00",
-    "saturday": "11:30 - 22:00",
-    "sunday": "ZAVŘENO"
+    "mode1": [
+      {"label": "Pondělí - Pátek", "time": "11:00 - 22:00"},
+      {"label": "Sobota", "time": "11:30 - 22:00"},
+      {"label": "Neděle", "time": "ZAVŘENO"}
+    ],
+    "mode2": [
+      {"label": "Pondělí", "time": "11:00 - 14:00"},
+      {"label": "Úterý - Pátek", "time": "11:00 - 22:00"},
+      {"label": "Sobota", "time": "11:30 - 22:00"},
+      {"label": "Neděle", "time": "ZAVŘENO"}
+    ],
+    "mode3": [
+      {"label": "Pondělí - Neděle", "time": "11:00 - 22:00"}
+    ]
   },
   "contacts": {
     "phoneMain": "326 322 007",
     "phoneAlt": "606 537 469",
-    "email": "info@americapodvezi.cz",
-    "address": "Komenského náměstí 61<br>Mladá Boleslav"
+    "email": "info@americapodvezi.cz"
   }
 }
