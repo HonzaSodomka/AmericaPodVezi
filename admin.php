@@ -10,18 +10,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $currentData = json_decode(file_get_contents($dataFile), true) ?: [];
     }
 
-    // Kontakty
     $currentData['contact']['phone'] = $_POST['contact_phone'] ?? '';
     $currentData['contact']['phone_alt'] = $_POST['contact_phone_alt'] ?? '';
     $currentData['contact']['email'] = $_POST['contact_email'] ?? '';
     $currentData['contact']['email_reservation'] = $_POST['contact_email_reservation'] ?? '';
     $currentData['contact']['address'] = $_POST['contact_address'] ?? '';
 
-    // Rating
     $currentData['rating']['value'] = (float)($_POST['rating_value'] ?? 4.5);
     $currentData['rating']['count'] = (int)($_POST['rating_count'] ?? 900);
 
-    // Delivery
     $currentData['delivery']['wolt'] = [
         'url' => $_POST['delivery_wolt_url'] ?? '',
         'enabled' => isset($_POST['delivery_wolt_enabled'])
@@ -37,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $currentData['daily_menu_url'] = $_POST['daily_menu_url'] ?? '';
 
-    // OTEVÍRACÍ DOBA
     $openingHoursRaw = $_POST['opening_hours_json'] ?? null;
     if ($openingHoursRaw !== null && $openingHoursRaw !== '') {
         $openingHoursParsed = json_decode($openingHoursRaw, true);
@@ -50,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // VÝJIMKY
     $exceptionsRaw = $_POST['exceptions_json'] ?? null;
     if ($exceptionsRaw !== null && $exceptionsRaw !== '') {
         $exceptionsParsed = json_decode($exceptionsRaw, true);
@@ -103,7 +98,6 @@ function isChecked($array, $key1, $key2, $key3) {
     return !empty($array[$key1][$key2][$key3]) ? 'checked' : '';
 }
 
-// FORCE OBJECTS not arrays for empty data
 $openingHoursData = $data['opening_hours'] ?? [];
 if (empty($openingHoursData)) {
     $openingHoursData = new stdClass();
@@ -126,19 +120,15 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     <link rel="stylesheet" href="fa/css/fontawesome.min.css">
     <link rel="stylesheet" href="fa/css/solid.min.css">
     <style>
-        /* BÍLÉ IKONKY - Odstranit filter, nechat nativní barvu */
         input[type="date"], input[type="time"] {
             color-scheme: dark;
         }
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator {
             cursor: pointer;
-            /* Odstranit filter, nechat nativní barvu (bílá) */
             filter: none;
             opacity: 1;
         }
-        
-        /* Přidání viditelnosti pomocí background */
         input[type="date"]::-webkit-calendar-picker-indicator {
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"><path d="M11 2V1h-1v1H6V1H5v1H1v14h14V2h-4zM2 15V5h12v10H2zm2-8h2v2H4V7zm3 0h2v2H7V7zm3 0h2v2h-2V7zM4 10h2v2H4v-2zm3 0h2v2H7v-2zm3 0h2v2h-2v-2z"/></svg>');
             background-size: 16px 16px;
@@ -416,18 +406,11 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     let selectedDays = [];
     
     let openingHoursData = <?= $openingHoursJson ?>;
-    if (Array.isArray(openingHoursData)) {
-        console.warn('openingHoursData was array, converting to object');
-        openingHoursData = {};
-    }
+    if (Array.isArray(openingHoursData)) openingHoursData = {};
     
     let exceptionsData = <?= $exceptionsJson ?>;
-    if (Array.isArray(exceptionsData)) {
-        console.warn('exceptionsData was array, converting to object');
-        exceptionsData = {};
-    }
+    if (Array.isArray(exceptionsData)) exceptionsData = {};
 
-    // Zavřeno checkbox logika
     const closedCheckbox = document.getElementById('closedCheckbox');
     const timeInputs = document.getElementById('timeInputs');
     const timeFrom = document.getElementById('timeFrom');
@@ -441,7 +424,6 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         }
     });
 
-    // Výjimky zavřeno checkbox
     const exceptionClosedCheckbox = document.getElementById('exceptionClosedCheckbox');
     const exceptionTimeInputs = document.getElementById('exceptionTimeInputs');
     const exceptionTimeFrom = document.getElementById('exceptionTimeFrom');
@@ -549,7 +531,10 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     };
 
     document.getElementById('addHoursBtn').onclick = function() {
-        if (selectedDays.length === 0) { alert('Vyberte den'); return; }
+        if (selectedDays.length === 0) { 
+            alert('Vyberte den'); 
+            return; 
+        }
         
         let timeString;
         if (closedCheckbox.checked) {
@@ -557,14 +542,10 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         } else {
             const from = timeFrom.value;
             const to = timeTo.value;
-            if (!from || !to) { alert('Vyplňte čas'); return; }
-            
-            // VALIDACE: Od musí být dřív než Do
-            if (from >= to) {
-                alert('Čas "Od" musí být dříve než "Do"!');
-                return;
+            if (!from || !to) { 
+                alert('Vyplňte čas'); 
+                return; 
             }
-            
             timeString = `${from} - ${to}`;
         }
         
@@ -584,8 +565,7 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     };
 
     function syncJsonInput() {
-        const json = JSON.stringify(openingHoursData);
-        document.getElementById('openingHoursJson').value = json;
+        document.getElementById('openingHoursJson').value = JSON.stringify(openingHoursData);
     }
 
     function formatDateForDisplay(dateStr) {
@@ -623,10 +603,14 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         const from = document.getElementById('exceptionDateFrom').value;
         const to = document.getElementById('exceptionDateTo').value;
         
-        if (!from || !to) { alert('Vyberte oba datumy'); return; }
-        
-        // VALIDACE: Datum Od musí být před Do
-        if (from > to) { alert('Datum "Od" musí být před "Do"'); return; }
+        if (!from || !to) { 
+            alert('Vyberte oba datumy'); 
+            return; 
+        }
+        if (from > to) { 
+            alert('Datum "Od" musí být před "Do"'); 
+            return; 
+        }
         
         let timeString;
         if (exceptionClosedCheckbox.checked) {
@@ -634,14 +618,10 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         } else {
             const timeFromVal = exceptionTimeFrom.value;
             const timeToVal = exceptionTimeTo.value;
-            if (!timeFromVal || !timeToVal) { alert('Vyplňte čas'); return; }
-            
-            // VALIDACE: Od musí být dřív než Do
-            if (timeFromVal >= timeToVal) {
-                alert('Čas "Od" musí být dříve než "Do"!');
-                return;
+            if (!timeFromVal || !timeToVal) { 
+                alert('Vyplňte čas'); 
+                return; 
             }
-            
             timeString = `${timeFromVal} - ${timeToVal}`;
         }
         
@@ -660,8 +640,7 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     };
 
     function syncExceptionsJson() {
-        const json = JSON.stringify(exceptionsData);
-        document.getElementById('exceptionsJson').value = json;
+        document.getElementById('exceptionsJson').value = JSON.stringify(exceptionsData);
     }
 
     if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
