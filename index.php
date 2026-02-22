@@ -473,13 +473,16 @@ if (!empty($boltLink)) {
                 </p>
                 <div class="flex flex-wrap gap-4 items-center justify-center md:justify-start animate-enter delay-300">
                     <div class="flex flex-row gap-3 w-full md:w-auto">
-                        <a href="#denni-menu" class="min-h-[64px] flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading px-4 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-row items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-2 whitespace-nowrap min-w-[140px]">
+    <a href="#denni-menu" class="min-h-[64px] flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading px-4 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-row items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-2 whitespace-nowrap min-w-[140px]">
+        <i class="fas fa-utensils text-sm sm:text-base"></i>
+        <span class="text-base sm:text-lg">DENNÍ MENU</span>
+    </a>
+    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="min-h-[64px] flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
+        <span class="text-base sm:text-lg mt-1">REZERVACE</span>
+        <span class="text-[10px] sm:text-xs font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> <?= htmlspecialchars($phone) ?></span>
+    </a>
+</div>
 
-                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="min-h-[64px] flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
-                            <span class="text-base sm:text-lg mt-1">REZERVACE</span>
-                            <span class="text-[10px] sm:text-xs font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> <?= htmlspecialchars($phone) ?></span>
-                        </a>
-                    </div>
                     <?php if (!empty($activeDeliveries)): ?>
                     <div class="min-h-[64px] bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col sm:flex-row items-center justify-center px-4 md:px-6 py-2 gap-1 md:gap-4 shadow-xl w-full md:w-auto overflow-hidden">
                         <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-300 font-heading font-bold whitespace-nowrap md:mt-0 mt-1">Rozvoz domů:</span>
