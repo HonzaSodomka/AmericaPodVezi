@@ -10,11 +10,22 @@ define('MENU_URL', 'https://www.menicka.cz/7509-america-pod-vezi.html');
 define('OUTPUT_FILE', __DIR__ . '/daily_menu.json');
 
 function scrapeMenu() {
-    // Fetch HTML
-    $html = @file_get_contents(MENU_URL);
+    // Fetch HTML using cURL (more reliable than file_get_contents)
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, MENU_URL);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     
-    if ($html === false) {
-        error_log('Failed to fetch menu from ' . MENU_URL);
+    $html = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($html === false || $httpCode !== 200) {
+        error_log('Failed to fetch menu from ' . MENU_URL . ' (HTTP ' . $httpCode . '): ' . $error);
         return false;
     }
     
