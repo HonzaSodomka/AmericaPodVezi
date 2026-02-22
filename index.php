@@ -430,7 +430,7 @@ if (!empty($boltLink)) {
                         <i class="fas fa-chevron-left text-lg md:text-xl"></i>
                     </button>
                     <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-0 md:p-4 transition duration-300">
-                        <img src="menu-page-1.svg" id="current-menu-image" alt="Jídelní lístek strana 1 - Burgery a předkrmy" width="800" height="600" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
+                        <img src="menu-page-1.svg" id="current-menu-image" alt="Jídelní lístek strana 1 - Burgery a předkrmy" width="800" height="600" loading="lazy" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
                         <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
                             <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
                             <p class="text-gray-500">Zde se zobrazí jídelní lístek</p>
@@ -447,7 +447,7 @@ if (!empty($boltLink)) {
                 </div>
             </div>
 
-            <!-- Fotokartíčky – Speciality & Catering (pod listek) -->
+            <!-- Fotokartičky – Speciality & Catering (pod listek) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-10 scroll-wait">
                 <div class="relative h-56 md:h-72 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default delay-100">
                     <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
@@ -660,7 +660,7 @@ if (!empty($boltLink)) {
                             $value = $openingHours[$key];
                             $isClosed = (strpos(strtoupper($value), 'ZAVŘENO') !== false);
                             $valClass = $isClosed ? 'text-brand-gold' : '';
-                            $borderClass = ($index < $count - 1) ? 'border-b border-white/10 pb-2' : 'pt-1';
+                            $borderClass = ($index < $count - 1) ? 'border-b border-white/10 pb-3' : 'pt-1';
                         ?>
                             <li class="flex justify-between <?= $borderClass ?>">
                                 <span class="font-bold text-white"><?= htmlspecialchars($label) ?></span>
@@ -669,9 +669,6 @@ if (!empty($boltLink)) {
                         <?php endforeach; ?>
 
                         <?php if (!empty($exceptions)): ?>
-                            <li class="pt-3 mt-1 border-t border-brand-gold/30 text-[10px] text-brand-gold uppercase tracking-widest font-heading flex flex-col gap-1">
-                                <span>Výjimečná otevírací doba:</span>
-                            </li>
                             <?php foreach ($exceptions as $dateRange => $note): 
                                 $dates = explode('_', $dateRange);
                                 if (count($dates) === 2) {
@@ -682,10 +679,10 @@ if (!empty($boltLink)) {
                                     $displayRange = $dateRange;
                                 }
                                 $isClosed = (strpos(strtoupper($note), 'ZAVŘENO') !== false);
-                                $valClass = $isClosed ? 'text-brand-gold font-bold' : 'text-white font-bold';
+                                $valClass = $isClosed ? 'text-brand-gold' : '';
                             ?>
-                            <li class="flex justify-between pb-1 text-sm">
-                                <span class="text-gray-300"><?= htmlspecialchars($displayRange) ?></span>
+                            <li class="flex justify-between border-t border-brand-gold/20 pt-3">
+                                <span class="font-bold text-white"><?= htmlspecialchars($displayRange) ?></span>
                                 <span class="<?= $valClass ?>"><?= htmlspecialchars($note) ?></span>
                             </li>
                             <?php endforeach; ?>
