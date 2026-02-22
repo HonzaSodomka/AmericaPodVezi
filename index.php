@@ -473,12 +473,8 @@ if (!empty($boltLink)) {
                 </p>
                 <div class="flex flex-wrap gap-4 items-center justify-center md:justify-start animate-enter delay-300">
                     <div class="flex flex-row gap-3 w-full md:w-auto">
-                        <?php if ($dailyMenuUrl): ?>
-                        <a href="<?= $dailyMenuUrl ?>" class="min-h-[64px] flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading px-4 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-row items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-2 whitespace-nowrap min-w-[140px]">
-                            <i class="fas fa-utensils text-sm sm:text-base"></i>
-                            <span class="text-base sm:text-lg">DENNÍ MENU</span>
-                        </a>
-                        <?php endif; ?>
+                        <a href="#denni-menu" class="min-h-[64px] flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading px-4 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-row items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-2 whitespace-nowrap min-w-[140px]">
+
                         <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="min-h-[64px] flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
                             <span class="text-base sm:text-lg mt-1">REZERVACE</span>
                             <span class="text-[10px] sm:text-xs font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> <?= htmlspecialchars($phone) ?></span>
@@ -786,46 +782,86 @@ if (!empty($boltLink)) {
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
     <!-- RESERVATION / EVENTS SECTION -->
-    <section id="reservation" class="bg-[#050505] py-20 px-8 md:px-12 relative">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-10 scroll-wait">
-                 <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
-                    Rezervace <span class="text-brand-gold">Akcí</span>
-                 </h2>
-                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg mb-6"></div>
-                 <p class="text-gray-300 text-lg font-light leading-relaxed max-w-2xl mx-auto">
-                     Ať už chystáte narozeninovou oslavu, firemní večírek, nebo rodinné setkání, naše salonky jsou vám plně k dispozici. Vyplňte nezávaznou poptávku a my se vám co nejdříve ozveme s nabídkou rautu a termínu na míru.
-                 </p>
-            </div>
-            
-            <form id="reservation-form" class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-sm shadow-xl scroll-wait delay-100 max-w-3xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div class="flex flex-col">
-                        <label for="res-name" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Jméno a příjmení</label>
-                        <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="Např. Jan Novák">
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="res-phone" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Telefon</label>
-                        <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="+420 777 777 777">
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="res-email" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">E-mail</label>
-                        <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="jan@novak.cz">
-                    </div>
-                </div>
-                <div class="flex flex-col mb-6">
-                    <label for="res-note" class="text-brand-gold text-[10px] font-heading tracking-widest uppercase mb-1.5">Vaše představa (termín, počet osob, typ akce...)</label>
-                    <textarea id="res-note" name="note" rows="3" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm resize-none" placeholder="Dobrý den, rádi bychom u vás uspořádali narozeninovou oslavu pro cca 20 lidí..."></textarea>
-                </div>
-                <div class="text-center">
-                    <button type="submit" onclick="event.preventDefault(); alert('Formulář zatím není napojen na backend. Brzy jej zprovozníme!');" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-sm md:text-base rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
-                        Odeslat nezávaznou poptávku
-                    </button>
-                    <p class="text-gray-500 text-[10px] mt-3 font-light">Odesláním formuláře souhlasíte se zpracováním údajů pro vyřízení rezervace.</p>
-                </div>
-            </form>
+<section id="reservation" class="bg-[#050505] py-20 px-8 md:px-12 relative">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-10 scroll-wait">
+             <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+                Rezervace <span class="text-brand-gold">Akcí</span>
+             </h2>
+             <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg mb-6"></div>
+             <p class="text-gray-300 text-lg font-light leading-relaxed max-w-2xl mx-auto">
+                 Ať už chystáte narozeninovou oslavu, firemní večírek, nebo rodinné setkání, naše salonky jsou vám plně k dispozici. Vyplňte nezávaznou poptávku a my se vám co nejdříve ozveme s nabídkou rautu a termínu na míru.
+             </p>
         </div>
-    </section>
+        
+        <form id="reservation-form" method="POST" action="reservation.php" class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-sm shadow-xl scroll-wait delay-100 max-w-3xl mx-auto">
+            <!-- Honeypot (bot trap) - hidden field -->
+            <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+            
+            <?php
+            // Display success/error messages
+            if (isset($_GET['reservation'])):
+                $status = $_GET['reservation'];
+                if ($status === 'success'):
+            ?>
+                <div class="bg-green-900/30 border border-green-500/50 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-pulse">
+                    <i class="fas fa-check-circle text-lg"></i>
+                    <span class="text-sm">Děkujeme! Vaše poptávka byla odeslána. Brzy se vám ozveme.</span>
+                </div>
+            <?php
+                elseif ($status === 'error'):
+            ?>
+                <div class="bg-red-900/30 border border-red-500/50 text-red-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
+                    <i class="fas fa-exclamation-triangle text-lg"></i>
+                    <span class="text-sm">Omlouváme se, nepodařilo se odeslat email. Zkuste to prosím později nebo nás kontaktujte telefonicky.</span>
+                </div>
+            <?php
+                elseif ($status === 'invalid'):
+            ?>
+                <div class="bg-yellow-900/30 border border-yellow-500/50 text-yellow-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
+                    <i class="fas fa-info-circle text-lg"></i>
+                    <span class="text-sm">Zkontrolujte prosím vyplněné údaje a zkuste to znovu.</span>
+                </div>
+            <?php
+                elseif ($status === 'rate_limit'):
+            ?>
+                <div class="bg-orange-900/30 border border-orange-500/50 text-orange-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
+                    <i class="fas fa-clock text-lg"></i>
+                    <span class="text-sm">Příliš mnoho pokusů. Zkuste to prosím za chvíli.</span>
+                </div>
+            <?php
+                endif;
+            endif;
+            ?>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="flex flex-col">
+                    <label for="res-name" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Jméno a příjmení</label>
+                    <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="Např. Jan Novák">
+                </div>
+                <div class="flex flex-col">
+                    <label for="res-phone" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Telefon</label>
+                    <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="+420 777 777 777">
+                </div>
+                <div class="flex flex-col">
+                    <label for="res-email" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">E-mail</label>
+                    <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="jan@novak.cz">
+                </div>
+            </div>
+            <div class="flex flex-col mb-6">
+                <label for="res-note" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Vaše představa (termín, počet osob, typ akce...)</label>
+                <textarea id="res-note" name="note" rows="3" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm resize-none" placeholder="Dobrý den, rádi bychom u vás uspořádali narozeninovou oslavu pro cca 20 lidí..."></textarea>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-sm md:text-base rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
+                    <i class="fas fa-paper-plane mr-2"></i> Odeslat nezávaznou poptávku
+                </button>
+                <p class="text-gray-500 text-[10px] mt-3 font-light">Odesláním formuláře souhlasíte se zpracováním údajů pro vyřízení rezervace.</p>
+            </div>
+        </form>
+    </div>
+</section>
+
 
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
