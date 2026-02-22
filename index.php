@@ -1029,5 +1029,59 @@ if (!empty($boltLink)) {
 
     <!-- Scripts -->
     <script src="script.js"></script>
+    <script>
+const form = document.getElementById('reservation-form');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Smaž staré chyby
+    document.querySelectorAll('.error-msg').forEach(el => el.remove());
+    document.querySelectorAll('.border-red-500').forEach(el => {
+        el.classList.remove('border-red-500');
+        el.classList.add('border-white/20');
+    });
+    
+    let ok = true;
+    
+    const name = document.getElementById('res-name');
+    const phone = document.getElementById('res-phone');
+    const email = document.getElementById('res-email');
+    const note = document.getElementById('res-note');
+    
+    // Kontrola
+    if (name.value.trim().length < 2) {
+        showError(name, 'Jméno musí mít alespoň 2 znaky');
+        ok = false;
+    }
+    
+    if (phone.value.trim().length < 9 || !/^[\d\s\+\-\(\)]+$/.test(phone.value)) {
+        showError(phone, 'Telefon min. 9 číslic');
+        ok = false;
+    }
+    
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        showError(email, 'Neplatný email');
+        ok = false;
+    }
+    
+    if (note.value.trim().length < 10) {
+        showError(note, 'Min. 10 znaků');
+        ok = false;
+    }
+    
+    if (ok) this.submit();
+});
+
+function showError(field, msg) {
+    field.classList.remove('border-white/20');
+    field.classList.add('border-red-500');
+    const err = document.createElement('span');
+    err.className = 'error-msg text-red-400 text-sm mt-1 block';
+    err.textContent = '⚠️ ' + msg;
+    field.parentElement.appendChild(err);
+}
+</script>
+
 </body>
 </html>
