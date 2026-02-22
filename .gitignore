@@ -1,4 +1,11 @@
 node_modules/
 setup-fa.sh
+
+
+# Tailwind CLI binaries (lokalni nastroje)
 tailwindcss.exe
+tailwindcss
+tailwindcss-*
+
+# Tailwind config (kazdy ma svuj lokalni)
 tailwind.config.js
