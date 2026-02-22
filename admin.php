@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         if (!isset($currentData['opening_hours'])) {
-            $currentData['opening_hours'] = new stdClass(); // Empty object
+            $currentData['opening_hours'] = new stdClass();
         }
     }
 
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         if (!isset($currentData['exceptions'])) {
-            $currentData['exceptions'] = new stdClass(); // Empty object
+            $currentData['exceptions'] = new stdClass();
         }
     }
 
@@ -132,7 +132,7 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator {
             cursor: pointer;
-            filter: invert(1) brightness(1.5);
+            filter: invert(1) brightness(2.0);
         }
         
         @keyframes fadeInUp {
@@ -546,7 +546,8 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         }
         
         selectedDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
-        const key = selectedDays.join('_');
+        // FIX: Use only first and last day (monday_wednesday NOT monday_tuesday_wednesday)
+        const key = selectedDays.length > 1 ? `${selectedDays[0]}_${selectedDays[selectedDays.length - 1]}` : selectedDays[0];
         openingHoursData[key] = timeString;
         
         console.log('AFTER ADD - openingHoursData:', openingHoursData);
@@ -566,7 +567,14 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         const json = JSON.stringify(openingHoursData);
         document.getElementById('openingHoursJson').value = json;
         console.log('SYNCED Opening hours JSON:', json);
-        console.log('Hidden input value:', document.getElementById('openingHoursJson').value);
+    }
+
+    function formatDateForDisplay(dateStr) {
+        // Convert 2026-02-07 to 7.2.
+        const parts = dateStr.split('-');
+        const day = parseInt(parts[2], 10);
+        const month = parseInt(parts[1], 10);
+        return `${day}.${month}.`;
     }
 
     function renderExceptionsPreview() {
@@ -578,9 +586,11 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         }
         Object.entries(exceptionsData).forEach(([key, value]) => {
             const [from, to] = key.split('_');
+            const fromDisplay = formatDateForDisplay(from);
+            const toDisplay = formatDateForDisplay(to);
             const item = document.createElement('div');
             item.className = 'flex items-center justify-between bg-black/30 p-3 rounded-sm border border-white/5';
-            item.innerHTML = `<div class="flex-1 min-w-0"><span class="text-brand-gold font-bold text-xs sm:text-sm block sm:inline">${from} – ${to}</span><span class="text-white text-sm sm:text-base sm:ml-3 block sm:inline mt-1 sm:mt-0">${value}</span></div><button type="button" onclick="removeException('${key}')" class="text-red-400 hover:text-red-300 transition ml-3 flex-shrink-0"><i class="fas fa-times"></i></button>`;
+            item.innerHTML = `<div class="flex-1 min-w-0"><span class="text-brand-gold font-bold text-xs sm:text-sm block sm:inline">${fromDisplay} – ${toDisplay}</span><span class="text-white text-sm sm:text-base sm:ml-3 block sm:inline mt-1 sm:mt-0">${value}</span></div><button type="button" onclick="removeException('${key}')" class="text-red-400 hover:text-red-300 transition ml-3 flex-shrink-0"><i class="fas fa-times"></i></button>`;
             preview.appendChild(item);
         });
     }
@@ -628,7 +638,6 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         const json = JSON.stringify(exceptionsData);
         document.getElementById('exceptionsJson').value = json;
         console.log('SYNCED Exceptions JSON:', json);
-        console.log('Hidden input value:', document.getElementById('exceptionsJson').value);
     }
 
     // DEBUG: Před odesláním formuáře
