@@ -3,33 +3,19 @@
  * Menu scraper pro menicka.cz
  * Stáhne denní menu a uloží do daily_menu.json
  * 
- * Použití: php scrape_menu.php nebo jako cron job
+ * Použití: php scrape_menu.php
  */
 
-define('MENU_URL', 'https://www.menicka.cz/7509-america-pod-vezi.html');
+define('MENU_URL', 'http://www.menicka.cz/7509-america-pod-vezi.html'); // HTTP místo HTTPS
 define('OUTPUT_FILE', __DIR__ . '/daily_menu.json');
 
 function scrapeMenu() {
-    // Fetch HTML using file_get_contents with proper headers
-    $context = stream_context_create([
-        'http' => [
-            'method' => 'GET',
-            'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\r\n" .
-                       "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" .
-                       "Accept-Language: cs,en;q=0.9\r\n",
-            'timeout' => 10
-        ],
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false
-        ]
-    ]);
-    
-    $html = @file_get_contents(MENU_URL, false, $context);
+    // Try simple file_get_contents with HTTP (not HTTPS)
+    $html = @file_get_contents(MENU_URL);
     
     if ($html === false) {
         $error = error_get_last();
-        error_log('Failed to fetch menu from ' . MENU_URL . ': ' . ($error['message'] ?? 'Unknown error'));
+        error_log('Failed to fetch menu: ' . ($error['message'] ?? 'Unknown error'));
         return false;
     }
     
@@ -44,11 +30,10 @@ function scrapeMenu() {
     ];
     
     // Find all menu sections by day
-    // Struktura: <div class="menicka"> obsahuje dny
     $menuDivs = $xpath->query("//div[contains(@class, 'menicka')]");
     
     foreach ($menuDivs as $menuDiv) {
-        // Najdi nadpis dne (např. "Čtvrtek 7.8.2025")
+        // Najdi nadpis dne
         $dateNodes = $xpath->query(".//h2 | .//h3", $menuDiv);
         if ($dateNodes->length === 0) continue;
         
@@ -65,7 +50,7 @@ function scrapeMenu() {
             'meals' => []
         ];
         
-        // Najdi všechny položky menu (soup + meals)
+        // Najdi všechny položky menu
         $menuItems = $xpath->query(".//li[contains(@class, 'polevka')] | .//li[contains(@class, 'jidlo')]", $menuDiv);
         
         foreach ($menuItems as $item) {
@@ -73,7 +58,6 @@ function scrapeMenu() {
             if (empty($text)) continue;
             
             // Rozčlenění na text a cenu
-            // Formát: "Název jídla 199 Kč" nebo "Polévka 45 Kč"
             if (preg_match('/^(.+?)\s+(\d+)\s*Kč\s*$/u', $text, $matches)) {
                 $name = trim($matches[1]);
                 $price = intval($matches[2]);
@@ -85,7 +69,7 @@ function scrapeMenu() {
                         'price' => $price
                     ];
                 } else {
-                    // Hlavní jídlo - vyřeš číslo na začátku
+                    // Hlavní jídlo
                     $mealNumber = null;
                     if (preg_match('/^(\d+)\.\s*(.+)$/u', $name, $mealMatches)) {
                         $mealNumber = intval($mealMatches[1]);
