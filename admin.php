@@ -1,7 +1,5 @@
 <?php
 $dataFile = __DIR__ . '/data.json';
-$successMessage = '';
-$errorMessage = '';
 
 // 1. ZPRACOVÁNÍ FORMULÁŘE (ULOŽENÍ)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -46,13 +44,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     
     if (file_put_contents($dataFile, $jsonString) !== false) {
-        $successMessage = 'Změny byly úspěšně uloženy!';
+        // POST-REDIRECT-GET pattern: Přesměruj po úspěšném uložení
+        header('Location: admin.php?saved=1');
+        exit;
     } else {
-        $errorMessage = 'Chyba při zápisu do souboru data.json. Zkontrolujte práva k souboru.';
+        // Přesměruj s chybovou hláškou
+        header('Location: admin.php?error=1');
+        exit;
     }
 }
 
-// 2. NAČTENÍ DAT PRO VYKRESLENÍ FORMULÁŘE
+// 2. ZPRÁVY (z GET parametrů po redirectu)
+$successMessage = '';
+$errorMessage = '';
+
+if (isset($_GET['saved'])) {
+    $successMessage = 'Změny byly úspěšně uloženy!';
+}
+if (isset($_GET['error'])) {
+    $errorMessage = 'Chyba při zápisu do souboru data.json. Zkontrolujte práva k souboru.';
+}
+
+// 3. NAČTENÍ DAT PRO VYKRESLENÍ FORMULÁŘE (vždy aktuální data z disku)
 $data = [];
 if (file_exists($dataFile)) {
     $data = json_decode(file_get_contents($dataFile), true) ?: [];
