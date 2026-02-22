@@ -1074,6 +1074,7 @@ form.addEventListener('submit', function(e) {
     // AJAX odeslání
     const formData = new FormData(form);
     const btn = form.querySelector('button[type="submit"]');
+    const btnText = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Odesílám...';
     
@@ -1081,16 +1082,22 @@ form.addEventListener('submit', function(e) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
-        // Success
-        form.reset();
-        form.innerHTML = '<div class="text-center py-8"><div class="text-6xl mb-4">✅</div><h3 class="text-2xl font-bold text-brand-gold mb-2">Rezervace odeslána!</h3><p class="text-white/80">Ozveme se vám co nejdříve.</p></div>';
+        if (data.success) {
+            // SUCCESS
+            form.innerHTML = '<div class="text-center py-12"><div class="text-7xl mb-4">✅</div><h3 class="text-3xl font-bold text-brand-gold mb-3">Rezervace odeslána!</h3><p class="text-white/80 text-lg">Ozveme se vám co nejdříve.</p></div>';
+        } else {
+            // ERROR
+            btn.disabled = false;
+            btn.textContent = btnText;
+            alert('❌ ' + data.message);
+        }
     })
     .catch(error => {
         btn.disabled = false;
-        btn.textContent = 'Odeslat rezervaci';
-        alert('Chyba při odesílání. Zkuste to prosím znovu.');
+        btn.textContent = btnText;
+        alert('❌ Chyba připojení. Zkuste to prosím znovu nebo zavolejte.');
     });
 });
 
