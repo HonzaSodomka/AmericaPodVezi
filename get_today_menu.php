@@ -11,7 +11,7 @@
  */
 
 header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: max-age=300'); // Cache na 5 minut
+header('Cache-Control: max-age=300');
 
 $menuFile = __DIR__ . '/daily_menu.json';
 
@@ -35,7 +35,6 @@ if (!$menuData || empty($menuData['days'])) {
     exit;
 }
 
-// Pokud je požadováno vše
 if (!empty($_GET['all'])) {
     echo json_encode([
         'success' => true,
@@ -45,10 +44,8 @@ if (!empty($_GET['all'])) {
     exit;
 }
 
-// Offset dne (0 = dnes, 1 = zítra, -1 = včera)
 $dayOffset = isset($_GET['day']) ? intval($_GET['day']) : 0;
 
-// Česká jména dnů
 $czechDays = [
     1 => 'Pondělí',
     2 => 'Úterý',
@@ -59,16 +56,13 @@ $czechDays = [
     0 => 'Neděle'
 ];
 
-// Vypočítej cílový datum
-$targetDate = date('j.n.Y', strtotime("+{$dayOffset} days")); // např. "23.2.2026"
+$targetDate = date('j.n.Y', strtotime("+{$dayOffset} days"));
 $targetDayName = $czechDays[date('w', strtotime("+{$dayOffset} days"))];
 
-// Najíť odpovídající den
 $foundDay = null;
 $dayIndex = -1;
 
 foreach ($menuData['days'] as $index => $day) {
-    // Zkus najít podle datumu v textu (např. "Pondělí 23.2.2026")
     if (stripos($day['date'], $targetDate) !== false || 
         (stripos($day['date'], $targetDayName) !== false && 
          stripos($day['date'], date('j.', strtotime("+{$dayOffset} days"))) !== false)) {
@@ -88,7 +82,6 @@ if (!$foundDay) {
     exit;
 }
 
-// Přidej navigaci (má předešlý/další den?)
 $hasPrev = $dayIndex > 0;
 $hasNext = $dayIndex < count($menuData['days']) - 1;
 
