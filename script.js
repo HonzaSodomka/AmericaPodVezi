@@ -29,23 +29,7 @@ const CONFIG = {
         fadeDuration: 600,
         menuFadeTime: 150
     },
-    swipeThreshold: 50,
-    allergenNames: {
-        1: 'Obíloviny s lepkem',
-        2: 'Korouci',
-        3: 'Vejče',
-        4: 'Ryby',
-        5: 'Arášídy',
-        6: 'Sója',
-        7: 'Mléko',
-        8: 'Ořechy',
-        9: 'Celer',
-        10: 'Hořčice',
-        11: 'Sezamová semena',
-        12: 'Oxid siřičitý',
-        13: 'Vlkí bob',
-        14: 'Měkkýši'
-    }
+    swipeThreshold: 50
 };
 
 document.addEventListener('DOMContentLoaded', initApp);
@@ -381,7 +365,7 @@ function initConsentAndMaps() {
 }
 
 /**
- * Daily Menu Loader with Navigation & Allergens
+ * Daily Menu Loader with Navigation
  */
 function initDailyMenuLoader() {
     const loadingEl = document.getElementById('menu-loading');
@@ -392,17 +376,6 @@ function initDailyMenuLoader() {
     if (!loadingEl || !displayEl || !closedEl || !errorEl) return;
     
     let currentDayOffset = 0;
-    
-    const renderAllergens = (allergens) => {
-        if (!allergens || allergens.length === 0) return '';
-        
-        const allergenBadges = allergens.map(num => {
-            const name = CONFIG.allergenNames[num] || `Alergen ${num}`;
-            return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-brand-gold/20 text-brand-gold text-xs font-bold border border-brand-gold/30" title="${name}">${num}</span>`;
-        }).join(' ');
-        
-        return `<div class="flex items-center gap-1.5 mt-1"><span class="text-gray-500 text-xs">Alergeny:</span> ${allergenBadges}</div>`;
-    };
     
     const showState = (state) => {
         [loadingEl, displayEl, closedEl, errorEl].forEach(el => el.classList.add('hidden'));
@@ -426,7 +399,6 @@ function initDailyMenuLoader() {
                     document.getElementById('menu-closed-message').textContent = 
                         data.is_closed ? 'Restaurace má zavřeno.' : 'Menu ještě nebylo zadáno.';
                     
-                    // Navigation
                     const prevBtnClosed = document.getElementById('menu-prev-day-closed');
                     const nextBtnClosed = document.getElementById('menu-next-day-closed');
                     
@@ -458,7 +430,6 @@ function initDailyMenuLoader() {
                 if (data.soup) {
                     document.getElementById('soup-name').textContent = data.soup.name;
                     document.getElementById('soup-price').textContent = data.soup.price + ' Kč';
-                    document.getElementById('soup-allergens').innerHTML = renderAllergens(data.soup.allergens);
                     soupSection.classList.remove('hidden');
                 } else {
                     soupSection.classList.add('hidden');
@@ -468,32 +439,19 @@ function initDailyMenuLoader() {
                 const mealsContainer = document.getElementById('meals-content');
                 mealsContainer.innerHTML = '';
                 
-                let hasAllergens = (data.soup && data.soup.allergens && data.soup.allergens.length > 0);
-                
                 if (data.meals) {
                     data.meals.forEach(meal => {
-                        if (meal.allergens && meal.allergens.length > 0) hasAllergens = true;
-                        
                         const mealDiv = document.createElement('div');
-                        mealDiv.className = 'flex justify-between items-start bg-black/30 p-4 rounded-sm hover:bg-black/40 transition';
+                        mealDiv.className = 'flex justify-between items-center bg-black/30 p-4 rounded-sm hover:bg-black/40 transition';
                         mealDiv.innerHTML = `
-                            <div class="flex-1">
-                                <span class="text-white text-base block">
-                                    ${meal.number ? '<span class="text-brand-gold font-bold mr-2">' + meal.number + '.</span>' : ''}
-                                    ${meal.name}
-                                </span>
-                                ${renderAllergens(meal.allergens)}
-                            </div>
-                            <span class="text-brand-gold font-bold text-lg ml-4 shrink-0">${meal.price} Kč</span>
+                            <span class="text-white text-base">
+                                ${meal.number ? '<span class="text-brand-gold font-bold mr-2">' + meal.number + '.</span>' : ''}
+                                ${meal.name}
+                            </span>
+                            <span class="text-brand-gold font-bold text-lg ml-4">${meal.price} Kč</span>
                         `;
                         mealsContainer.appendChild(mealDiv);
                     });
-                }
-                
-                // Zobraz legendu alergenů pokud jsou nějaké
-                const legendEl = document.getElementById('allergen-legend');
-                if (legendEl) {
-                    legendEl.classList.toggle('hidden', !hasAllergens);
                 }
                 
                 // Navigation
