@@ -3,6 +3,12 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 $dataFile = __DIR__ . '/data.json';
+$uploadsDir = __DIR__ . '/uploads/';
+
+// Create uploads directory if it doesn't exist
+if (!is_dir($uploadsDir)) {
+    mkdir($uploadsDir, 0755, true);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $currentData = [];
@@ -58,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Handle Events/Akce
+    // Handle Events/Akce with FILE-BASED storage
     $eventActive = isset($_POST['event_active']);
     $eventDateFrom = $_POST['event_date_from'] ?? '';
     $eventDateTo = $_POST['event_date_to'] ?? '';
@@ -72,11 +78,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
+    // Handle image upload/update
+    $eventImageFile = $currentData['event']['image_file'] ?? '';
+    
+    if (!empty($eventImageData) && strpos($eventImageData, 'data:image/') === 0) {
+        // New image uploaded - save as file
+        
+        // Delete old file if exists
+        if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
+            unlink(__DIR__ . '/' . $eventImageFile);
+        }
+        
+        // Extract format and data
+        preg_match('/data:image\/(\w+);base64,(.+)/', $eventImageData, $matches);
+        $extension = $matches[1] ?? 'jpg';
+        if ($extension === 'jpeg') $extension = 'jpg';
+        $base64Data = $matches[2] ?? '';
+        
+        if (!empty($base64Data)) {
+            $imageData = base64_decode($base64Data);
+            $filename = 'event-' . time() . '.' . $extension;
+            $filepath = $uploadsDir . $filename;
+            
+            if (file_put_contents($filepath, $imageData)) {
+                $eventImageFile = 'uploads/' . $filename;
+            }
+        }
+    } elseif ($eventImageData === '' && !empty($eventImageFile)) {
+        // Image removed - delete file
+        if (file_exists(__DIR__ . '/' . $eventImageFile)) {
+            unlink(__DIR__ . '/' . $eventImageFile);
+        }
+        $eventImageFile = '';
+    }
+    
     $currentData['event'] = [
         'active' => $eventActive,
         'date_from' => $eventDateFrom,
         'date_to' => $eventDateTo,
-        'image_data' => $eventImageData
+        'image_file' => $eventImageFile
     ];
 
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
@@ -136,11 +176,17 @@ if (empty($exceptionsData)) {
 $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
 
 // Event data
-$eventData = $data['event'] ?? ['active' => false, 'date_from' => '', 'date_to' => '', 'image_data' => ''];
+$eventData = $data['event'] ?? ['active' => false, 'date_from' => '', 'date_to' => '', 'image_file' => ''];
 $eventActive = !empty($eventData['active']);
 $eventDateFrom = $eventData['date_from'] ?? '';
 $eventDateTo = $eventData['date_to'] ?? '';
-$eventImageData = $eventData['image_data'] ?? '';
+$eventImageFile = $eventData['image_file'] ?? '';
+
+// Convert file path to data URL for preview in admin
+$eventImagePreview = '';
+if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
+    $eventImagePreview = $eventImageFile . '?v=' . filemtime(__DIR__ . '/' . $eventImageFile);
+}
 ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -440,8 +486,8 @@ $eventImageData = $eventData['image_data'] ?? '';
                             <p class="text-xs text-gray-500">Velké obrázky budou automaticky zmenšeny na max. 1200px pro rychlé načítání.</p>
                             
                             <!-- Preview Container -->
-                            <div class="mt-4 relative <?= $eventImageData ? '' : 'hidden' ?> w-full max-w-sm border border-white/20 rounded-sm overflow-hidden bg-black/30" id="eventPreviewContainer">
-                                <img id="eventPreview" src="<?= $eventImageData ?>" alt="Náhled akce" class="w-full h-auto">
+                            <div class="mt-4 relative <?= $eventImagePreview ? '' : 'hidden' ?> w-full max-w-sm border border-white/20 rounded-sm overflow-hidden bg-black/30" id="eventPreviewContainer">
+                                <img id="eventPreview" src="<?= $eventImagePreview ?>" alt="Náhled akce" class="w-full h-auto">
                                 <div class="absolute top-2 right-2 flex gap-2">
                                     <button type="button" id="eventRemoveBtn" class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition shadow-lg">
                                         <i class="fas fa-times text-sm"></i>
@@ -450,8 +496,8 @@ $eventImageData = $eventData['image_data'] ?? '';
                                 <div class="absolute bottom-0 left-0 right-0 bg-black/80 p-2 text-xs text-gray-300" id="eventImageInfo"></div>
                             </div>
 
-                            <!-- Hidden input for base64 data -->
-                            <input type="hidden" name="event_image_data" id="eventImageData" value="<?= htmlspecialchars($eventImageData) ?>">
+                            <!-- Hidden input for base64 data (temporary during upload) -->
+                            <input type="hidden" name="event_image_data" id="eventImageData" value="">
                         </div>
                     </div>
                 </div>
@@ -732,7 +778,7 @@ $eventImageData = $eventData['image_data'] ?? '';
         document.getElementById('exceptionsJson').value = JSON.stringify(exceptionsData);
     }
 
-    // ===== EVENT IMAGE HANDLER =====
+    // ===== EVENT IMAGE HANDLER (FILE-BASED) =====
     const eventImageInput = document.getElementById('eventImageInput');
     const eventPreviewContainer = document.getElementById('eventPreviewContainer');
     const eventPreview = document.getElementById('eventPreview');
@@ -803,10 +849,11 @@ $eventImageData = $eventData['image_data'] ?? '';
                 // Calculate final size
                 const sizeKB = Math.round((base64.length * 3) / 4 / 1024);
                 
+                // Store base64 temporarily for form submission
                 eventImageData.value = base64;
                 eventPreview.src = base64;
                 eventPreviewContainer.classList.remove('hidden');
-                eventImageInfo.textContent = `${width}×${height}px • ${sizeKB} KB`;
+                eventImageInfo.textContent = `${width}×${height}px • ${sizeKB} KB • Bude uloženo jako soubor`;
             };
             img.src = event.target.result;
         };
