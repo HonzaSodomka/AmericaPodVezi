@@ -108,22 +108,28 @@ function formatExceptionDate($dateStr) {
     return $dateStr;
 }
 
-// ===== EVENT POPUP LOGIC =====
+// ===== EVENT POPUP LOGIC (FILE-BASED) =====
 $showEventPopup = false;
-$eventImageData = '';
+$eventImagePath = '';
 
 if (isset($data['event'])) {
     $event = $data['event'];
     $eventActive = !empty($event['active']);
     $eventDateFrom = $event['date_from'] ?? '';
     $eventDateTo = $event['date_to'] ?? '';
-    $eventImageData = $event['image_data'] ?? '';
+    
+    // Support both old (image_data) and new (image_file) format
+    $eventImageFile = $event['image_file'] ?? '';
     
     // Check if event should be displayed today
-    if ($eventActive && $eventDateFrom && $eventDateTo && $eventImageData) {
-        $today = date('Y-m-d');
-        if ($today >= $eventDateFrom && $today <= $eventDateTo) {
-            $showEventPopup = true;
+    if ($eventActive && $eventDateFrom && $eventDateTo && $eventImageFile) {
+        // Verify file exists
+        if (file_exists(__DIR__ . '/' . $eventImageFile)) {
+            $today = date('Y-m-d');
+            if ($today >= $eventDateFrom && $today <= $eventDateTo) {
+                $showEventPopup = true;
+                $eventImagePath = htmlspecialchars($eventImageFile);
+            }
         }
     }
 }
@@ -314,7 +320,7 @@ if (!empty($boltLink)) {
                 
                 <!-- Image Container -->
                 <div class="bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl">
-                    <img src="<?= htmlspecialchars($eventImageData) ?>" alt="Aktuální akce" class="w-full h-auto max-h-[85vh] object-contain">
+                    <img src="<?= $eventImagePath ?>" alt="Aktuální akce" class="w-full h-auto max-h-[85vh] object-contain" loading="eager">
                 </div>
             </div>
         </div>
