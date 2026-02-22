@@ -37,18 +37,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $currentData['daily_menu_url'] = $_POST['daily_menu_url'] ?? '';
 
-    // OTEVÍRACÍ DOBA - NOVÁ LOGIKA
-    $openingHoursRaw = $_POST['opening_hours_json'] ?? '{}';
-    $openingHoursParsed = json_decode($openingHoursRaw, true);
-    if (json_last_error() === JSON_ERROR_NONE && is_array($openingHoursParsed)) {
-        $currentData['opening_hours'] = $openingHoursParsed;
+    // OTEVÍRACÍ DOBA - OPRAVENO
+    $openingHoursRaw = $_POST['opening_hours_json'] ?? null;
+    if ($openingHoursRaw !== null && $openingHoursRaw !== '') {
+        $openingHoursParsed = json_decode($openingHoursRaw, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($openingHoursParsed)) {
+            $currentData['opening_hours'] = $openingHoursParsed;
+        }
+    } else {
+        // Pokud není předáno, zachováme stávající data
+        if (!isset($currentData['opening_hours'])) {
+            $currentData['opening_hours'] = [];
+        }
     }
 
-    // VÝJIMKY - NOVÁ LOGIKA
-    $exceptionsRaw = $_POST['exceptions_json'] ?? '{}';
-    $exceptionsParsed = json_decode($exceptionsRaw, true);
-    if (json_last_error() === JSON_ERROR_NONE && is_array($exceptionsParsed)) {
-        $currentData['exceptions'] = $exceptionsParsed;
+    // VÝJIMKY - OPRAVENO
+    $exceptionsRaw = $_POST['exceptions_json'] ?? null;
+    if ($exceptionsRaw !== null && $exceptionsRaw !== '') {
+        $exceptionsParsed = json_decode($exceptionsRaw, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($exceptionsParsed)) {
+            $currentData['exceptions'] = $exceptionsParsed;
+        }
+    } else {
+        // Pokud není předáno, zachováme stávající data
+        if (!isset($currentData['exceptions'])) {
+            $currentData['exceptions'] = [];
+        }
     }
 
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -110,7 +124,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator {
             cursor: pointer;
-            filter: invert(1);
+            filter: invert(1) brightness(1.5);
         }
         
         @keyframes fadeInUp {
@@ -251,7 +265,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
                 </div>
             </section>
 
-            <!-- OTEVÍRACÍ DOBA - NOVÝ DESIGN -->
+            <!-- OTEVÍRACÍ DOBA -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -290,7 +304,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
                 </div>
             </section>
 
-            <!-- VÝJIMKY - NOVÝ DESIGN -->
+            <!-- VÝJIMKY -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -373,6 +387,10 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     let selectedDays = [];
     let openingHoursData = <?= $openingHoursJson ?>;
     let exceptionsData = <?= $exceptionsJson ?>;
+
+    console.log('INITIAL STATE:');
+    console.log('openingHoursData:', openingHoursData);
+    console.log('exceptionsData:', exceptionsData);
 
     // Zavřeno checkbox logika
     const closedCheckbox = document.getElementById('closedCheckbox');
@@ -511,6 +529,9 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         selectedDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
         const key = selectedDays.join('_');
         openingHoursData[key] = timeString;
+        
+        console.log('AFTER ADD - openingHoursData:', openingHoursData);
+        
         availableDays = availableDays.filter(day => !selectedDays.includes(day));
         selectedDays = [];
         timeFrom.value = '';
@@ -525,7 +546,8 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     function syncJsonInput() {
         const json = JSON.stringify(openingHoursData);
         document.getElementById('openingHoursJson').value = json;
-        console.log('Opening hours JSON:', json);
+        console.log('SYNCED Opening hours JSON:', json);
+        console.log('Hidden input value:', document.getElementById('openingHoursJson').value);
     }
 
     function renderExceptionsPreview() {
@@ -570,6 +592,8 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         const key = `${from}_${to}`;
         exceptionsData[key] = timeString;
         
+        console.log('AFTER ADD - exceptionsData:', exceptionsData);
+        
         document.getElementById('exceptionDateFrom').value = '';
         document.getElementById('exceptionDateTo').value = '';
         exceptionTimeFrom.value = '';
@@ -584,8 +608,16 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     function syncExceptionsJson() {
         const json = JSON.stringify(exceptionsData);
         document.getElementById('exceptionsJson').value = json;
-        console.log('Exceptions JSON:', json);
+        console.log('SYNCED Exceptions JSON:', json);
+        console.log('Hidden input value:', document.getElementById('exceptionsJson').value);
     }
+
+    // DEBUG: Před odesláním formuáře
+    document.getElementById('adminForm').addEventListener('submit', function(e) {
+        console.log('\n=== FORM SUBMIT ===');
+        console.log('opening_hours_json value:', document.getElementById('openingHoursJson').value);
+        console.log('exceptions_json value:', document.getElementById('exceptionsJson').value);
+    });
 
     if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
         setTimeout(function() {
