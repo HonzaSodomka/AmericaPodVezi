@@ -309,19 +309,18 @@ if (!empty($boltLink)) {
     </div>
 
     <?php if ($showEventPopup): ?>
-    <!-- Event Popup Modal -->
+    <!-- Event Popup Modal - Clean Design -->
     <div id="event-popup" class="fixed inset-0 z-[120] hidden" style="background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(8px);">
         <div class="absolute inset-0 flex items-center justify-center p-4">
-            <div class="relative max-w-2xl w-full max-h-[90vh] flex flex-col">
-                <!-- Close Button -->
-                <button id="event-close" aria-label="Zavřít" class="absolute -top-2 -right-2 z-10 w-10 h-10 bg-brand-gold hover:bg-white text-black rounded-full flex items-center justify-center transition shadow-2xl group">
-                    <i class="fas fa-times text-lg group-hover:rotate-90 transition-transform duration-300"></i>
+            <!-- Container for image + close button -->
+            <div class="relative max-w-2xl w-full">
+                <!-- Close button positioned on top right corner of image -->
+                <button id="event-close" aria-label="Zavřít" class="absolute top-3 right-3 z-10 w-12 h-12 bg-brand-gold hover:bg-white text-black rounded-full flex items-center justify-center transition shadow-2xl group">
+                    <i class="fas fa-times text-xl group-hover:rotate-90 transition-transform duration-300"></i>
                 </button>
                 
-                <!-- Image Container -->
-                <div class="bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl">
-                    <img src="<?= $eventImagePath ?>" alt="Aktuální akce" class="w-full h-auto max-h-[85vh] object-contain" loading="eager">
-                </div>
+                <!-- Image without any border or padding -->
+                <img src="<?= $eventImagePath ?>" alt="Aktuální akce" class="w-full h-auto max-h-[90vh] object-contain rounded-sm shadow-2xl" loading="eager">
             </div>
         </div>
     </div>
