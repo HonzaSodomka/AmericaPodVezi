@@ -68,19 +68,14 @@ function scrapeMenu() {
     ];
     
     // Find all menu sections by day
-    $menuDivs = $xpath->query("//div[contains(@class, 'menicka')]");
+    $menuDivs = $xpath->query("//div[@class='menicka']");
     
     foreach ($menuDivs as $menuDiv) {
         // Najdi nadpis dne
-        $dateNodes = $xpath->query(".//h2 | .//h3", $menuDiv);
+        $dateNodes = $xpath->query(".//div[@class='nadpis']", $menuDiv);
         if ($dateNodes->length === 0) continue;
         
         $dayText = trim($dateNodes->item(0)->textContent);
-        
-        // Skip if closed or no menu
-        if (stripos($dayText, 'zavřeno') !== false || stripos($dayText, 'nebylo zadáno') !== false) {
-            continue;
-        }
         
         $dayData = [
             'date' => $dayText,
@@ -88,38 +83,51 @@ function scrapeMenu() {
             'meals' => []
         ];
         
-        // Najdi všechny položky menu
-        $menuItems = $xpath->query(".//li[contains(@class, 'polevka')] | .//li[contains(@class, 'jidlo')]", $menuDiv);
+        // Najdi všechny položky menu (polévka + jídla)
+        $menuItems = $xpath->query(".//li[@class='polevka'] | .//li[@class='jidlo']", $menuDiv);
         
         foreach ($menuItems as $item) {
-            $text = trim($item->textContent);
-            if (empty($text)) continue;
+            // Zkontroluj jestli není zavřeno nebo není zadáno menu
+            $fullText = trim($item->textContent);
+            if (stripos($fullText, 'zavřeno') !== false || stripos($fullText, 'nebylo zadáno') !== false) {
+                continue;
+            }
             
-            // Rozčlenění na text a cenu
-            if (preg_match('/^(.+?)\s+(\d+)\s*Kč\s*$/u', $text, $matches)) {
-                $name = trim($matches[1]);
-                $price = intval($matches[2]);
-                
-                // Je to polévka?
-                if (strpos($item->getAttribute('class'), 'polevka') !== false) {
-                    $dayData['soup'] = [
-                        'name' => $name,
-                        'price' => $price
-                    ];
-                } else {
-                    // Hlavní jídlo
-                    $mealNumber = null;
-                    if (preg_match('/^(\d+)\.\s*(.+)$/u', $name, $mealMatches)) {
-                        $mealNumber = intval($mealMatches[1]);
-                        $name = trim($mealMatches[2]);
-                    }
-                    
-                    $dayData['meals'][] = [
-                        'number' => $mealNumber,
-                        'name' => $name,
-                        'price' => $price
-                    ];
+            // Najdi div.polozka a div.cena
+            $polozkaNodes = $xpath->query(".//div[@class='polozka']", $item);
+            $cenaNodes = $xpath->query(".//div[@class='cena']", $item);
+            
+            if ($polozkaNodes->length === 0 || $cenaNodes->length === 0) continue;
+            
+            $name = trim($polozkaNodes->item(0)->textContent);
+            $priceText = trim($cenaNodes->item(0)->textContent);
+            
+            // Vytáhni číslo z ceny
+            if (preg_match('/(\d+)\s*Kč/u', $priceText, $matches)) {
+                $price = intval($matches[1]);
+            } else {
+                continue; // Přeskoč položky bez ceny
+            }
+            
+            // Je to polévka?
+            if ($item->getAttribute('class') === 'polevka') {
+                $dayData['soup'] = [
+                    'name' => $name,
+                    'price' => $price
+                ];
+            } else {
+                // Hlavní jídlo - zkus najít číslo
+                $mealNumber = null;
+                if (preg_match('/^(\d+)\.\s*(.+)$/u', $name, $mealMatches)) {
+                    $mealNumber = intval($mealMatches[1]);
+                    $name = trim($mealMatches[2]);
                 }
+                
+                $dayData['meals'][] = [
+                    'number' => $mealNumber,
+                    'name' => $name,
+                    'price' => $price
+                ];
             }
         }
         
