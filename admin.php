@@ -126,13 +126,34 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     <link rel="stylesheet" href="fa/css/fontawesome.min.css">
     <link rel="stylesheet" href="fa/css/solid.min.css">
     <style>
+        /* BÍLÉ IKONKY - Odstranit filter, nechat nativní barvu */
         input[type="date"], input[type="time"] {
             color-scheme: dark;
         }
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator {
             cursor: pointer;
-            filter: invert(1) brightness(2.0);
+            /* Odstranit filter, nechat nativní barvu (bílá) */
+            filter: none;
+            opacity: 1;
+        }
+        
+        /* Přidání viditelnosti pomocí background */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"><path d="M11 2V1h-1v1H6V1H5v1H1v14h14V2h-4zM2 15V5h12v10H2zm2-8h2v2H4V7zm3 0h2v2H7V7zm3 0h2v2h-2V7zM4 10h2v2H4v-2zm3 0h2v2H7v-2zm3 0h2v2h-2v-2z"/></svg>');
+            background-size: 16px 16px;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 20px;
+            height: 20px;
+        }
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"><path d="M8 1a7 7 0 110 14A7 7 0 018 1zm0 1a6 6 0 100 12A6 6 0 008 2zm-.5 2v4.414l3.043 3.043.707-.707L8.5 7.586V4h-1z"/></svg>');
+            background-size: 16px 16px;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 20px;
+            height: 20px;
         }
         
         @keyframes fadeInUp {
@@ -394,7 +415,6 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     let availableDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     let selectedDays = [];
     
-    // FIX: Convert arrays to objects
     let openingHoursData = <?= $openingHoursJson ?>;
     if (Array.isArray(openingHoursData)) {
         console.warn('openingHoursData was array, converting to object');
@@ -406,10 +426,6 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         console.warn('exceptionsData was array, converting to object');
         exceptionsData = {};
     }
-
-    console.log('INITIAL STATE:');
-    console.log('openingHoursData:', openingHoursData);
-    console.log('exceptionsData:', exceptionsData);
 
     // Zavřeno checkbox logika
     const closedCheckbox = document.getElementById('closedCheckbox');
@@ -542,15 +558,19 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
             const from = timeFrom.value;
             const to = timeTo.value;
             if (!from || !to) { alert('Vyplňte čas'); return; }
+            
+            // VALIDACE: Od musí být dřív než Do
+            if (from >= to) {
+                alert('Čas "Od" musí být dříve než "Do"!');
+                return;
+            }
+            
             timeString = `${from} - ${to}`;
         }
         
         selectedDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
-        // FIX: Use only first and last day (monday_wednesday NOT monday_tuesday_wednesday)
         const key = selectedDays.length > 1 ? `${selectedDays[0]}_${selectedDays[selectedDays.length - 1]}` : selectedDays[0];
         openingHoursData[key] = timeString;
-        
-        console.log('AFTER ADD - openingHoursData:', openingHoursData);
         
         availableDays = availableDays.filter(day => !selectedDays.includes(day));
         selectedDays = [];
@@ -566,11 +586,9 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     function syncJsonInput() {
         const json = JSON.stringify(openingHoursData);
         document.getElementById('openingHoursJson').value = json;
-        console.log('SYNCED Opening hours JSON:', json);
     }
 
     function formatDateForDisplay(dateStr) {
-        // Convert 2026-02-07 to 7.2.
         const parts = dateStr.split('-');
         const day = parseInt(parts[2], 10);
         const month = parseInt(parts[1], 10);
@@ -606,6 +624,8 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
         const to = document.getElementById('exceptionDateTo').value;
         
         if (!from || !to) { alert('Vyberte oba datumy'); return; }
+        
+        // VALIDACE: Datum Od musí být před Do
         if (from > to) { alert('Datum "Od" musí být před "Do"'); return; }
         
         let timeString;
@@ -615,13 +635,18 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
             const timeFromVal = exceptionTimeFrom.value;
             const timeToVal = exceptionTimeTo.value;
             if (!timeFromVal || !timeToVal) { alert('Vyplňte čas'); return; }
+            
+            // VALIDACE: Od musí být dřív než Do
+            if (timeFromVal >= timeToVal) {
+                alert('Čas "Od" musí být dříve než "Do"!');
+                return;
+            }
+            
             timeString = `${timeFromVal} - ${timeToVal}`;
         }
         
         const key = `${from}_${to}`;
         exceptionsData[key] = timeString;
-        
-        console.log('AFTER ADD - exceptionsData:', exceptionsData);
         
         document.getElementById('exceptionDateFrom').value = '';
         document.getElementById('exceptionDateTo').value = '';
@@ -637,15 +662,7 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     function syncExceptionsJson() {
         const json = JSON.stringify(exceptionsData);
         document.getElementById('exceptionsJson').value = json;
-        console.log('SYNCED Exceptions JSON:', json);
     }
-
-    // DEBUG: Před odesláním formuáře
-    document.getElementById('adminForm').addEventListener('submit', function(e) {
-        console.log('\n=== FORM SUBMIT ===');
-        console.log('opening_hours_json value:', document.getElementById('openingHoursJson').value);
-        console.log('exceptions_json value:', document.getElementById('exceptionsJson').value);
-    });
 
     if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
         setTimeout(function() {
