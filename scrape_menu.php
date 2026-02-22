@@ -1,7 +1,7 @@
 <?php
 /**
  * Menu scraper pro menicka.cz
- * Stáhne denní menu a uloží do daily_menu.json
+ * Stáhne denní menu pro celý týden včetně alergenů a uloží do daily_menu.json
  * 
  * Použití: php scrape_menu.php
  */
@@ -49,6 +49,32 @@ function fetchWithCurl($url) {
     return $result;
 }
 
+/**
+ * Parse allergens from text
+ * Example: "Kuřecí řízek (1,3,7)" -> [1, 3, 7]
+ */
+function parseAllergens($text) {
+    $allergens = [];
+    // Hledej čísla v závorkách na konci textu
+    if (preg_match('/\(([0-9,\s]+)\)\s*$/u', $text, $matches)) {
+        $numbers = preg_split('/[,\s]+/', trim($matches[1]));
+        foreach ($numbers as $num) {
+            if (is_numeric($num)) {
+                $allergens[] = intval($num);
+            }
+        }
+    }
+    return $allergens;
+}
+
+/**
+ * Remove allergen numbers from meal name
+ * Example: "Kuřecí řízek (1,3,7)" -> "Kuřecí řízek"
+ */
+function cleanMealName($text) {
+    return trim(preg_replace('/\([0-9,\s]+\)\s*$/u', '', $text));
+}
+
 function scrapeMenu() {
     $html = fetchWithCurl(MENU_URL);
     
@@ -80,27 +106,41 @@ function scrapeMenu() {
         $dayData = [
             'date' => $dayText,
             'soup' => null,
-            'meals' => []
+            'meals' => [],
+            'is_closed' => false,
+            'is_empty' => false
         ];
+        
+        // Zkontroluj jestli není zavřeno
+        $fullDayText = trim($menuDiv->textContent);
+        if (stripos($fullDayText, 'zavřeno') !== false) {
+            $dayData['is_closed'] = true;
+            $menuData['days'][] = $dayData;
+            continue;
+        }
+        
+        if (stripos($fullDayText, 'nebylo zadáno') !== false) {
+            $dayData['is_empty'] = true;
+            $menuData['days'][] = $dayData;
+            continue;
+        }
         
         // Najdi všechny položky menu (polévka + jídla)
         $menuItems = $xpath->query(".//li[@class='polevka'] | .//li[@class='jidlo']", $menuDiv);
         
         foreach ($menuItems as $item) {
-            // Zkontroluj jestli není zavřeno nebo není zadáno menu
-            $fullText = trim($item->textContent);
-            if (stripos($fullText, 'zavřeno') !== false || stripos($fullText, 'nebylo zadáno') !== false) {
-                continue;
-            }
-            
             // Najdi div.polozka a div.cena
             $polozkaNodes = $xpath->query(".//div[@class='polozka']", $item);
             $cenaNodes = $xpath->query(".//div[@class='cena']", $item);
             
             if ($polozkaNodes->length === 0 || $cenaNodes->length === 0) continue;
             
-            $name = trim($polozkaNodes->item(0)->textContent);
+            $rawName = trim($polozkaNodes->item(0)->textContent);
             $priceText = trim($cenaNodes->item(0)->textContent);
+            
+            // Parsuj alergeny
+            $allergens = parseAllergens($rawName);
+            $name = cleanMealName($rawName);
             
             // Vytáhni číslo z ceny
             if (preg_match('/(\d+)\s*Kč/u', $priceText, $matches)) {
@@ -113,7 +153,8 @@ function scrapeMenu() {
             if ($item->getAttribute('class') === 'polevka') {
                 $dayData['soup'] = [
                     'name' => $name,
-                    'price' => $price
+                    'price' => $price,
+                    'allergens' => $allergens
                 ];
             } else {
                 // Hlavní jídlo - zkus najít číslo
@@ -126,15 +167,14 @@ function scrapeMenu() {
                 $dayData['meals'][] = [
                     'number' => $mealNumber,
                     'name' => $name,
-                    'price' => $price
+                    'price' => $price,
+                    'allergens' => $allergens
                 ];
             }
         }
         
-        // Přidej den jen pokud má nějaká jídla
-        if ($dayData['soup'] || !empty($dayData['meals'])) {
-            $menuData['days'][] = $dayData;
-        }
+        // Přidej vždy všechny dny (i prázdné)
+        $menuData['days'][] = $dayData;
     }
     
     return $menuData;
@@ -178,12 +218,27 @@ if (php_sapi_name() === 'cli' || !empty($_GET['run'])) {
         
         // Print preview
         foreach ($menuData['days'] as $day) {
-            echo "\n" . $day['date'] . ":\n";
+            echo "\n" . $day['date'] . ":";
+            
+            if ($day['is_closed']) {
+                echo " ZAVŘENO\n";
+                continue;
+            }
+            
+            if ($day['is_empty']) {
+                echo " Nebylo zadáno menu\n";
+                continue;
+            }
+            
+            echo "\n";
+            
             if ($day['soup']) {
-                echo "  Polévka: " . $day['soup']['name'] . " (" . $day['soup']['price'] . " Kč)\n";
+                $allergenStr = !empty($day['soup']['allergens']) ? ' [' . implode(',', $day['soup']['allergens']) . ']' : '';
+                echo "  Polévka: " . $day['soup']['name'] . $allergenStr . " (" . $day['soup']['price'] . " Kč)\n";
             }
             foreach ($day['meals'] as $meal) {
-                echo "  " . ($meal['number'] ? $meal['number'] . ". " : "") . $meal['name'] . " (" . $meal['price'] . " Kč)\n";
+                $allergenStr = !empty($meal['allergens']) ? ' [' . implode(',', $meal['allergens']) . ']' : '';
+                echo "  " . ($meal['number'] ? $meal['number'] . ". " : "") . $meal['name'] . $allergenStr . " (" . $meal['price'] . " Kč)\n";
             }
         }
     } else {
