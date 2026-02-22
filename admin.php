@@ -33,11 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Otevírací doba
     $openingHoursJson = $_POST['opening_hours_json'] ?? '{}';
-    $currentData['opening_hours'] = json_decode($openingHoursJson, true) ?: [];
+    $openingHoursDecoded = json_decode($openingHoursJson, true);
+    $currentData['opening_hours'] = is_array($openingHoursDecoded) ? $openingHoursDecoded : [];
 
-    // Výjimky (speciální dny)
+    // Výjimky (speciální dny) - OPRAVENÁ ČÁST
     $exceptionsJson = $_POST['exceptions_json'] ?? '{}';
-    $currentData['exceptions'] = json_decode($exceptionsJson, true) ?: [];
+    $exceptionsDecoded = json_decode($exceptionsJson, true);
+    $currentData['exceptions'] = is_array($exceptionsDecoded) ? $exceptionsDecoded : [];
 
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     
@@ -91,6 +93,16 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     <link rel="stylesheet" href="output.css">
     <link rel="stylesheet" href="fa/css/fontawesome.min.css">
     <link rel="stylesheet" href="fa/css/solid.min.css">
+    <style>
+        /* Zajištění, že date inputy budou vždy zobrazovat kalendář */
+        input[type="date"] {
+            position: relative;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body class="bg-[#050505] text-white font-sans min-h-screen p-4 md:p-8">
 
@@ -212,11 +224,11 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div class="flex flex-col">
                         <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Datum Od</label>
-                        <input type="date" id="exceptionDateFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none">
+                        <input type="date" id="exceptionDateFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none" style="color-scheme: dark;">
                     </div>
                     <div class="flex flex-col">
                         <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Datum Do</label>
-                        <input type="date" id="exceptionDateTo" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none">
+                        <input type="date" id="exceptionDateTo" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none" style="color-scheme: dark;">
                     </div>
                 </div>
 
