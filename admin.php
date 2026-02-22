@@ -58,6 +58,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Handle Events/Akce
+    $eventActive = isset($_POST['event_active']);
+    $eventDateFrom = $_POST['event_date_from'] ?? '';
+    $eventDateTo = $_POST['event_date_to'] ?? '';
+    $eventImageData = $_POST['event_image_data'] ?? '';
+    
+    // Validate dates if event is active
+    if ($eventActive && $eventDateFrom && $eventDateTo) {
+        if (strtotime($eventDateFrom) > strtotime($eventDateTo)) {
+            header('Location: admin.php?error=date_invalid');
+            exit;
+        }
+    }
+    
+    $currentData['event'] = [
+        'active' => $eventActive,
+        'date_from' => $eventDateFrom,
+        'date_to' => $eventDateTo,
+        'image_data' => $eventImageData
+    ];
+
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
     
     if (file_put_contents($dataFile, $jsonString) !== false) {
@@ -76,7 +97,11 @@ if (isset($_GET['saved'])) {
     $successMessage = 'Změny byly úspěšně uloženy!';
 }
 if (isset($_GET['error'])) {
-    $errorMessage = 'Chyba při zápisu do souboru data.json.';
+    if ($_GET['error'] === 'date_invalid') {
+        $errorMessage = 'Datum "Od" musí být před datem "Do".';
+    } else {
+        $errorMessage = 'Chyba při zápisu do souboru data.json.';
+    }
 }
 
 $data = [];
@@ -109,6 +134,13 @@ if (empty($exceptionsData)) {
     $exceptionsData = new stdClass();
 }
 $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+
+// Event data
+$eventData = $data['event'] ?? ['active' => false, 'date_from' => '', 'date_to' => '', 'image_data' => ''];
+$eventActive = !empty($eventData['active']);
+$eventDateFrom = $eventData['date_from'] ?? '';
+$eventDateTo = $eventData['date_to'] ?? '';
+$eventImageData = $eventData['image_data'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -365,6 +397,63 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
                     </button>
                     <div id="exceptionsPreview" class="mt-6 space-y-2"></div>
                     <input type="hidden" name="exceptions_json" id="exceptionsJson" value="">
+                </div>
+            </section>
+
+            <!-- AKCE / POPUP -->
+            <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                    <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-bullhorn text-brand-gold"></i> Akce / Popup
+                    </h2>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                        Nahrajte leták akce (např. Vánoční menu, Silvestr apod.) a nastavte datum platnosti. Popup se zobrazí návštěvníkům automaticky <strong class="text-white">jen v nastaveném období</strong> a pouze jednou za návštěvu.
+                    </p>
+
+                    <div class="space-y-6">
+                        <!-- Active Toggle -->
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="event_active" id="eventActive" class="sr-only peer" <?= $eventActive ? 'checked' : '' ?>>
+                            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-gold"></div>
+                            <span class="ml-3 text-sm font-heading tracking-widest uppercase text-white">Zobrazit akci na webu</span>
+                        </label>
+
+                        <!-- Date Range -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col">
+                                <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Zobrazovat OD</label>
+                                <input type="date" name="event_date_from" id="eventDateFrom" value="<?= $eventDateFrom ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm cursor-pointer">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Zobrazovat DO (včetně)</label>
+                                <input type="date" name="event_date_to" id="eventDateTo" value="<?= $eventDateTo ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm cursor-pointer">
+                            </div>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div>
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Obrázek letáku</label>
+                            <input type="file" id="eventImageInput" accept="image/png, image/jpeg, image/jpg, image/webp" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-bold file:bg-brand-gold file:text-black hover:file:bg-white file:transition file:cursor-pointer bg-black/50 border border-white/20 rounded-sm cursor-pointer">
+                            <p class="text-xs text-gray-500 mt-2">Podporované formáty: PNG, JPEG, WebP. Doporučený formát: na výšku nebo čtverec.</p>
+                            <p class="text-xs text-gray-500">Velké obrázky budou automaticky zmenšeny na max. 1200px pro rychlé načítání.</p>
+                            
+                            <!-- Preview Container -->
+                            <div class="mt-4 relative <?= $eventImageData ? '' : 'hidden' ?> w-full max-w-sm border border-white/20 rounded-sm overflow-hidden bg-black/30" id="eventPreviewContainer">
+                                <img id="eventPreview" src="<?= $eventImageData ?>" alt="Náhled akce" class="w-full h-auto">
+                                <div class="absolute top-2 right-2 flex gap-2">
+                                    <button type="button" id="eventRemoveBtn" class="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition shadow-lg">
+                                        <i class="fas fa-times text-sm"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 bg-black/80 p-2 text-xs text-gray-300" id="eventImageInfo"></div>
+                            </div>
+
+                            <!-- Hidden input for base64 data -->
+                            <input type="hidden" name="event_image_data" id="eventImageData" value="<?= htmlspecialchars($eventImageData) ?>">
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -642,6 +731,115 @@ $exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FOR
     function syncExceptionsJson() {
         document.getElementById('exceptionsJson').value = JSON.stringify(exceptionsData);
     }
+
+    // ===== EVENT IMAGE HANDLER =====
+    const eventImageInput = document.getElementById('eventImageInput');
+    const eventPreviewContainer = document.getElementById('eventPreviewContainer');
+    const eventPreview = document.getElementById('eventPreview');
+    const eventImageData = document.getElementById('eventImageData');
+    const eventRemoveBtn = document.getElementById('eventRemoveBtn');
+    const eventImageInfo = document.getElementById('eventImageInfo');
+
+    eventImageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Check file type
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            alert('Neplatný formát obrázku. Použijte PNG, JPEG nebo WebP.');
+            eventImageInput.value = '';
+            return;
+        }
+
+        // Check file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Obrázek je příliš velký (max 10MB).');
+            eventImageInput.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const maxDim = 1200;
+
+                // Calculate new dimensions
+                if (width > height) {
+                    if (width > maxDim) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    }
+                } else {
+                    if (height > maxDim) {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Determine output format and quality
+                let outputFormat = 'image/jpeg';
+                let quality = 0.85;
+                
+                if (file.type === 'image/png') {
+                    outputFormat = 'image/png';
+                    quality = 0.9;
+                } else if (file.type === 'image/webp') {
+                    outputFormat = 'image/webp';
+                    quality = 0.85;
+                }
+
+                const base64 = canvas.toDataURL(outputFormat, quality);
+                
+                // Calculate final size
+                const sizeKB = Math.round((base64.length * 3) / 4 / 1024);
+                
+                eventImageData.value = base64;
+                eventPreview.src = base64;
+                eventPreviewContainer.classList.remove('hidden');
+                eventImageInfo.textContent = `${width}×${height}px • ${sizeKB} KB`;
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    eventRemoveBtn.addEventListener('click', function() {
+        if (confirm('Opravdu chcete odstranit obrázek akce?')) {
+            eventImageData.value = '';
+            eventPreview.src = '';
+            eventPreviewContainer.classList.add('hidden');
+            eventImageInput.value = '';
+            eventImageInfo.textContent = '';
+        }
+    });
+
+    // Date validation for events
+    const eventDateFrom = document.getElementById('eventDateFrom');
+    const eventDateTo = document.getElementById('eventDateTo');
+
+    eventDateFrom.addEventListener('change', function() {
+        if (eventDateTo.value && this.value > eventDateTo.value) {
+            alert('Datum "Od" musí být před datem "Do".');
+            this.value = '';
+        }
+    });
+
+    eventDateTo.addEventListener('change', function() {
+        if (eventDateFrom.value && this.value < eventDateFrom.value) {
+            alert('Datum "Do" musí být po datu "Od".');
+            this.value = '';
+        }
+    });
 
     if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
         setTimeout(function() {
