@@ -25,11 +25,27 @@ const CONFIG = {
         { src: 'menu-page-4.svg', alt: 'Jídelní lístek strana 4 - Nápojový lístek' }
     ],
     animation: {
-        preloaderDelay: 1800,  // Minimální garantovaný čas zobrazení
-        fadeDuration: 600,    
+        preloaderDelay: 1800,
+        fadeDuration: 600,
         menuFadeTime: 150
     },
-    swipeThreshold: 50
+    swipeThreshold: 50,
+    allergenNames: {
+        1: 'Obíloviny s lepkem',
+        2: 'Korouci',
+        3: 'Vejče',
+        4: 'Ryby',
+        5: 'Arášídy',
+        6: 'Sója',
+        7: 'Mléko',
+        8: 'Ořechy',
+        9: 'Celer',
+        10: 'Hořčice',
+        11: 'Sezamová semena',
+        12: 'Oxid siřičitý',
+        13: 'Vlkí bob',
+        14: 'Měkkýši'
+    }
 };
 
 document.addEventListener('DOMContentLoaded', initApp);
@@ -46,9 +62,6 @@ function initApp() {
     initDailyMenuLoader();
 }
 
-/**
- * FIXED HERO HEIGHT
- */
 function initHeroHeightFix() {
     const hero = document.querySelector(CONFIG.selectors.heroSection);
     if (!hero) return;
@@ -73,33 +86,22 @@ function initHeroHeightFix() {
     });
 }
 
-/**
- * Dynamic Scroll Padding (pro přesné scrollování pod hlavičku)
- */
 function initDynamicScrollPadding() {
     const navbar = document.querySelector(CONFIG.selectors.navbar);
     if (!navbar) return;
 
     const updateScrollPadding = () => {
-        // Získáme přesnou fyzickou výšku hlavičky v danou chvíli
         const headerHeight = navbar.offsetHeight;
-        // Nastavíme ji na <html> element, takže přesně o tolik prohlížeč uskočí
         document.documentElement.style.scrollPaddingTop = `${headerHeight}px`;
     };
 
-    // Spustit ihned při načtení
     updateScrollPadding();
-
-    // Přepočítat vždy, když uživatel změní velikost okna nebo otočí mobil
     window.addEventListener('resize', updateScrollPadding, { passive: true });
     window.addEventListener('orientationchange', () => {
         setTimeout(updateScrollPadding, 100);
     });
 }
 
-/**
- * Sticky Navbar (GPU Optimized with opacity instead of blur recalculation)
- */
 function initStickyNavbar() {
     const navbar = document.querySelector(CONFIG.selectors.navbar);
     const backdrop = document.querySelector('.nav-backdrop');
@@ -114,9 +116,7 @@ function initStickyNavbar() {
                 const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
                 const progress = Math.min(window.scrollY / (heroHeight * 0.5), 1);
                 
-                // Mění se pouze GPU-friendly opacity, blur() je fixní v CSS
                 backdrop.style.opacity = progress.toFixed(2);
-                
                 navbar.style.backgroundColor = `rgba(0,0,0,${(Math.round(progress * 230)/255).toFixed(2)})`;
                 navbar.style.boxShadow = progress > 0.5 ? `0 2px 20px rgba(0,0,0,${(progress * 0.8).toFixed(2)})` : '';
                 navbar.style.borderBottom = progress > 0.5 ? `1px solid rgba(212,163,115,${(progress * 0.15).toFixed(2)})` : '1px solid transparent';
@@ -128,10 +128,6 @@ function initStickyNavbar() {
     }, { passive: true });
 }
 
-/**
- * Preloader Fade Out 
- * Kombinovaná logika: Čeká se buď 1.8s, NEBO na load obrázků - podle toho, CO NASTANE POZDĚJI.
- */
 function initPreloader() {
     const preloader = document.querySelector(CONFIG.selectors.preloader);
     
@@ -143,7 +139,6 @@ function initPreloader() {
     let isTimerDone = false;
     let isLoadDone = false;
 
-    // Funkce spustí mizení pouze pokud jsou splněny OBĚ podmínky
     const checkAndFade = () => {
         if (isTimerDone && isLoadDone) {
             preloader.style.opacity = '0';
@@ -154,13 +149,11 @@ function initPreloader() {
         }
     };
 
-    // Podmínka 1: Garantujeme, že animace poběží minimálně 1.8 sekundy
     setTimeout(() => {
         isTimerDone = true;
         checkAndFade();
     }, CONFIG.animation.preloaderDelay);
 
-    // Podmínka 2: Čekáme na úplné stažení stránky (včetně hero fotky)
     if (document.readyState === 'complete') {
         isLoadDone = true;
         checkAndFade();
@@ -172,9 +165,6 @@ function initPreloader() {
     }
 }
 
-/**
- * Dynamic Year in Footer
- */
 function initDynamicYear() {
     const yearSpan = document.querySelector(CONFIG.selectors.currentYear);
     if (yearSpan) {
@@ -182,9 +172,6 @@ function initDynamicYear() {
     }
 }
 
-/**
- * Mobile Navigation Toggle (Accessibility fixed)
- */
 function initMobileMenu() {
     const menuBtn = document.querySelector(CONFIG.selectors.menuBtn);
     const mobileMenu = document.querySelector(CONFIG.selectors.mobileMenu);
@@ -194,7 +181,6 @@ function initMobileMenu() {
     const icon = menuBtn.querySelector('i');
     let isOpen = false;
 
-    // A11y: Schovat před čtečkami zavřené menu
     mobileMenu.style.visibility = 'hidden';
 
     const toggleMenu = () => {
@@ -203,7 +189,6 @@ function initMobileMenu() {
         mobileMenu.classList.toggle('menu-closed', !isOpen);
         mobileMenu.classList.toggle('menu-open', isOpen);
         
-        // A11y: Zamknutí pozadí a přepnutí viditelnosti
         document.body.style.overflow = isOpen ? 'hidden' : '';
         mobileMenu.style.visibility = isOpen ? 'visible' : 'hidden';
 
@@ -214,7 +199,6 @@ function initMobileMenu() {
             icon.classList.toggle('fa-times', isOpen);
         }
         
-        // A11y: Zamknutí focusu dovnitř (focus na první odkaz)
         if (isOpen) {
             const firstLink = mobileMenu.querySelector('a');
             if (firstLink) setTimeout(() => firstLink.focus(), 300);
@@ -230,9 +214,6 @@ function initMobileMenu() {
     });
 }
 
-/**
- * Static Menu Viewer (Image Gallery)
- */
 function initMenuViewer() {
     const elements = {
         container: document.querySelector(CONFIG.selectors.menuContainer),
@@ -264,14 +245,12 @@ function initMenuViewer() {
                 elements.indicator.textContent = `STRANA ${currentIndex + 1} / ${CONFIG.menuImages.length}`;
             }
 
-            // Fix zbytečného odpálení fadeIn kvůli { once: true }
             elements.currentImg.onload = () => { 
                 elements.currentImg.style.opacity = '1'; 
                 preloadImage(currentIndex + 1);
                 preloadImage(currentIndex - 1);
             };
             
-            // Pojistka, kdyby load neproběhl (např. cache)
             if (elements.currentImg.complete) {
                 elements.currentImg.onload();
             }
@@ -308,9 +287,6 @@ function initMenuViewer() {
     }
 }
 
-/**
- * Scroll Animations
- */
 function initScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -325,9 +301,6 @@ function initScrollAnimations() {
     document.querySelectorAll(CONFIG.selectors.scrollWait).forEach(el => observer.observe(el));
 }
 
-/**
- * GDPR Consent - Google Maps
- */
 function initConsentAndMaps() {
     const STORAGE_KEY = 'consent_google_maps'; 
 
@@ -408,61 +381,149 @@ function initConsentAndMaps() {
 }
 
 /**
- * Daily Menu Loader
+ * Daily Menu Loader with Navigation & Allergens
  */
 function initDailyMenuLoader() {
     const loadingEl = document.getElementById('menu-loading');
     const displayEl = document.getElementById('menu-display');
+    const closedEl = document.getElementById('menu-closed');
     const errorEl = document.getElementById('menu-error');
     
-    if (!loadingEl || !displayEl || !errorEl) return;
+    if (!loadingEl || !displayEl || !closedEl || !errorEl) return;
     
-    fetch('get_today_menu.php')
-        .then(res => res.json())
-        .then(data => {
-            loadingEl.classList.add('hidden');
-            
-            if (data.success && data.meals && data.meals.length > 0) {
+    let currentDayOffset = 0;
+    
+    const renderAllergens = (allergens) => {
+        if (!allergens || allergens.length === 0) return '';
+        
+        const allergenBadges = allergens.map(num => {
+            const name = CONFIG.allergenNames[num] || `Alergen ${num}`;
+            return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-brand-gold/20 text-brand-gold text-xs font-bold border border-brand-gold/30" title="${name}">${num}</span>`;
+        }).join(' ');
+        
+        return `<div class="flex items-center gap-1.5 mt-1"><span class="text-gray-500 text-xs">Alergeny:</span> ${allergenBadges}</div>`;
+    };
+    
+    const showState = (state) => {
+        [loadingEl, displayEl, closedEl, errorEl].forEach(el => el.classList.add('hidden'));
+        if (state) state.classList.remove('hidden');
+    };
+    
+    const loadMenu = (dayOffset) => {
+        showState(loadingEl);
+        
+        fetch(`get_today_menu.php?day=${dayOffset}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    showState(errorEl);
+                    return;
+                }
+                
+                // Zavřeno nebo prázdné?
+                if (data.is_closed || data.is_empty) {
+                    document.getElementById('menu-date-closed').textContent = data.date || '';
+                    document.getElementById('menu-closed-message').textContent = 
+                        data.is_closed ? 'Restaurace má zavřeno.' : 'Menu ještě nebylo zadáno.';
+                    
+                    // Navigation
+                    const prevBtnClosed = document.getElementById('menu-prev-day-closed');
+                    const nextBtnClosed = document.getElementById('menu-next-day-closed');
+                    
+                    if (prevBtnClosed) {
+                        prevBtnClosed.disabled = !data.navigation.has_prev;
+                        prevBtnClosed.onclick = () => {
+                            currentDayOffset--;
+                            loadMenu(currentDayOffset);
+                        };
+                    }
+                    
+                    if (nextBtnClosed) {
+                        nextBtnClosed.disabled = !data.navigation.has_next;
+                        nextBtnClosed.onclick = () => {
+                            currentDayOffset++;
+                            loadMenu(currentDayOffset);
+                        };
+                    }
+                    
+                    showState(closedEl);
+                    return;
+                }
+                
                 // Zobraz menu
-                const dateEl = document.getElementById('menu-date');
-                if (dateEl) dateEl.textContent = data.date || 'Dnešní menu';
+                document.getElementById('menu-date').textContent = data.date || 'Menu';
                 
                 // Polévka
+                const soupSection = document.getElementById('soup-section');
                 if (data.soup) {
-                    const soupName = document.getElementById('soup-name');
-                    const soupPrice = document.getElementById('soup-price');
-                    const soupSection = document.getElementById('soup-section');
-                    
-                    if (soupName) soupName.textContent = data.soup.name;
-                    if (soupPrice) soupPrice.textContent = data.soup.price + ' Kč';
-                    if (soupSection) soupSection.classList.remove('hidden');
+                    document.getElementById('soup-name').textContent = data.soup.name;
+                    document.getElementById('soup-price').textContent = data.soup.price + ' Kč';
+                    document.getElementById('soup-allergens').innerHTML = renderAllergens(data.soup.allergens);
+                    soupSection.classList.remove('hidden');
+                } else {
+                    soupSection.classList.add('hidden');
                 }
                 
                 // Jídla
                 const mealsContainer = document.getElementById('meals-content');
-                if (mealsContainer && data.meals) {
+                mealsContainer.innerHTML = '';
+                
+                let hasAllergens = (data.soup && data.soup.allergens && data.soup.allergens.length > 0);
+                
+                if (data.meals) {
                     data.meals.forEach(meal => {
+                        if (meal.allergens && meal.allergens.length > 0) hasAllergens = true;
+                        
                         const mealDiv = document.createElement('div');
-                        mealDiv.className = 'flex justify-between items-start bg-black/30 p-4 rounded-sm hover:bg-black/50 transition';
+                        mealDiv.className = 'flex justify-between items-start bg-black/30 p-4 rounded-sm hover:bg-black/40 transition';
                         mealDiv.innerHTML = `
-                            <span class="text-white text-base flex-1">
-                                ${meal.number ? '<span class="text-brand-gold font-bold mr-2">' + meal.number + '.</span>' : ''}
-                                ${meal.name}
-                            </span>
-                            <span class="text-brand-gold font-bold text-lg ml-4">${meal.price} Kč</span>
+                            <div class="flex-1">
+                                <span class="text-white text-base block">
+                                    ${meal.number ? '<span class="text-brand-gold font-bold mr-2">' + meal.number + '.</span>' : ''}
+                                    ${meal.name}
+                                </span>
+                                ${renderAllergens(meal.allergens)}
+                            </div>
+                            <span class="text-brand-gold font-bold text-lg ml-4 shrink-0">${meal.price} Kč</span>
                         `;
                         mealsContainer.appendChild(mealDiv);
                     });
                 }
                 
-                displayEl.classList.remove('hidden');
-            } else {
-                errorEl.classList.remove('hidden');
-            }
-        })
-        .catch(err => {
-            console.error('Menu load error:', err);
-            loadingEl.classList.add('hidden');
-            errorEl.classList.remove('hidden');
-        });
+                // Zobraz legendu alergenů pokud jsou nějaké
+                const legendEl = document.getElementById('allergen-legend');
+                if (legendEl) {
+                    legendEl.classList.toggle('hidden', !hasAllergens);
+                }
+                
+                // Navigation
+                const prevBtn = document.getElementById('menu-prev-day');
+                const nextBtn = document.getElementById('menu-next-day');
+                
+                if (prevBtn) {
+                    prevBtn.disabled = !data.navigation.has_prev;
+                    prevBtn.onclick = () => {
+                        currentDayOffset--;
+                        loadMenu(currentDayOffset);
+                    };
+                }
+                
+                if (nextBtn) {
+                    nextBtn.disabled = !data.navigation.has_next;
+                    nextBtn.onclick = () => {
+                        currentDayOffset++;
+                        loadMenu(currentDayOffset);
+                    };
+                }
+                
+                showState(displayEl);
+            })
+            .catch(err => {
+                console.error('Menu load error:', err);
+                showState(errorEl);
+            });
+    };
+    
+    // Načti dnešek
+    loadMenu(0);
 }
