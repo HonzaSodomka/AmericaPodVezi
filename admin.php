@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Handle Events/Akce with FILE-BASED storage
+    // Handle Events/Akce with FILE-BASED storage + AUTO CLEANUP
     $eventActive = isset($_POST['event_active']);
     $eventDateFrom = $_POST['event_date_from'] ?? '';
     $eventDateTo = $_POST['event_date_to'] ?? '';
@@ -78,38 +78,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    // Handle image upload/update
+    // Get current image file
     $eventImageFile = $currentData['event']['image_file'] ?? '';
     
-    if (!empty($eventImageData) && strpos($eventImageData, 'data:image/') === 0) {
-        // New image uploaded - save as file
-        
-        // Delete old file if exists
-        if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
-            unlink(__DIR__ . '/' . $eventImageFile);
-        }
-        
-        // Extract format and data
-        preg_match('/data:image\/(\w+);base64,(.+)/', $eventImageData, $matches);
-        $extension = $matches[1] ?? 'jpg';
-        if ($extension === 'jpeg') $extension = 'jpg';
-        $base64Data = $matches[2] ?? '';
-        
-        if (!empty($base64Data)) {
-            $imageData = base64_decode($base64Data);
-            $filename = 'event-' . time() . '.' . $extension;
-            $filepath = $uploadsDir . $filename;
-            
-            if (file_put_contents($filepath, $imageData)) {
-                $eventImageFile = 'uploads/' . $filename;
-            }
-        }
-    } elseif ($eventImageData === '' && !empty($eventImageFile)) {
-        // Image removed - delete file
+    // AUTOMATIC CLEANUP: If event is deactivated, delete the file
+    if (!$eventActive && !empty($eventImageFile)) {
         if (file_exists(__DIR__ . '/' . $eventImageFile)) {
             unlink(__DIR__ . '/' . $eventImageFile);
         }
         $eventImageFile = '';
+    }
+    // Handle image upload/update (only if event is active)
+    elseif ($eventActive) {
+        if (!empty($eventImageData) && strpos($eventImageData, 'data:image/') === 0) {
+            // New image uploaded - save as file
+            
+            // Delete old file if exists
+            if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
+                unlink(__DIR__ . '/' . $eventImageFile);
+            }
+            
+            // Extract format and data
+            preg_match('/data:image\/(\w+);base64,(.+)/', $eventImageData, $matches);
+            $extension = $matches[1] ?? 'jpg';
+            if ($extension === 'jpeg') $extension = 'jpg';
+            $base64Data = $matches[2] ?? '';
+            
+            if (!empty($base64Data)) {
+                $imageData = base64_decode($base64Data);
+                $filename = 'event-' . time() . '.' . $extension;
+                $filepath = $uploadsDir . $filename;
+                
+                if (file_put_contents($filepath, $imageData)) {
+                    $eventImageFile = 'uploads/' . $filename;
+                }
+            }
+        } elseif ($eventImageData === '' && !empty($eventImageFile)) {
+            // Image manually removed - delete file
+            if (file_exists(__DIR__ . '/' . $eventImageFile)) {
+                unlink(__DIR__ . '/' . $eventImageFile);
+            }
+            $eventImageFile = '';
+        }
     }
     
     $currentData['event'] = [
@@ -455,7 +465,7 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                 </div>
                 <div class="p-4 sm:p-6">
                     <p class="text-gray-400 text-sm mb-6 leading-relaxed">
-                        Nahrajte leták akce (např. Vánoční menu, Silvestr apod.) a nastavte datum platnosti. Popup se zobrazí návštěvníkům automaticky <strong class="text-white">jen v nastaveném období</strong> a pouze jednou za návštěvu.
+                        Nahrajte leták akce (např. Vánoční menu, Silvestr apod.) a nastavte datum platnosti. Popup se zobrazí návštěvníkům automaticky <strong class="text-white">jen v nastaveném období</strong> a pouze jednou za návštěvu. <span class="text-brand-gold font-bold">Po deaktivaci akce se soubor automaticky smaže.</span>
                     </p>
 
                     <div class="space-y-6">
