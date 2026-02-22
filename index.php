@@ -9,9 +9,9 @@ if (file_exists($dataFile)) {
 
 // Výchozí hodnoty
 $phone = $data['contact']['phone'] ?? '326 322 007';
-$phoneClean = preg_replace('/\s+/', '', $phone);
+$phoneClean = preg_replace('/\\s+/', '', $phone);
 $phoneAlt = $data['contact']['phone_alt'] ?? '606 537 469';
-$phoneAltClean = preg_replace('/\s+/', '', $phoneAlt);
+$phoneAltClean = preg_replace('/\\s+/', '', $phoneAlt);
 $email = $data['contact']['email'] ?? 'info@americapodvezi.cz';
 $address = $data['contact']['address'] ?? 'Komenského náměstí 61, Mladá Boleslav';
 
@@ -29,10 +29,37 @@ function safeUrl($url) {
     return '';
 }
 
+// Nová logika pro delivery s enabled přepínačem
 $delivery = $data['delivery'] ?? [];
-$woltLink = safeUrl($delivery['wolt'] ?? '');
-$foodoraLink = safeUrl($delivery['foodora'] ?? '');
-$boltLink = safeUrl($delivery['bolt'] ?? '');
+$woltLink = '';
+$foodoraLink = '';
+$boltLink = '';
+
+if (isset($delivery['wolt'])) {
+    if (is_array($delivery['wolt']) && !empty($delivery['wolt']['enabled']) && !empty($delivery['wolt']['url'])) {
+        $woltLink = safeUrl($delivery['wolt']['url']);
+    } elseif (is_string($delivery['wolt'])) {
+        // Backward compatibility pro starou strukturu
+        $woltLink = safeUrl($delivery['wolt']);
+    }
+}
+
+if (isset($delivery['foodora'])) {
+    if (is_array($delivery['foodora']) && !empty($delivery['foodora']['enabled']) && !empty($delivery['foodora']['url'])) {
+        $foodoraLink = safeUrl($delivery['foodora']['url']);
+    } elseif (is_string($delivery['foodora'])) {
+        $foodoraLink = safeUrl($delivery['foodora']);
+    }
+}
+
+if (isset($delivery['bolt'])) {
+    if (is_array($delivery['bolt']) && !empty($delivery['bolt']['enabled']) && !empty($delivery['bolt']['url'])) {
+        $boltLink = safeUrl($delivery['bolt']['url']);
+    } elseif (is_string($delivery['bolt'])) {
+        $boltLink = safeUrl($delivery['bolt']);
+    }
+}
+
 $dailyMenuUrl = safeUrl($data['daily_menu_url'] ?? 'https://www.menicka.cz/7509-america-pod-vezi.html');
 
 $openingHours = $data['opening_hours'] ?? [
@@ -79,7 +106,7 @@ $schema = [
     "description" => "Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.",
     "address" => [
         "@type" => "PostalAddress",
-        "streetAddress" => $address, // Využití dynamické adresy z JSON
+        "streetAddress" => $address,
         "addressLocality" => "Mladá Boleslav",
         "postalCode" => "293 01",
         "addressCountry" => "CZ"
@@ -408,7 +435,7 @@ if (!empty($boltLink)) {
                 </div>
             </div>
 
-            <!-- Fotokartičky – Speciality & Catering (pod listek) -->
+            <!-- Fotokartíčky – Speciality & Catering (pod listek) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-10 scroll-wait">
                 <div class="relative h-56 md:h-72 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default delay-100">
                     <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
@@ -669,7 +696,7 @@ if (!empty($boltLink)) {
                             </div>
                             <div id="map-iframe-host" class="absolute inset-0 hidden"></div>
                         </div>
-                        <a href="https://maps.google.com/?q=America+Pod+V%C4%9B%C5%BE%C3%AD" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
+                        <a href="https://maps.google.com/?q=America+Pod+V%C4%9b%C5%BE%C3%AD" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
                             <i class="fas fa-external-link-alt"></i> Otevřít v aplikaci
                         </a>
                     </div>
