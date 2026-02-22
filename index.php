@@ -450,8 +450,7 @@ if (!empty($boltLink)) {
     <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- DENNÍ MENU SECTION -->
-    <!-- DENNÍ MENU SECTION -->
+<!-- DENNÍ MENU SECTION -->
 <!-- Nahradit sekci v index.php (cca řádek 669) touto novým HTML -->
 <section id="denni-menu" class="bg-black py-20 px-8 md:px-12 relative">
     <div class="max-w-7xl mx-auto">
@@ -492,6 +491,14 @@ if (!empty($boltLink)) {
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
+
+                <!-- Phone Button (Top) -->
+                <div class="flex justify-center mb-6 pb-6 border-b border-white/10">
+                    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-8 py-4 rounded-sm transition duration-300 text-base font-bold font-heading tracking-wider uppercase shadow-lg">
+                        <i class="fas fa-phone-alt text-lg"></i> 
+                        <span>Objednat s sebou: <?= htmlspecialchars($phone) ?></span>
+                    </a>
+                </div>
                 
                 <!-- Menu Content -->
                 <div id="menu-content">
@@ -500,12 +507,9 @@ if (!empty($boltLink)) {
                         <h4 class="text-brand-gold font-heading text-lg uppercase tracking-widest mb-3 border-b border-white/20 pb-2">
                             <i class="fas fa-bowl-hot mr-2"></i> Polévka
                         </h4>
-                        <div id="soup-content" class="flex justify-between items-start bg-black/30 p-4 rounded-sm hover:bg-black/40 transition">
-                            <div class="flex-1">
-                                <span id="soup-name" class="text-white text-base block mb-1"></span>
-                                <div id="soup-allergens" class="text-xs text-gray-400"></div>
-                            </div>
-                            <span id="soup-price" class="text-brand-gold font-bold text-lg ml-4 shrink-0"></span>
+                        <div id="soup-content" class="flex justify-between items-center bg-black/30 p-4 rounded-sm hover:bg-black/40 transition">
+                            <span id="soup-name" class="text-white text-base"></span>
+                            <span id="soup-price" class="text-brand-gold font-bold text-lg ml-4"></span>
                         </div>
                     </div>
 
@@ -516,21 +520,6 @@ if (!empty($boltLink)) {
                         </h4>
                         <div id="meals-content" class="space-y-3"></div>
                     </div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 pt-6 border-t border-white/10">
-                    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
-                        <i class="fas fa-phone-alt"></i> Objednat: <?= htmlspecialchars($phone) ?>
-                    </a>
-                </div>
-
-                <!-- Allergen Legend (if present) -->
-                <div id="allergen-legend" class="mt-6 pt-6 border-t border-white/10 hidden">
-                    <p class="text-xs text-gray-500 text-center">
-                        <i class="fas fa-info-circle mr-1"></i> 
-                        <span class="font-bold">Čísla představují alergeny:</span> 
-                        1-Obíloviny s lepkem, 2-Korouci, 3-Vejče, 4-Ryby, 5-Arášídy, 6-Sója, 7-Mléko, 8-Ořechy, 9-Celer, 10-Hořčice, 11-Sezamová semena, 12-Oxid siřičitý, 13-Vlkí bob, 14-Měkkýši
-                    </p>
                 </div>
             </div>
         </div>
