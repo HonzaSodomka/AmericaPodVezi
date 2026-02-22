@@ -31,13 +31,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $currentData['daily_menu_url'] = $_POST['daily_menu_url'] ?? '';
 
+    // Otevírací doba
     $openingHoursJson = $_POST['opening_hours_json'] ?? '{}';
     $openingHoursDecoded = json_decode($openingHoursJson, true);
-    $currentData['opening_hours'] = is_array($openingHoursDecoded) ? $openingHoursDecoded : [];
+    $currentData['opening_hours'] = (is_array($openingHoursDecoded) && !empty($openingHoursDecoded)) ? $openingHoursDecoded : ($currentData['opening_hours'] ?? []);
 
-    $exceptionsJson = $_POST['exceptions_json'] ?? '{}';
-    $exceptionsDecoded = json_decode($exceptionsJson, true);
-    $currentData['exceptions'] = is_array($exceptionsDecoded) ? $exceptionsDecoded : [];
+    // Výjimky - OPRAVENÁ LOGIKA
+    $exceptionsJson = $_POST['exceptions_json'] ?? '';
+    if (!empty($exceptionsJson)) {
+        $exceptionsDecoded = json_decode($exceptionsJson, true);
+        if (is_array($exceptionsDecoded)) {
+            $currentData['exceptions'] = $exceptionsDecoded;
+        }
+    } else {
+        // Pokud je prázdný string, zachovej stávající exceptions (nebo prázdné pole)
+        if (!isset($currentData['exceptions'])) {
+            $currentData['exceptions'] = [];
+        }
+    }
 
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     
@@ -101,7 +112,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         }
     </style>
 </head>
-<body class="bg-[#050505] text-white font-sans min-h-screen">
+<body class="bg-[#050505] text-white font-sans min-h-screen pb-24">
 
     <div class="w-full max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12">
         
@@ -117,14 +128,14 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
 
         <!-- SUCCESS/ERROR MESSAGES -->
         <?php if ($successMessage): ?>
-            <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-fade-in">
+            <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
                 <i class="fas fa-check-circle text-lg"></i>
                 <span class="text-sm sm:text-base"><?= $successMessage ?></span>
             </div>
         <?php endif; ?>
 
         <?php if ($errorMessage): ?>
-            <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-fade-in">
+            <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
                 <i class="fas fa-exclamation-triangle text-lg"></i>
                 <span class="text-sm sm:text-base"><?= $errorMessage ?></span>
             </div>
@@ -306,14 +317,16 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
                 </div>
             </section>
 
-            <!-- SAVE BUTTON -->
-            <div class="sticky bottom-0 bg-[#050505]/95 backdrop-blur-sm border-t border-white/10 py-4 -mx-4 px-4 sm:-mx-6 sm:px-6">
-                <button type="submit" class="w-full sm:w-auto sm:float-right bg-brand-gold text-black font-bold font-heading py-3 px-8 text-base sm:text-lg rounded-sm hover:bg-white transition uppercase tracking-widest shadow-[0_0_20px_rgba(212,163,115,0.5)] hover:shadow-[0_0_30px_rgba(212,163,115,0.7)]">
-                    <i class="fas fa-save mr-2"></i> Uložit Změny
-                </button>
-            </div>
-
         </form>
+    </div>
+
+    <!-- FIXED SAVE BUTTON (vždy viditelný) -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 bg-[#050505]/98 backdrop-blur-md border-t border-white/20 shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+        <div class="w-full max-w-5xl mx-auto px-4 py-4 sm:px-6">
+            <button type="submit" form="adminForm" class="w-full sm:w-auto sm:float-right bg-brand-gold text-black font-bold font-heading py-3.5 px-10 text-base sm:text-lg rounded-sm hover:bg-white transition uppercase tracking-widest shadow-[0_0_25px_rgba(212,163,115,0.6)] hover:shadow-[0_0_35px_rgba(212,163,115,0.8)]">
+                <i class="fas fa-save mr-2"></i> Uložit Změny
+            </button>
+        </div>
     </div>
 
     <script>
@@ -323,6 +336,8 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     let selectedDays = [];
     let openingHoursData = <?= $openingHoursJson ?>;
     let exceptionsData = <?= $exceptionsJson ?>;
+
+    console.log('Loaded exceptions:', exceptionsData);
 
     function expandDayRange(key) {
         const parts = key.split('_');
@@ -433,9 +448,12 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     };
 
     function syncJsonInput() {
-        document.getElementById('openingHoursJson').value = JSON.stringify(openingHoursData);
+        const json = JSON.stringify(openingHoursData);
+        document.getElementById('openingHoursJson').value = json;
+        console.log('Opening hours synced:', json);
     }
 
+    // VÝJIMKY - OPRAVENÁ LOGIKA
     function renderExceptionsPreview() {
         const preview = document.getElementById('exceptionsPreview');
         preview.innerHTML = '';
@@ -453,6 +471,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     }
 
     window.removeException = function(key) {
+        console.log('Removing exception:', key);
         delete exceptionsData[key];
         renderExceptionsPreview();
         syncExceptionsJson();
@@ -463,12 +482,17 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         const to = document.getElementById('exceptionDateTo').value;
         const time = document.getElementById('exceptionTimeInput').value.trim();
         
+        console.log('Adding exception:', {from, to, time});
+        
         if (!from || !to) { alert('Vyberte oba datumy'); return; }
         if (!time) { alert('Vyplňte otevírací dobu'); return; }
         if (from > to) { alert('Datum "Od" musí být před "Do"'); return; }
         
         const key = `${from}_${to}`;
         exceptionsData[key] = time;
+        
+        console.log('Exception added:', key, time);
+        console.log('All exceptions:', exceptionsData);
         
         document.getElementById('exceptionDateFrom').value = '';
         document.getElementById('exceptionDateTo').value = '';
@@ -479,7 +503,9 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     };
 
     function syncExceptionsJson() {
-        document.getElementById('exceptionsJson').value = JSON.stringify(exceptionsData);
+        const json = JSON.stringify(exceptionsData);
+        document.getElementById('exceptionsJson').value = json;
+        console.log('Exceptions synced to hidden input:', json);
     }
 
     if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
