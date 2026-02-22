@@ -342,7 +342,9 @@ $openingHoursJson = json_encode($data['opening_hours'] ?? [], JSON_UNESCAPED_UNI
 
     function toggleDay(day) {
         if (selectedDays.includes(day)) {
-            selectedDays = selectedDays.filter(d => d !== day);
+            // CHYTRÉ ODZNAČOVÁNÍ: Zruš kliknutý den + všechny dny za ním
+            const clickedIdx = dayOrder.indexOf(day);
+            selectedDays = selectedDays.filter(d => dayOrder.indexOf(d) < clickedIdx);
         } else {
             selectedDays.push(day);
             fillGaps(); // Automaticky doplní mezery
