@@ -108,16 +108,6 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
             filter: invert(1);
         }
         
-        /* Floating Save Button - Elegantní animace */
-        #saveButtonContainer {
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        #saveButtonContainer.visible {
-            transform: translateY(0);
-        }
-        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -342,8 +332,8 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         </form>
     </div>
 
-    <!-- ELEGANTNÍ FLOATING SAVE BUTTON (jako menu v indexu) -->
-    <div id="saveButtonContainer" class="fixed bottom-8 right-8 z-50">
+    <!-- FIXED FLOATING SAVE BUTTON (vždy viditelný) -->
+    <div class="fixed bottom-8 right-8 z-50">
         <button type="submit" form="adminForm" class="group bg-brand-gold hover:bg-white text-black font-bold font-heading py-4 px-8 rounded-full uppercase tracking-widest transition-all duration-300 shadow-[0_8px_30px_rgba(212,163,115,0.5)] hover:shadow-[0_12px_40px_rgba(212,163,115,0.7)] hover:scale-105 flex items-center gap-3">
             <i class="fas fa-save text-lg group-hover:rotate-12 transition-transform duration-300"></i>
             <span class="hidden sm:inline">Uložit</span>
@@ -357,22 +347,6 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     let selectedDays = [];
     let openingHoursData = <?= $openingHoursJson ?>;
     let exceptionsData = <?= $exceptionsJson ?>;
-
-    // Elegantní scroll animace pro Save Button
-    let lastScroll = 0;
-    const saveBtn = document.getElementById('saveButtonContainer');
-    
-    window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-        
-        if (currentScroll > 200) {
-            saveBtn.classList.add('visible');
-        } else {
-            saveBtn.classList.remove('visible');
-        }
-        
-        lastScroll = currentScroll;
-    });
 
     function expandDayRange(key) {
         const parts = key.split('_');
