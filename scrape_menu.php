@@ -6,16 +6,54 @@
  * Použití: php scrape_menu.php
  */
 
-define('MENU_URL', 'http://www.menicka.cz/7509-america-pod-vezi.html'); // HTTP místo HTTPS
+define('MENU_URL', 'https://www.menicka.cz/7509-america-pod-vezi.html');
 define('OUTPUT_FILE', __DIR__ . '/daily_menu.json');
 
+function fetchWithCurl($url) {
+    if (!function_exists('curl_init')) {
+        // Fallback - try with stream context
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'timeout' => 10
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false
+            ]
+        ]);
+        return @file_get_contents($url, false, $context);
+    }
+    
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        CURLOPT_TIMEOUT => 10
+    ]);
+    
+    $result = curl_exec($ch);
+    $error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($result === false) {
+        error_log('cURL error: ' . $error);
+        return false;
+    }
+    
+    return $result;
+}
+
 function scrapeMenu() {
-    // Try simple file_get_contents with HTTP (not HTTPS)
-    $html = @file_get_contents(MENU_URL);
+    $html = fetchWithCurl(MENU_URL);
     
     if ($html === false) {
-        $error = error_get_last();
-        error_log('Failed to fetch menu: ' . ($error['message'] ?? 'Unknown error'));
+        error_log('Failed to fetch menu from ' . MENU_URL);
         return false;
     }
     
