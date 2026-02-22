@@ -10,6 +10,37 @@ if (!is_dir($uploadsDir)) {
     mkdir($uploadsDir, 0755, true);
 }
 
+// Mapování dnů na jejich pořadí v týdnu (1 = pondělí, 7 = neděle)
+$dayOrder = [
+    'monday' => 1,
+    'tuesday' => 2,
+    'wednesday' => 3,
+    'thursday' => 4,
+    'friday' => 5,
+    'saturday' => 6,
+    'sunday' => 7
+];
+
+// Funkce pro seřazení dnů podle správného pořadí v týdnu
+function sortDaysByWeekOrder($openingHours, $dayOrder) {
+    $sorted = [];
+    foreach ($openingHours as $key => $value) {
+        $keyLower = strtolower($key);
+        // Pro rozsahy dnů (např. monday_friday) použijeme první den
+        $firstDay = explode('_', $keyLower)[0];
+        $order = $dayOrder[$firstDay] ?? 999;
+        $sorted[$key] = ['value' => $value, 'order' => $order];
+    }
+    uasort($sorted, function($a, $b) {
+        return $a['order'] <=> $b['order'];
+    });
+    $result = [];
+    foreach ($sorted as $key => $data) {
+        $result[$key] = $data['value'];
+    }
+    return $result;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $currentData = [];
     if (file_exists($dataFile)) {
@@ -44,7 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($openingHoursRaw !== null && $openingHoursRaw !== '') {
         $openingHoursParsed = json_decode($openingHoursRaw, true);
         if (json_last_error() === JSON_ERROR_NONE && is_array($openingHoursParsed)) {
-            $currentData['opening_hours'] = $openingHoursParsed;
+            // SEŘADIT otevírací dobu před uložením
+            $currentData['opening_hours'] = sortDaysByWeekOrder($openingHoursParsed, $dayOrder);
         }
     } else {
         if (!isset($currentData['opening_hours'])) {
@@ -731,9 +763,11 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
             const [from, to] = key.split('_');
             const fromDisplay = formatDateForDisplay(from);
             const toDisplay = formatDateForDisplay(to);
+            // Pokud jsou data stejná, zobraz jen jednou
+            const dateDisplay = fromDisplay === toDisplay ? fromDisplay : `${fromDisplay} – ${toDisplay}`;
             const item = document.createElement('div');
             item.className = 'flex items-center justify-between bg-black/30 p-3 rounded-sm border border-white/5';
-            item.innerHTML = `<div class="flex-1 min-w-0"><span class="text-brand-gold font-bold text-xs sm:text-sm block sm:inline">${fromDisplay} – ${toDisplay}</span><span class="text-white text-sm sm:text-base sm:ml-3 block sm:inline mt-1 sm:mt-0">${value}</span></div><button type="button" onclick="removeException('${key}')" class="text-red-400 hover:text-red-300 transition ml-3 flex-shrink-0"><i class="fas fa-times"></i></button>`;
+            item.innerHTML = `<div class="flex-1 min-w-0"><span class="text-brand-gold font-bold text-xs sm:text-sm block sm:inline">${dateDisplay}</span><span class="text-white text-sm sm:text-base sm:ml-3 block sm:inline mt-1 sm:mt-0">${value}</span></div><button type="button" onclick="removeException('${key}')" class="text-red-400 hover:text-red-300 transition ml-3 flex-shrink-0"><i class="fas fa-times"></i></button>`;
             preview.appendChild(item);
         });
     }
