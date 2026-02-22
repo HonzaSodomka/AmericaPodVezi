@@ -1029,27 +1029,26 @@ if (!empty($boltLink)) {
 
     <!-- Scripts -->
     <script src="script.js"></script>
-    <script>
+<script>
 const form = document.getElementById('reservation-form');
 
 form.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // Smaž staré chyby
+    // Smaž chyby
     document.querySelectorAll('.error-msg').forEach(el => el.remove());
     document.querySelectorAll('.border-red-500').forEach(el => {
         el.classList.remove('border-red-500');
         el.classList.add('border-white/20');
     });
     
-    let ok = true;
-    
     const name = document.getElementById('res-name');
     const phone = document.getElementById('res-phone');
     const email = document.getElementById('res-email');
     const note = document.getElementById('res-note');
     
-    // Kontrola
+    let ok = true;
+    
     if (name.value.trim().length < 2) {
         showError(name, 'Jméno musí mít alespoň 2 znaky');
         ok = false;
@@ -1070,7 +1069,29 @@ form.addEventListener('submit', function(e) {
         ok = false;
     }
     
-    if (ok) this.submit();
+    if (!ok) return;
+    
+    // AJAX odeslání
+    const formData = new FormData(form);
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Odesílám...';
+    
+    fetch('reservation.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Success
+        form.reset();
+        form.innerHTML = '<div class="text-center py-8"><div class="text-6xl mb-4">✅</div><h3 class="text-2xl font-bold text-brand-gold mb-2">Rezervace odeslána!</h3><p class="text-white/80">Ozveme se vám co nejdříve.</p></div>';
+    })
+    .catch(error => {
+        btn.disabled = false;
+        btn.textContent = 'Odeslat rezervaci';
+        alert('Chyba při odesílání. Zkuste to prosím znovu.');
+    });
 });
 
 function showError(field, msg) {
@@ -1082,6 +1103,7 @@ function showError(field, msg) {
     field.parentElement.appendChild(err);
 }
 </script>
+
 
 </body>
 </html>
