@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 $dataFile = __DIR__ . '/data.json';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -7,15 +10,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $currentData = json_decode(file_get_contents($dataFile), true) ?: [];
     }
 
+    // Kontakty
     $currentData['contact']['phone'] = $_POST['contact_phone'] ?? '';
     $currentData['contact']['phone_alt'] = $_POST['contact_phone_alt'] ?? '';
     $currentData['contact']['email'] = $_POST['contact_email'] ?? '';
     $currentData['contact']['email_reservation'] = $_POST['contact_email_reservation'] ?? '';
     $currentData['contact']['address'] = $_POST['contact_address'] ?? '';
 
+    // Rating
     $currentData['rating']['value'] = (float)($_POST['rating_value'] ?? 4.5);
     $currentData['rating']['count'] = (int)($_POST['rating_count'] ?? 900);
 
+    // Delivery
     $currentData['delivery']['wolt'] = [
         'url' => $_POST['delivery_wolt_url'] ?? '',
         'enabled' => isset($_POST['delivery_wolt_enabled'])
@@ -31,17 +37,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $currentData['daily_menu_url'] = $_POST['daily_menu_url'] ?? '';
 
-    $openingHoursJson = $_POST['opening_hours_json'] ?? '{}';
-    $openingHoursDecoded = json_decode($openingHoursJson, true);
-    $currentData['opening_hours'] = (is_array($openingHoursDecoded) && !empty($openingHoursDecoded)) ? $openingHoursDecoded : ($currentData['opening_hours'] ?? []);
+    // OTEVÍRACÍ DOBA - NOVÁ LOGIKA
+    $openingHoursRaw = $_POST['opening_hours_json'] ?? '{}';
+    $openingHoursParsed = json_decode($openingHoursRaw, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($openingHoursParsed)) {
+        $currentData['opening_hours'] = $openingHoursParsed;
+    }
 
-    // Výjimky - KOMPLETNĚ OPRAVENÁ LOGIKA
-    $exceptionsJson = $_POST['exceptions_json'] ?? '{}';
-    $exceptionsDecoded = json_decode($exceptionsJson, true);
-    if (is_array($exceptionsDecoded)) {
-        $currentData['exceptions'] = $exceptionsDecoded;
-    } elseif (!isset($currentData['exceptions'])) {
-        $currentData['exceptions'] = [];
+    // VÝJIMKY - NOVÁ LOGIKA
+    $exceptionsRaw = $_POST['exceptions_json'] ?? '{}';
+    $exceptionsParsed = json_decode($exceptionsRaw, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($exceptionsParsed)) {
+        $currentData['exceptions'] = $exceptionsParsed;
     }
 
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -97,23 +104,18 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     <link rel="stylesheet" href="fa/css/fontawesome.min.css">
     <link rel="stylesheet" href="fa/css/solid.min.css">
     <style>
-        input[type="date"] {
+        input[type="date"], input[type="time"] {
             color-scheme: dark;
         }
-        input[type="date"]::-webkit-calendar-picker-indicator {
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator {
             cursor: pointer;
             filter: invert(1);
         }
         
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .animate-fade-in {
@@ -125,7 +127,6 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
 
     <div class="w-full max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12 pb-32">
         
-        <!-- HEADER -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10">
             <h1 class="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold tracking-widest uppercase text-brand-gold">
                 <i class="fas fa-cog mr-2"></i> Administrace
@@ -135,7 +136,6 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
             </a>
         </div>
 
-        <!-- SUCCESS/ERROR MESSAGES -->
         <?php if ($successMessage): ?>
             <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-fade-in">
                 <i class="fas fa-check-circle text-lg"></i>
@@ -251,7 +251,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
                 </div>
             </section>
 
-            <!-- OTEVÍRACÍ DOBA -->
+            <!-- OTEVÍRACÍ DOBA - NOVÝ DESIGN -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -263,10 +263,25 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
                         <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-3 block">Vyberte dny</label>
                         <div id="daySelector" class="flex flex-wrap gap-2"></div>
                     </div>
+                    
                     <div class="mb-4">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Otevírací doba</label>
-                        <input type="text" id="timeInput" placeholder="11:00 - 22:00 nebo ZAVŘENO" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none placeholder-gray-500 transition text-sm sm:text-base">
+                        <label class="flex items-center gap-2 mb-3 cursor-pointer">
+                            <input type="checkbox" id="closedCheckbox" class="w-5 h-5 text-brand-gold bg-black/50 border-white/20 rounded focus:ring-brand-gold focus:ring-2">
+                            <span class="text-white font-bold">ZAVŘENO</span>
+                        </label>
                     </div>
+                    
+                    <div id="timeInputs" class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Od</label>
+                            <input type="time" id="timeFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Do</label>
+                            <input type="time" id="timeTo" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm">
+                        </div>
+                    </div>
+                    
                     <button type="button" id="addHoursBtn" class="w-full sm:w-auto bg-brand-gold/20 hover:bg-brand-gold/30 border border-brand-gold text-brand-gold px-6 py-2.5 rounded-sm text-sm uppercase tracking-widest transition font-bold">
                         <i class="fas fa-plus mr-2"></i> Přidat
                     </button>
@@ -275,7 +290,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
                 </div>
             </section>
 
-            <!-- VÝJIMKY -->
+            <!-- VÝJIMKY - NOVÝ DESIGN -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -283,23 +298,35 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
                     </h2>
                 </div>
                 <div class="p-4 sm:p-6">
-                    <div class="mb-4">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-3 block">Klikněte na datum v kalendáři</label>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="flex flex-col">
-                                <label class="text-gray-400 text-xs mb-2">Začátek</label>
-                                <input type="date" id="exceptionDateFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base cursor-pointer">
-                            </div>
-                            <div class="flex flex-col">
-                                <label class="text-gray-400 text-xs mb-2">Konec</label>
-                                <input type="date" id="exceptionDateTo" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base cursor-pointer">
-                            </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Začátek</label>
+                            <input type="date" id="exceptionDateFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm cursor-pointer">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Konec</label>
+                            <input type="date" id="exceptionDateTo" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm cursor-pointer">
                         </div>
                     </div>
+                    
                     <div class="mb-4">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Otevírací doba</label>
-                        <input type="text" id="exceptionTimeInput" placeholder="ZAVŘENO nebo 10:00 - 16:00" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none placeholder-gray-500 transition text-sm sm:text-base">
+                        <label class="flex items-center gap-2 mb-3 cursor-pointer">
+                            <input type="checkbox" id="exceptionClosedCheckbox" class="w-5 h-5 text-brand-gold bg-black/50 border-white/20 rounded focus:ring-brand-gold focus:ring-2">
+                            <span class="text-white font-bold">ZAVŘENO</span>
+                        </label>
                     </div>
+                    
+                    <div id="exceptionTimeInputs" class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Od</label>
+                            <input type="time" id="exceptionTimeFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Do</label>
+                            <input type="time" id="exceptionTimeTo" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm">
+                        </div>
+                    </div>
+                    
                     <button type="button" id="addExceptionBtn" class="w-full sm:w-auto bg-brand-gold/20 hover:bg-brand-gold/30 border border-brand-gold text-brand-gold px-6 py-2.5 rounded-sm text-sm uppercase tracking-widest transition font-bold">
                         <i class="fas fa-plus mr-2"></i> Přidat Výjimku
                     </button>
@@ -332,7 +359,6 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         </form>
     </div>
 
-    <!-- FIXED FLOATING SAVE BUTTON -->
     <div class="fixed bottom-8 right-8 z-50">
         <button type="submit" form="adminForm" class="group bg-brand-gold hover:bg-white text-black font-bold font-heading py-4 px-8 rounded-full uppercase tracking-widest transition-all duration-300 shadow-[0_8px_30px_rgba(212,163,115,0.5)] hover:shadow-[0_12px_40px_rgba(212,163,115,0.7)] hover:scale-105 flex items-center gap-3">
             <i class="fas fa-save text-lg group-hover:rotate-12 transition-transform duration-300"></i>
@@ -348,7 +374,33 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     let openingHoursData = <?= $openingHoursJson ?>;
     let exceptionsData = <?= $exceptionsJson ?>;
 
-    console.log('Initial exceptions data:', exceptionsData);
+    // Zavřeno checkbox logika
+    const closedCheckbox = document.getElementById('closedCheckbox');
+    const timeInputs = document.getElementById('timeInputs');
+    const timeFrom = document.getElementById('timeFrom');
+    const timeTo = document.getElementById('timeTo');
+
+    closedCheckbox.addEventListener('change', function() {
+        timeInputs.style.display = this.checked ? 'none' : 'grid';
+        if (this.checked) {
+            timeFrom.value = '';
+            timeTo.value = '';
+        }
+    });
+
+    // Výjimky zavřeno checkbox
+    const exceptionClosedCheckbox = document.getElementById('exceptionClosedCheckbox');
+    const exceptionTimeInputs = document.getElementById('exceptionTimeInputs');
+    const exceptionTimeFrom = document.getElementById('exceptionTimeFrom');
+    const exceptionTimeTo = document.getElementById('exceptionTimeTo');
+
+    exceptionClosedCheckbox.addEventListener('change', function() {
+        exceptionTimeInputs.style.display = this.checked ? 'none' : 'grid';
+        if (this.checked) {
+            exceptionTimeFrom.value = '';
+            exceptionTimeTo.value = '';
+        }
+    });
 
     function expandDayRange(key) {
         const parts = key.split('_');
@@ -445,21 +497,35 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
 
     document.getElementById('addHoursBtn').onclick = function() {
         if (selectedDays.length === 0) { alert('Vyberte den'); return; }
-        const time = document.getElementById('timeInput').value.trim();
-        if (!time) { alert('Vyplňte čas'); return; }
+        
+        let timeString;
+        if (closedCheckbox.checked) {
+            timeString = 'ZAVŘENO';
+        } else {
+            const from = timeFrom.value;
+            const to = timeTo.value;
+            if (!from || !to) { alert('Vyplňte čas'); return; }
+            timeString = `${from} - ${to}`;
+        }
+        
         selectedDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
         const key = selectedDays.join('_');
-        openingHoursData[key] = time;
+        openingHoursData[key] = timeString;
         availableDays = availableDays.filter(day => !selectedDays.includes(day));
         selectedDays = [];
-        document.getElementById('timeInput').value = '';
+        timeFrom.value = '';
+        timeTo.value = '';
+        closedCheckbox.checked = false;
+        timeInputs.style.display = 'grid';
         renderDaySelector();
         renderPreview();
         syncJsonInput();
     };
 
     function syncJsonInput() {
-        document.getElementById('openingHoursJson').value = JSON.stringify(openingHoursData);
+        const json = JSON.stringify(openingHoursData);
+        document.getElementById('openingHoursJson').value = json;
+        console.log('Opening hours JSON:', json);
     }
 
     function renderExceptionsPreview() {
@@ -479,7 +545,6 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     }
 
     window.removeException = function(key) {
-        console.log('Removing exception:', key);
         delete exceptionsData[key];
         renderExceptionsPreview();
         syncExceptionsJson();
@@ -488,31 +553,38 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     document.getElementById('addExceptionBtn').onclick = function() {
         const from = document.getElementById('exceptionDateFrom').value;
         const to = document.getElementById('exceptionDateTo').value;
-        const time = document.getElementById('exceptionTimeInput').value.trim();
-        
-        console.log('Adding exception - from:', from, 'to:', to, 'time:', time);
         
         if (!from || !to) { alert('Vyberte oba datumy'); return; }
-        if (!time) { alert('Vyplňte otevírací dobu'); return; }
         if (from > to) { alert('Datum "Od" musí být před "Do"'); return; }
         
-        const key = `${from}_${to}`;
-        exceptionsData[key] = time;
+        let timeString;
+        if (exceptionClosedCheckbox.checked) {
+            timeString = 'ZAVŘENO';
+        } else {
+            const timeFromVal = exceptionTimeFrom.value;
+            const timeToVal = exceptionTimeTo.value;
+            if (!timeFromVal || !timeToVal) { alert('Vyplňte čas'); return; }
+            timeString = `${timeFromVal} - ${timeToVal}`;
+        }
         
-        console.log('Exception added, new data:', exceptionsData);
+        const key = `${from}_${to}`;
+        exceptionsData[key] = timeString;
         
         document.getElementById('exceptionDateFrom').value = '';
         document.getElementById('exceptionDateTo').value = '';
-        document.getElementById('exceptionTimeInput').value = '';
+        exceptionTimeFrom.value = '';
+        exceptionTimeTo.value = '';
+        exceptionClosedCheckbox.checked = false;
+        exceptionTimeInputs.style.display = 'grid';
         
         renderExceptionsPreview();
         syncExceptionsJson();
     };
 
     function syncExceptionsJson() {
-        const jsonStr = JSON.stringify(exceptionsData);
-        document.getElementById('exceptionsJson').value = jsonStr;
-        console.log('Synced exceptions JSON:', jsonStr);
+        const json = JSON.stringify(exceptionsData);
+        document.getElementById('exceptionsJson').value = json;
+        console.log('Exceptions JSON:', json);
     }
 
     if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
