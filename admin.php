@@ -241,5 +241,19 @@ function isChecked($array, $key1, $key2, $key3) {
         </form>
     </div>
 
+    <!-- Auto-remove GET parametr po zobrazení hlášky -->
+    <script>
+        // Pokud je v URL '?saved=1' nebo '?error=1', po 2 sekundách to očistíme
+        if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
+            setTimeout(function() {
+                // Použijeme History API pro očištění URL bez reload stránky
+                const url = new URL(window.location);
+                url.searchParams.delete('saved');
+                url.searchParams.delete('error');
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            }, 2500); // Zobrazí se na 2.5 sekundy, pak zmizí z URL
+        }
+    </script>
+
 </body>
 </html>
