@@ -9,3 +9,5 @@ tailwindcss-*
 
 # Tailwind config (kazdy ma svuj lokalni)
 tailwind.config.js
+
+output.css
