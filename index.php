@@ -660,15 +660,19 @@ if (!empty($boltLink)) {
                             $value = $openingHours[$key];
                             $isClosed = (strpos(strtoupper($value), 'ZAVŘENO') !== false);
                             $valClass = $isClosed ? 'text-brand-gold' : '';
-                            $borderClass = ($index < $count - 1) ? 'border-b border-white/10 pb-3' : 'pt-1';
+                            $borderClass = ($index < $count - 1) ? 'border-b border-white/10 pb-3' : '';
                         ?>
                             <li class="flex justify-between <?= $borderClass ?>">
                                 <span class="font-bold text-white"><?= htmlspecialchars($label) ?></span>
                                 <span class="<?= $valClass ?>"><?= htmlspecialchars($value) ?></span>
                             </li>
                         <?php endforeach; ?>
+                    </ul>
 
-                        <?php if (!empty($exceptions)): ?>
+                    <?php if (!empty($exceptions)): ?>
+                    <div class="pt-4 border-t-2 border-brand-gold/30">
+                        <h4 class="text-brand-gold font-heading text-xs uppercase tracking-widest mb-3">Výjimečná Otevírací Doba</h4>
+                        <ul class="text-gray-300 text-sm space-y-3 w-full">
                             <?php foreach ($exceptions as $dateRange => $note): 
                                 $dates = explode('_', $dateRange);
                                 if (count($dates) === 2) {
@@ -681,13 +685,14 @@ if (!empty($boltLink)) {
                                 $isClosed = (strpos(strtoupper($note), 'ZAVŘENO') !== false);
                                 $valClass = $isClosed ? 'text-brand-gold' : '';
                             ?>
-                            <li class="flex justify-between border-t border-brand-gold/20 pt-3">
+                            <li class="flex justify-between">
                                 <span class="font-bold text-white"><?= htmlspecialchars($displayRange) ?></span>
                                 <span class="<?= $valClass ?>"><?= htmlspecialchars($note) ?></span>
                             </li>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </ul>
+                        </ul>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <div class="w-full h-auto lg:h-full min-h-[200px] flex flex-col scroll-wait delay-300">
                     <div class="border border-white/10 bg-white/5 p-3 rounded-sm shadow-xl h-full flex flex-col justify-between">
