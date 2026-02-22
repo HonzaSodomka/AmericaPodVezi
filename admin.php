@@ -35,16 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $openingHoursDecoded = json_decode($openingHoursJson, true);
     $currentData['opening_hours'] = (is_array($openingHoursDecoded) && !empty($openingHoursDecoded)) ? $openingHoursDecoded : ($currentData['opening_hours'] ?? []);
 
-    $exceptionsJson = $_POST['exceptions_json'] ?? '';
-    if (!empty($exceptionsJson)) {
-        $exceptionsDecoded = json_decode($exceptionsJson, true);
-        if (is_array($exceptionsDecoded)) {
-            $currentData['exceptions'] = $exceptionsDecoded;
-        }
-    } else {
-        if (!isset($currentData['exceptions'])) {
-            $currentData['exceptions'] = [];
-        }
+    // Výjimky - KOMPLETNĚ OPRAVENÁ LOGIKA
+    $exceptionsJson = $_POST['exceptions_json'] ?? '{}';
+    $exceptionsDecoded = json_decode($exceptionsJson, true);
+    if (is_array($exceptionsDecoded)) {
+        $currentData['exceptions'] = $exceptionsDecoded;
+    } elseif (!isset($currentData['exceptions'])) {
+        $currentData['exceptions'] = [];
     }
 
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -282,18 +279,21 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-brand-gold"></i> Výjimky (Svátky)
+                        <i class="fas fa-calendar-alt text-brand-gold"></i> Výjimky
                     </h2>
                 </div>
                 <div class="p-4 sm:p-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                        <div class="flex flex-col">
-                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Datum Od</label>
-                            <input type="date" id="exceptionDateFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base">
-                        </div>
-                        <div class="flex flex-col">
-                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Datum Do</label>
-                            <input type="date" id="exceptionDateTo" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base">
+                    <div class="mb-4">
+                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-3 block">Klikněte na datum v kalendáři</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col">
+                                <label class="text-gray-400 text-xs mb-2">Začátek</label>
+                                <input type="date" id="exceptionDateFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base cursor-pointer">
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-gray-400 text-xs mb-2">Konec</label>
+                                <input type="date" id="exceptionDateTo" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base cursor-pointer">
+                            </div>
                         </div>
                     </div>
                     <div class="mb-4">
@@ -332,7 +332,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         </form>
     </div>
 
-    <!-- FIXED FLOATING SAVE BUTTON (vždy viditelný) -->
+    <!-- FIXED FLOATING SAVE BUTTON -->
     <div class="fixed bottom-8 right-8 z-50">
         <button type="submit" form="adminForm" class="group bg-brand-gold hover:bg-white text-black font-bold font-heading py-4 px-8 rounded-full uppercase tracking-widest transition-all duration-300 shadow-[0_8px_30px_rgba(212,163,115,0.5)] hover:shadow-[0_12px_40px_rgba(212,163,115,0.7)] hover:scale-105 flex items-center gap-3">
             <i class="fas fa-save text-lg group-hover:rotate-12 transition-transform duration-300"></i>
@@ -347,6 +347,8 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     let selectedDays = [];
     let openingHoursData = <?= $openingHoursJson ?>;
     let exceptionsData = <?= $exceptionsJson ?>;
+
+    console.log('Initial exceptions data:', exceptionsData);
 
     function expandDayRange(key) {
         const parts = key.split('_');
@@ -477,6 +479,7 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     }
 
     window.removeException = function(key) {
+        console.log('Removing exception:', key);
         delete exceptionsData[key];
         renderExceptionsPreview();
         syncExceptionsJson();
@@ -487,12 +490,16 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         const to = document.getElementById('exceptionDateTo').value;
         const time = document.getElementById('exceptionTimeInput').value.trim();
         
+        console.log('Adding exception - from:', from, 'to:', to, 'time:', time);
+        
         if (!from || !to) { alert('Vyberte oba datumy'); return; }
         if (!time) { alert('Vyplňte otevírací dobu'); return; }
         if (from > to) { alert('Datum "Od" musí být před "Do"'); return; }
         
         const key = `${from}_${to}`;
         exceptionsData[key] = time;
+        
+        console.log('Exception added, new data:', exceptionsData);
         
         document.getElementById('exceptionDateFrom').value = '';
         document.getElementById('exceptionDateTo').value = '';
@@ -503,7 +510,9 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     };
 
     function syncExceptionsJson() {
-        document.getElementById('exceptionsJson').value = JSON.stringify(exceptionsData);
+        const jsonStr = JSON.stringify(exceptionsData);
+        document.getElementById('exceptionsJson').value = jsonStr;
+        console.log('Synced exceptions JSON:', jsonStr);
     }
 
     if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
