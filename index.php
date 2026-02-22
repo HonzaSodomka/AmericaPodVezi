@@ -108,6 +108,26 @@ function formatExceptionDate($dateStr) {
     return $dateStr;
 }
 
+// ===== EVENT POPUP LOGIC =====
+$showEventPopup = false;
+$eventImageData = '';
+
+if (isset($data['event'])) {
+    $event = $data['event'];
+    $eventActive = !empty($event['active']);
+    $eventDateFrom = $event['date_from'] ?? '';
+    $eventDateTo = $event['date_to'] ?? '';
+    $eventImageData = $event['image_data'] ?? '';
+    
+    // Check if event should be displayed today
+    if ($eventActive && $eventDateFrom && $eventDateTo && $eventImageData) {
+        $today = date('Y-m-d');
+        if ($today >= $eventDateFrom && $today <= $eventDateTo) {
+            $showEventPopup = true;
+        }
+    }
+}
+
 // Generování JSON-LD
 $schema = [
     "@context" => "https://schema.org",
@@ -281,6 +301,64 @@ if (!empty($boltLink)) {
             POD VĚŽÍ
         </div>
     </div>
+
+    <?php if ($showEventPopup): ?>
+    <!-- Event Popup Modal -->
+    <div id="event-popup" class="fixed inset-0 z-[120] hidden" style="background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(8px);">
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="relative max-w-2xl w-full max-h-[90vh] flex flex-col">
+                <!-- Close Button -->
+                <button id="event-close" aria-label="Zavřít" class="absolute -top-2 -right-2 z-10 w-10 h-10 bg-brand-gold hover:bg-white text-black rounded-full flex items-center justify-center transition shadow-2xl group">
+                    <i class="fas fa-times text-lg group-hover:rotate-90 transition-transform duration-300"></i>
+                </button>
+                
+                <!-- Image Container -->
+                <div class="bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl">
+                    <img src="<?= htmlspecialchars($eventImageData) ?>" alt="Aktuální akce" class="w-full h-auto max-h-[85vh] object-contain">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Event popup logic - show once per session
+    (function() {
+        const popup = document.getElementById('event-popup');
+        const closeBtn = document.getElementById('event-close');
+        const sessionKey = 'event_popup_shown';
+        
+        function closePopup() {
+            popup.classList.add('hidden');
+            sessionStorage.setItem(sessionKey, 'true');
+        }
+        
+        // Check if already shown this session
+        if (!sessionStorage.getItem(sessionKey)) {
+            // Wait for preloader to finish (2s animation + 0.5s buffer)
+            setTimeout(function() {
+                popup.classList.remove('hidden');
+            }, 2500);
+        }
+        
+        // Close on button click
+        closeBtn.addEventListener('click', closePopup);
+        
+        // Close on backdrop click
+        popup.addEventListener('click', function(e) {
+            if (e.target === popup) {
+                closePopup();
+            }
+        });
+        
+        // Close on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !popup.classList.contains('hidden')) {
+                closePopup();
+            }
+        });
+    })();
+    </script>
+    <?php endif; ?>
 
     <!-- Navigation -->
     <nav class="fixed w-full z-50 top-0 left-0 p-6 md:px-12 transition-all duration-300 border-b border-transparent" id="navbar">
