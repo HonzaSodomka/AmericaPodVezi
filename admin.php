@@ -258,17 +258,32 @@ $openingHoursJson = json_encode($data['opening_hours'] ?? [], JSON_UNESCAPED_UNI
         'sunday': 'Neděle'
     };
 
+    const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
     let availableDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     let selectedDays = [];
     let openingHoursData = <?= $openingHoursJson ?>;
+
+    // Pomocná funkce: rozbaluje rozsahy dnů (např. tuesday_friday -> [tuesday, wednesday, thursday, friday])
+    function expandDayRange(key) {
+        const parts = key.split('_');
+        if (parts.length === 1) return parts;
+        
+        const startIdx = dayOrder.indexOf(parts[0]);
+        const endIdx = dayOrder.indexOf(parts[parts.length - 1]);
+        
+        if (startIdx === -1 || endIdx === -1 || startIdx > endIdx) return parts;
+        
+        return dayOrder.slice(startIdx, endIdx + 1);
+    }
 
     // Inicializace - přečti existující data a označ použité dny
     function initializeEditor() {
         const usedDays = new Set();
         
         Object.keys(openingHoursData).forEach(key => {
-            // Rozloží "tuesday_friday" na ["tuesday", "friday"]
-            const days = key.split('_');
+            // Rozbal rozsah dnů (např. tuesday_friday zahrnuje i wednesday a thursday)
+            const days = expandDayRange(key);
             days.forEach(day => usedDays.add(day));
         });
 
@@ -338,13 +353,10 @@ $openingHoursJson = json_encode($data['opening_hours'] ?? [], JSON_UNESCAPED_UNI
     }
 
     window.removeHours = function(key) {
-        // Vrát dny zpět do availableDays
-        const days = key.split('_');
+        // Vrát všechny dny z rozsahu zpět do availableDays
+        const days = expandDayRange(key);
         availableDays.push(...days);
-        availableDays.sort((a, b) => {
-            const order = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-            return order.indexOf(a) - order.indexOf(b);
-        });
+        availableDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
         
         delete openingHoursData[key];
         renderDaySelector();
@@ -365,7 +377,6 @@ $openingHoursJson = json_encode($data['opening_hours'] ?? [], JSON_UNESCAPED_UNI
         }
 
         // Setříď dny vzestupně
-        const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         selectedDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
 
         // Vytvoř klíč (např. "tuesday_friday")
