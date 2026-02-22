@@ -1,13 +1,50 @@
+# Node modules
 node_modules/
-setup-fa.sh
 
-
-# Tailwind CLI binaries (lokalni nastroje)
+# Tailwind CLI binaries
 tailwindcss.exe
 tailwindcss
 tailwindcss-*
-
-# Tailwind config (kazdy ma svuj lokalni)
 tailwind.config.js
-
 output.css
+
+# Build scripts (local only)
+setup-fa.sh
+build.sh
+
+# Documentation files (development only)
+tailwind-navod.txt
+DAILY_MENU_INSTRUCTIONS.md
+PATCH_daily_menu_section.html
+
+# Runtime data (generated files)
+daily_menu.json
+scrape.log
+*.log
+
+# Environment & secrets
+.env
+.env.*
+config.local.php
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# PHP
+vendor/
+composer.lock
