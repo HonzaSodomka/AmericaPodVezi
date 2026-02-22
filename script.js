@@ -435,20 +435,24 @@ function initDailyMenuLoader() {
                     soupSection.classList.add('hidden');
                 }
                 
-                // Jídla - OPRAVENÝ LAYOUT
+                // Jídla - OPRAVENÝ LAYOUT s odděleným číslem
                 const mealsContainer = document.getElementById('meals-content');
                 mealsContainer.innerHTML = '';
                 
                 if (data.meals) {
                     data.meals.forEach(meal => {
                         const mealDiv = document.createElement('div');
-                        mealDiv.className = 'flex justify-between items-start gap-4 bg-black/30 p-4 rounded-sm hover:bg-black/40 transition';
+                        mealDiv.className = 'flex items-start gap-2 bg-black/30 p-4 rounded-sm hover:bg-black/40 transition';
+                        
+                        // Struktura: [Číslo] [Text - flex-1] [Cena]
+                        const numberHtml = meal.number 
+                            ? `<span class="text-brand-gold font-bold shrink-0">${meal.number}.</span>` 
+                            : '';
+                        
                         mealDiv.innerHTML = `
-                            <div class="flex-1 min-w-0 text-white text-base">
-                                ${meal.number ? '<span class="text-brand-gold font-bold mr-2">' + meal.number + '.</span>' : ''}
-                                ${meal.name}
-                            </div>
-                            <div class="text-brand-gold font-bold text-lg whitespace-nowrap flex-shrink-0">${meal.price} Kč</div>
+                            ${numberHtml}
+                            <div class="flex-1 min-w-0 text-white text-base">${meal.name}</div>
+                            <div class="text-brand-gold font-bold text-lg whitespace-nowrap shrink-0">${meal.price} Kč</div>
                         `;
                         mealsContainer.appendChild(mealDiv);
                     });
