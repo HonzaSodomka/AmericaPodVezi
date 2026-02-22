@@ -18,7 +18,6 @@ DAILY_MENU_INSTRUCTIONS.md
 PATCH_daily_menu_section.html
 
 # Runtime data (generated files)
-daily_menu.json
 scrape.log
 *.log
 
