@@ -277,6 +277,30 @@ $openingHoursJson = json_encode($data['opening_hours'] ?? [], JSON_UNESCAPED_UNI
         return dayOrder.slice(startIdx, endIdx + 1);
     }
 
+    // Nová funkce: automaticky doplní mezery mezi vybranými dny
+    function fillGaps() {
+        if (selectedDays.length < 2) return;
+        
+        // Setříď podle pořadí
+        selectedDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
+        
+        const firstIdx = dayOrder.indexOf(selectedDays[0]);
+        const lastIdx = dayOrder.indexOf(selectedDays[selectedDays.length - 1]);
+        
+        // Doplní všechny dny mezi prvním a posledním
+        const fullRange = dayOrder.slice(firstIdx, lastIdx + 1);
+        
+        // Přidá jen ty, které jsou dostupné a ještě nejsou vybrané
+        fullRange.forEach(day => {
+            if (availableDays.includes(day) && !selectedDays.includes(day)) {
+                selectedDays.push(day);
+            }
+        });
+        
+        // Setříď znovu
+        selectedDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
+    }
+
     // Inicializace - přečti existující data a označ použité dny
     function initializeEditor() {
         const usedDays = new Set();
@@ -321,6 +345,7 @@ $openingHoursJson = json_encode($data['opening_hours'] ?? [], JSON_UNESCAPED_UNI
             selectedDays = selectedDays.filter(d => d !== day);
         } else {
             selectedDays.push(day);
+            fillGaps(); // Automaticky doplní mezery
         }
         renderDaySelector();
     }
