@@ -1,0 +1,81 @@
+<!-- DENNÍ MENU SECTION -->
+<!-- Nahradit sekci v index.php (cca řádek 669) touto novým HTML -->
+<section id="denni-menu" class="bg-black py-20 px-8 md:px-12 relative">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-10 scroll-wait">
+            <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+                Denní <span class="text-brand-gold">Menu</span>
+            </h2>
+            <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="menu-loading" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-5xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+            <div class="relative z-10">
+                <div class="text-brand-gold text-4xl md:text-5xl mb-6 animate-pulse">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <p class="text-gray-300">Načítám dnešní menu...</p>
+            </div>
+        </div>
+
+        <!-- Menu Display (Hidden by default) -->
+        <div id="menu-display" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-5xl mx-auto scroll-wait delay-100 relative overflow-hidden hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+            <div class="relative z-10">
+                <div class="text-brand-gold text-4xl md:text-5xl mb-6">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3 id="menu-date" class="text-2xl md:text-3xl font-heading font-bold text-white mb-6 tracking-wider uppercase"></h3>
+                
+                <!-- Polévka -->
+                <div id="soup-section" class="mb-8 text-left max-w-3xl mx-auto hidden">
+                    <h4 class="text-brand-gold font-heading text-lg uppercase tracking-widest mb-3 border-b border-white/20 pb-2">
+                        <i class="fas fa-bowl-hot mr-2"></i> Polévka
+                    </h4>
+                    <div id="soup-content" class="flex justify-between items-center bg-black/30 p-4 rounded-sm">
+                        <span id="soup-name" class="text-white text-base"></span>
+                        <span id="soup-price" class="text-brand-gold font-bold text-lg"></span>
+                    </div>
+                </div>
+
+                <!-- Hlavní jídla -->
+                <div id="meals-section" class="text-left max-w-3xl mx-auto">
+                    <h4 class="text-brand-gold font-heading text-lg uppercase tracking-widest mb-3 border-b border-white/20 pb-2">
+                        <i class="fas fa-hamburger mr-2"></i> Hlavní jídla
+                    </h4>
+                    <div id="meals-content" class="space-y-3"></div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 pt-6 border-t border-white/10">
+                    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
+                        <i class="fas fa-phone-alt"></i> Objednat s sebou: <?= htmlspecialchars($phone) ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="menu-error" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-3xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+            <div class="relative z-10">
+                <div class="text-gray-600 text-4xl md:text-5xl mb-6">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-heading font-bold text-white mb-4 tracking-wider uppercase">Dnes nemáme polení menu</h3>
+                <p class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto">Polení menu nabízíme pouze ve všední dny. O víkendech doporučujeme navštívit naše stálé menu.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
+                        <i class="fas fa-phone-alt"></i> Informace: <?= htmlspecialchars($phone) ?>
+                    </a>
+                    <?php if ($dailyMenuUrl): ?>
+                    <a href="<?= $dailyMenuUrl ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading uppercase tracking-widest">
+                        <i class="fas fa-external-link-alt"></i> Menicka.cz
+                    </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
