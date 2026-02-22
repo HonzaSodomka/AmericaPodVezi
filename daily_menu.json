@@ -1,0 +1,95 @@
+{
+    "scraped_at": "2026-02-22 16:36:34",
+    "days": [
+        {
+            "date": "Neděle 22.2.2026",
+            "soup": null,
+            "meals": [],
+            "is_closed": true,
+            "is_empty": false
+        },
+        {
+            "date": "Pondělí 23.2.2026",
+            "soup": {
+                "name": "Zelňačka s klobásou",
+                "price": 45,
+                "allergens": []
+            },
+            "meals": [
+                {
+                    "number": 1,
+                    "name": "Pečené jelito, vařený brambor, kys. zelí",
+                    "price": 179,
+                    "allergens": []
+                },
+                {
+                    "number": 2,
+                    "name": "Grilovaná kotleta zapečená se šunkou a sýrem, op. brambor, pepřová omáčka",
+                    "price": 182,
+                    "allergens": []
+                },
+                {
+                    "number": 3,
+                    "name": "Penne s kuřecím masem, žampióny, kápií a pórkem ve smetanové kari omáčce",
+                    "price": 176,
+                    "allergens": []
+                },
+                {
+                    "number": 4,
+                    "name": "130g Hovězí FIRE BURGER (čedar, slanina, karamelizovaná cibulka, jalapenos) + domácí hranolky\/coleslaw",
+                    "price": 178,
+                    "allergens": []
+                },
+                {
+                    "number": 5,
+                    "name": "130g Hovězí PLUM BURGER (čedar, slanina, smažená cibulka, švestková omáčka) + domácí hranolky\/coleslaw",
+                    "price": 178,
+                    "allergens": []
+                },
+                {
+                    "number": 6,
+                    "name": "130g Hovězí CHEESEBURGER + domácí hranolky\/coleslaw",
+                    "price": 174,
+                    "allergens": []
+                }
+            ],
+            "is_closed": false,
+            "is_empty": false
+        },
+        {
+            "date": "Úterý 24.2.2026",
+            "soup": null,
+            "meals": [],
+            "is_closed": false,
+            "is_empty": true
+        },
+        {
+            "date": "Středa 25.2.2026",
+            "soup": null,
+            "meals": [],
+            "is_closed": false,
+            "is_empty": true
+        },
+        {
+            "date": "Čtvrtek 26.2.2026",
+            "soup": null,
+            "meals": [],
+            "is_closed": false,
+            "is_empty": true
+        },
+        {
+            "date": "Pátek 27.2.2026",
+            "soup": null,
+            "meals": [],
+            "is_closed": false,
+            "is_empty": true
+        },
+        {
+            "date": "Sobota 28.2.2026",
+            "soup": null,
+            "meals": [],
+            "is_closed": false,
+            "is_empty": true
+        }
+    ]
+}
