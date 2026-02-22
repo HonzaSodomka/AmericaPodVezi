@@ -1,7 +1,7 @@
 <?php
 /**
  * Menu scraper pro menicka.cz
- * Stáhne denní menu pro celý týden včetně alergenů a uloží do daily_menu.json
+ * Stáhne denní menu pro celý týden a uloží do daily_menu.json
  * 
  * Použití: php scrape_menu.php
  */
@@ -11,7 +11,6 @@ define('OUTPUT_FILE', __DIR__ . '/daily_menu.json');
 
 function fetchWithCurl($url) {
     if (!function_exists('curl_init')) {
-        // Fallback - try with stream context
         $context = stream_context_create([
             'http' => [
                 'method' => 'GET',
@@ -49,32 +48,6 @@ function fetchWithCurl($url) {
     return $result;
 }
 
-/**
- * Parse allergens from text
- * Example: "Kuřecí řízek (1,3,7)" -> [1, 3, 7]
- */
-function parseAllergens($text) {
-    $allergens = [];
-    // Hledej čísla v závorkách na konci textu
-    if (preg_match('/\(([0-9,\s]+)\)\s*$/u', $text, $matches)) {
-        $numbers = preg_split('/[,\s]+/', trim($matches[1]));
-        foreach ($numbers as $num) {
-            if (is_numeric($num)) {
-                $allergens[] = intval($num);
-            }
-        }
-    }
-    return $allergens;
-}
-
-/**
- * Remove allergen numbers from meal name
- * Example: "Kuřecí řízek (1,3,7)" -> "Kuřecí řízek"
- */
-function cleanMealName($text) {
-    return trim(preg_replace('/\([0-9,\s]+\)\s*$/u', '', $text));
-}
-
 function scrapeMenu() {
     $html = fetchWithCurl(MENU_URL);
     
@@ -83,7 +56,6 @@ function scrapeMenu() {
         return false;
     }
     
-    // Load into DOMDocument
     $dom = new DOMDocument();
     @$dom->loadHTML($html);
     $xpath = new DOMXPath($dom);
@@ -93,11 +65,9 @@ function scrapeMenu() {
         'days' => []
     ];
     
-    // Find all menu sections by day
     $menuDivs = $xpath->query("//div[@class='menicka']");
     
     foreach ($menuDivs as $menuDiv) {
-        // Najdi nadpis dne
         $dateNodes = $xpath->query(".//div[@class='nadpis']", $menuDiv);
         if ($dateNodes->length === 0) continue;
         
@@ -111,7 +81,6 @@ function scrapeMenu() {
             'is_empty' => false
         ];
         
-        // Zkontroluj jestli není zavřeno
         $fullDayText = trim($menuDiv->textContent);
         if (stripos($fullDayText, 'zavřeno') !== false) {
             $dayData['is_closed'] = true;
@@ -125,39 +94,29 @@ function scrapeMenu() {
             continue;
         }
         
-        // Najdi všechny položky menu (polévka + jídla)
         $menuItems = $xpath->query(".//li[@class='polevka'] | .//li[@class='jidlo']", $menuDiv);
         
         foreach ($menuItems as $item) {
-            // Najdi div.polozka a div.cena
             $polozkaNodes = $xpath->query(".//div[@class='polozka']", $item);
             $cenaNodes = $xpath->query(".//div[@class='cena']", $item);
             
             if ($polozkaNodes->length === 0 || $cenaNodes->length === 0) continue;
             
-            $rawName = trim($polozkaNodes->item(0)->textContent);
+            $name = trim($polozkaNodes->item(0)->textContent);
             $priceText = trim($cenaNodes->item(0)->textContent);
             
-            // Parsuj alergeny
-            $allergens = parseAllergens($rawName);
-            $name = cleanMealName($rawName);
-            
-            // Vytáhni číslo z ceny
             if (preg_match('/(\d+)\s*Kč/u', $priceText, $matches)) {
                 $price = intval($matches[1]);
             } else {
-                continue; // Přeskoč položky bez ceny
+                continue;
             }
             
-            // Je to polévka?
             if ($item->getAttribute('class') === 'polevka') {
                 $dayData['soup'] = [
                     'name' => $name,
-                    'price' => $price,
-                    'allergens' => $allergens
+                    'price' => $price
                 ];
             } else {
-                // Hlavní jídlo - zkus najít číslo
                 $mealNumber = null;
                 if (preg_match('/^(\d+)\.\s*(.+)$/u', $name, $mealMatches)) {
                     $mealNumber = intval($mealMatches[1]);
@@ -167,13 +126,11 @@ function scrapeMenu() {
                 $dayData['meals'][] = [
                     'number' => $mealNumber,
                     'name' => $name,
-                    'price' => $price,
-                    'allergens' => $allergens
+                    'price' => $price
                 ];
             }
         }
         
-        // Přidej vždy všechny dny (i prázdné)
         $menuData['days'][] = $dayData;
     }
     
@@ -195,7 +152,6 @@ function saveMenu($data) {
     return true;
 }
 
-// Main execution
 if (php_sapi_name() === 'cli' || !empty($_GET['run'])) {
     echo "Scraping menu from menicka.cz...\n";
     
@@ -216,7 +172,6 @@ if (php_sapi_name() === 'cli' || !empty($_GET['run'])) {
         echo "Menu saved to daily_menu.json\n";
         echo "Scraped at: " . $menuData['scraped_at'] . "\n";
         
-        // Print preview
         foreach ($menuData['days'] as $day) {
             echo "\n" . $day['date'] . ":";
             
@@ -233,12 +188,10 @@ if (php_sapi_name() === 'cli' || !empty($_GET['run'])) {
             echo "\n";
             
             if ($day['soup']) {
-                $allergenStr = !empty($day['soup']['allergens']) ? ' [' . implode(',', $day['soup']['allergens']) . ']' : '';
-                echo "  Polévka: " . $day['soup']['name'] . $allergenStr . " (" . $day['soup']['price'] . " Kč)\n";
+                echo "  Polévka: " . $day['soup']['name'] . " (" . $day['soup']['price'] . " Kč)\n";
             }
             foreach ($day['meals'] as $meal) {
-                $allergenStr = !empty($meal['allergens']) ? ' [' . implode(',', $meal['allergens']) . ']' : '';
-                echo "  " . ($meal['number'] ? $meal['number'] . ". " : "") . $meal['name'] . $allergenStr . " (" . $meal['price'] . " Kč)\n";
+                echo "  " . ($meal['number'] ? $meal['number'] . ". " : "") . $meal['name'] . " (" . $meal['price'] . " Kč)\n";
             }
         }
     } else {
@@ -246,7 +199,6 @@ if (php_sapi_name() === 'cli' || !empty($_GET['run'])) {
         exit(1);
     }
 } else {
-    // Web interface
     header('Content-Type: application/json');
     
     $menuData = scrapeMenu();
