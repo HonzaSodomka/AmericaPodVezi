@@ -9,9 +9,9 @@ if (file_exists($dataFile)) {
 
 // Výchozí hodnoty
 $phone = $data['contact']['phone'] ?? '326 322 007';
-$phoneClean = preg_replace('/\\s+/', '', $phone);
+$phoneClean = preg_replace('/\s+/', '', $phone);
 $phoneAlt = $data['contact']['phone_alt'] ?? '606 537 469';
-$phoneAltClean = preg_replace('/\\s+/', '', $phoneAlt);
+$phoneAltClean = preg_replace('/\s+/', '', $phoneAlt);
 $email = $data['contact']['email'] ?? 'info@americapodvezi.cz';
 $address = $data['contact']['address'] ?? 'Komenského náměstí 61, Mladá Boleslav';
 
@@ -94,6 +94,18 @@ function formatDayKey($key, $translations) {
         $res[] = $translations[$p] ?? $p;
     }
     return implode(' - ', $res);
+}
+
+// Helper pro formátování datumu ve výjimkách (bez roku)
+function formatExceptionDate($dateStr) {
+    // 2026-02-07 -> 7.2.
+    $parts = explode('-', $dateStr);
+    if (count($parts) === 3) {
+        $day = intval($parts[2]);
+        $month = intval($parts[1]);
+        return $day . '.' . $month . '.';
+    }
+    return $dateStr;
 }
 
 // Generování JSON-LD
@@ -660,12 +672,20 @@ if (!empty($boltLink)) {
                             <li class="pt-3 mt-1 border-t border-brand-gold/30 text-[10px] text-brand-gold uppercase tracking-widest font-heading flex flex-col gap-1">
                                 <span>Výjimečná otevírací doba:</span>
                             </li>
-                            <?php foreach ($exceptions as $dateStr => $note): 
+                            <?php foreach ($exceptions as $dateRange => $note): 
+                                $dates = explode('_', $dateRange);
+                                if (count($dates) === 2) {
+                                    $fromDisplay = formatExceptionDate($dates[0]);
+                                    $toDisplay = formatExceptionDate($dates[1]);
+                                    $displayRange = $fromDisplay . ' - ' . $toDisplay;
+                                } else {
+                                    $displayRange = $dateRange;
+                                }
                                 $isClosed = (strpos(strtoupper($note), 'ZAVŘENO') !== false);
                                 $valClass = $isClosed ? 'text-brand-gold font-bold' : 'text-white font-bold';
                             ?>
                             <li class="flex justify-between pb-1 text-sm">
-                                <span class="text-gray-300"><?= htmlspecialchars($dateStr) ?></span>
+                                <span class="text-gray-300"><?= htmlspecialchars($displayRange) ?></span>
                                 <span class="<?= $valClass ?>"><?= htmlspecialchars($note) ?></span>
                             </li>
                             <?php endforeach; ?>
@@ -696,7 +716,7 @@ if (!empty($boltLink)) {
                             </div>
                             <div id="map-iframe-host" class="absolute inset-0 hidden"></div>
                         </div>
-                        <a href="https://maps.google.com/?q=America+Pod+V%C4%9b%C5%BE%C3%AD" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
+                        <a href="https://maps.google.com/?q=America+Pod+Věží" target="_blank" rel="noopener noreferrer" class="text-[10px] text-center text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition flex items-center justify-center gap-1 py-1">
                             <i class="fas fa-external-link-alt"></i> Otevřít v aplikaci
                         </a>
                     </div>
