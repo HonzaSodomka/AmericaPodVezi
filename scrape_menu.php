@@ -10,22 +10,26 @@ define('MENU_URL', 'https://www.menicka.cz/7509-america-pod-vezi.html');
 define('OUTPUT_FILE', __DIR__ . '/daily_menu.json');
 
 function scrapeMenu() {
-    // Fetch HTML using cURL (more reliable than file_get_contents)
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, MENU_URL);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    // Fetch HTML using file_get_contents with proper headers
+    $context = stream_context_create([
+        'http' => [
+            'method' => 'GET',
+            'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\r\n" .
+                       "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n" .
+                       "Accept-Language: cs,en;q=0.9\r\n",
+            'timeout' => 10
+        ],
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false
+        ]
+    ]);
     
-    $html = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    curl_close($ch);
+    $html = @file_get_contents(MENU_URL, false, $context);
     
-    if ($html === false || $httpCode !== 200) {
-        error_log('Failed to fetch menu from ' . MENU_URL . ' (HTTP ' . $httpCode . '): ' . $error);
+    if ($html === false) {
+        $error = error_get_last();
+        error_log('Failed to fetch menu from ' . MENU_URL . ': ' . ($error['message'] ?? 'Unknown error'));
         return false;
     }
     
