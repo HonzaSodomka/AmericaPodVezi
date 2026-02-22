@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $currentData['daily_menu_url'] = $_POST['daily_menu_url'] ?? '';
 
-    // OTEVÍRACÍ DOBA - OPRAVENO
+    // OTEVÍRACÍ DOBA
     $openingHoursRaw = $_POST['opening_hours_json'] ?? null;
     if ($openingHoursRaw !== null && $openingHoursRaw !== '') {
         $openingHoursParsed = json_decode($openingHoursRaw, true);
@@ -45,13 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $currentData['opening_hours'] = $openingHoursParsed;
         }
     } else {
-        // Pokud není předáno, zachováme stávající data
         if (!isset($currentData['opening_hours'])) {
-            $currentData['opening_hours'] = [];
+            $currentData['opening_hours'] = new stdClass(); // Empty object
         }
     }
 
-    // VÝJIMKY - OPRAVENO
+    // VÝJIMKY
     $exceptionsRaw = $_POST['exceptions_json'] ?? null;
     if ($exceptionsRaw !== null && $exceptionsRaw !== '') {
         $exceptionsParsed = json_decode($exceptionsRaw, true);
@@ -59,13 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $currentData['exceptions'] = $exceptionsParsed;
         }
     } else {
-        // Pokud není předáno, zachováme stávající data
         if (!isset($currentData['exceptions'])) {
-            $currentData['exceptions'] = [];
+            $currentData['exceptions'] = new stdClass(); // Empty object
         }
     }
 
-    $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
     
     if (file_put_contents($dataFile, $jsonString) !== false) {
         header('Location: admin.php?saved=1');
@@ -105,8 +103,18 @@ function isChecked($array, $key1, $key2, $key3) {
     return !empty($array[$key1][$key2][$key3]) ? 'checked' : '';
 }
 
-$openingHoursJson = json_encode($data['opening_hours'] ?? [], JSON_UNESCAPED_UNICODE);
-$exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE);
+// FORCE OBJECTS not arrays for empty data
+$openingHoursData = $data['opening_hours'] ?? [];
+if (empty($openingHoursData)) {
+    $openingHoursData = new stdClass();
+}
+$openingHoursJson = json_encode($openingHoursData, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+
+$exceptionsData = $data['exceptions'] ?? [];
+if (empty($exceptionsData)) {
+    $exceptionsData = new stdClass();
+}
+$exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
 ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -385,8 +393,19 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     let availableDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     let selectedDays = [];
+    
+    // FIX: Convert arrays to objects
     let openingHoursData = <?= $openingHoursJson ?>;
+    if (Array.isArray(openingHoursData)) {
+        console.warn('openingHoursData was array, converting to object');
+        openingHoursData = {};
+    }
+    
     let exceptionsData = <?= $exceptionsJson ?>;
+    if (Array.isArray(exceptionsData)) {
+        console.warn('exceptionsData was array, converting to object');
+        exceptionsData = {};
+    }
 
     console.log('INITIAL STATE:');
     console.log('openingHoursData:', openingHoursData);
