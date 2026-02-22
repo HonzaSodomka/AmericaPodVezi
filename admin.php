@@ -1,7 +1,6 @@
 <?php
 $dataFile = __DIR__ . '/data.json';
 
-// 1. ZPRACOVÁNÍ FORMULÁŘE (ULOŽENÍ)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $currentData = [];
     if (file_exists($dataFile)) {
@@ -11,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $currentData['contact']['phone'] = $_POST['contact_phone'] ?? '';
     $currentData['contact']['phone_alt'] = $_POST['contact_phone_alt'] ?? '';
     $currentData['contact']['email'] = $_POST['contact_email'] ?? '';
+    $currentData['contact']['email_reservation'] = $_POST['contact_email_reservation'] ?? '';
     $currentData['contact']['address'] = $_POST['contact_address'] ?? '';
 
     $currentData['rating']['value'] = (float)($_POST['rating_value'] ?? 4.5);
@@ -31,12 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $currentData['daily_menu_url'] = $_POST['daily_menu_url'] ?? '';
 
-    // Otevírací doba
     $openingHoursJson = $_POST['opening_hours_json'] ?? '{}';
     $openingHoursDecoded = json_decode($openingHoursJson, true);
     $currentData['opening_hours'] = is_array($openingHoursDecoded) ? $openingHoursDecoded : [];
 
-    // Výjimky (speciální dny) - OPRAVENÁ ČÁST
     $exceptionsJson = $_POST['exceptions_json'] ?? '{}';
     $exceptionsDecoded = json_decode($exceptionsJson, true);
     $currentData['exceptions'] = is_array($exceptionsDecoded) ? $exceptionsDecoded : [];
@@ -94,174 +92,223 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
     <link rel="stylesheet" href="fa/css/fontawesome.min.css">
     <link rel="stylesheet" href="fa/css/solid.min.css">
     <style>
-        /* Zajištění, že date inputy budou vždy zobrazovat kalendář */
         input[type="date"] {
-            position: relative;
+            color-scheme: dark;
         }
         input[type="date"]::-webkit-calendar-picker-indicator {
             cursor: pointer;
-            opacity: 1;
+            filter: invert(1);
         }
     </style>
 </head>
-<body class="bg-[#050505] text-white font-sans min-h-screen p-4 md:p-8">
+<body class="bg-[#050505] text-white font-sans min-h-screen">
 
-    <div class="max-w-4xl mx-auto">
-        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-            <h1 class="text-3xl font-heading font-bold tracking-widest uppercase text-brand-gold">
-                <i class="fas fa-cog mr-2"></i> Administrace Webu
+    <div class="w-full max-w-5xl mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12">
+        
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold tracking-widest uppercase text-brand-gold">
+                <i class="fas fa-cog mr-2"></i> Administrace
             </h1>
-            <a href="index.php" target="_blank" class="text-gray-400 hover:text-white transition text-sm">
+            <a href="index.php" target="_blank" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
                 <i class="fas fa-external-link-alt"></i> Zobrazit web
             </a>
         </div>
 
+        <!-- SUCCESS/ERROR MESSAGES -->
         <?php if ($successMessage): ?>
-            <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-6 flex items-center gap-3">
-                <i class="fas fa-check-circle"></i> <?= $successMessage ?>
+            <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-fade-in">
+                <i class="fas fa-check-circle text-lg"></i>
+                <span class="text-sm sm:text-base"><?= $successMessage ?></span>
             </div>
         <?php endif; ?>
 
         <?php if ($errorMessage): ?>
-            <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-6 flex items-center gap-3">
-                <i class="fas fa-exclamation-triangle"></i> <?= $errorMessage ?>
+            <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-fade-in">
+                <i class="fas fa-exclamation-triangle text-lg"></i>
+                <span class="text-sm sm:text-base"><?= $errorMessage ?></span>
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="admin.php" class="space-y-8" id="adminForm">
+        <form method="POST" action="admin.php" class="space-y-6 sm:space-y-8" id="adminForm">
             
             <!-- KONTAKTY -->
-            <div class="bg-white/5 border border-white/10 p-6 rounded-sm shadow-xl">
-                <h2 class="text-xl font-heading text-white tracking-wider uppercase mb-4 border-b border-white/10 pb-2">Kontakty</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Hlavní Telefon</label>
-                        <input type="text" name="contact_phone" value="<?= val($data, 'contact', 'phone') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Alternativní Telefon</label>
-                        <input type="text" name="contact_phone_alt" value="<?= val($data, 'contact', 'phone_alt') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">E-mail</label>
-                        <input type="email" name="contact_email" value="<?= val($data, 'contact', 'email') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Adresa</label>
-                        <input type="text" name="contact_address" value="<?= val($data, 'contact', 'address') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none">
+            <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                    <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-address-book text-brand-gold"></i> Kontakty
+                    </h2>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
+                                <i class="fas fa-phone text-xs"></i> Hlavní Telefon
+                            </label>
+                            <input type="text" name="contact_phone" value="<?= val($data, 'contact', 'phone') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
+                                <i class="fas fa-phone text-xs"></i> Alternativní Telefon
+                            </label>
+                            <input type="text" name="contact_phone_alt" value="<?= val($data, 'contact', 'phone_alt') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
+                                <i class="fas fa-envelope text-xs"></i> E-mail
+                            </label>
+                            <input type="email" name="contact_email" value="<?= val($data, 'contact', 'email') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
+                                <i class="fas fa-calendar-check text-xs"></i> E-mail na Rezervace
+                            </label>
+                            <input type="email" name="contact_email_reservation" value="<?= val($data, 'contact', 'email_reservation') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base" placeholder="rezervace@...">
+                        </div>
+                        <div class="flex flex-col sm:col-span-2">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
+                                <i class="fas fa-map-marker-alt text-xs"></i> Adresa
+                            </label>
+                            <input type="text" name="contact_address" value="<?= val($data, 'contact', 'address') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base">
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- ODKAZY -->
-            <div class="bg-white/5 border border-white/10 p-6 rounded-sm shadow-xl">
-                <h2 class="text-xl font-heading text-white tracking-wider uppercase mb-4 border-b border-white/10 pb-2">Rozvoz & Menu</h2>
-                <div class="space-y-4">
+            <!-- ROZVOZ & MENU -->
+            <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                    <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-utensils text-brand-gold"></i> Rozvoz & Menu
+                    </h2>
+                </div>
+                <div class="p-4 sm:p-6 space-y-4">
                     <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Denní Menu</label>
-                        <input type="url" name="daily_menu_url" value="<?= val($data, 'daily_menu_url') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none placeholder-gray-600" placeholder="https://...">
+                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
+                            <i class="fas fa-clipboard-list text-xs"></i> Denní Menu (URL)
+                        </label>
+                        <input type="url" name="daily_menu_url" value="<?= val($data, 'daily_menu_url') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none placeholder-gray-500 transition text-sm sm:text-base" placeholder="https://menicka.cz/...">
                     </div>
                     
-                    <div class="bg-black/30 p-4 rounded border border-white/5">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="text-brand-gold text-sm uppercase tracking-widest font-bold">Wolt</label>
+                    <div class="bg-black/30 p-4 rounded-sm border border-white/5">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                            <label class="text-brand-gold text-xs sm:text-sm uppercase tracking-widest font-bold flex items-center gap-2">
+                                <i class="fas fa-motorcycle"></i> Wolt
+                            </label>
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" name="delivery_wolt_enabled" <?= isChecked($data, 'delivery', 'wolt', 'enabled') ?> class="w-5 h-5 text-brand-gold bg-black/50 border-white/20 rounded focus:ring-brand-gold focus:ring-2">
-                                <span class="text-xs text-gray-400">Zobrazovat</span>
+                                <span class="text-xs text-gray-400">Zobrazovat na webu</span>
                             </label>
                         </div>
-                        <input type="url" name="delivery_wolt_url" value="<?= val($data, 'delivery', 'wolt', 'url') ?>" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none" placeholder="https://wolt.com/...">
+                        <input type="url" name="delivery_wolt_url" value="<?= val($data, 'delivery', 'wolt', 'url') ?>" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm" placeholder="https://wolt.com/...">
                     </div>
 
-                    <div class="bg-black/30 p-4 rounded border border-white/5">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="text-brand-gold text-sm uppercase tracking-widest font-bold">Foodora</label>
+                    <div class="bg-black/30 p-4 rounded-sm border border-white/5">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                            <label class="text-brand-gold text-xs sm:text-sm uppercase tracking-widest font-bold flex items-center gap-2">
+                                <i class="fas fa-bicycle"></i> Foodora
+                            </label>
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" name="delivery_foodora_enabled" <?= isChecked($data, 'delivery', 'foodora', 'enabled') ?> class="w-5 h-5 text-brand-gold bg-black/50 border-white/20 rounded focus:ring-brand-gold focus:ring-2">
-                                <span class="text-xs text-gray-400">Zobrazovat</span>
+                                <span class="text-xs text-gray-400">Zobrazovat na webu</span>
                             </label>
                         </div>
-                        <input type="url" name="delivery_foodora_url" value="<?= val($data, 'delivery', 'foodora', 'url') ?>" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none" placeholder="https://www.foodora.cz/...">
+                        <input type="url" name="delivery_foodora_url" value="<?= val($data, 'delivery', 'foodora', 'url') ?>" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm" placeholder="https://www.foodora.cz/...">
                     </div>
 
-                    <div class="bg-black/30 p-4 rounded border border-white/5">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="text-brand-gold text-sm uppercase tracking-widest font-bold">Bolt Food</label>
+                    <div class="bg-black/30 p-4 rounded-sm border border-white/5">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                            <label class="text-brand-gold text-xs sm:text-sm uppercase tracking-widest font-bold flex items-center gap-2">
+                                <i class="fas fa-bolt"></i> Bolt Food
+                            </label>
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" name="delivery_bolt_enabled" <?= isChecked($data, 'delivery', 'bolt', 'enabled') ?> class="w-5 h-5 text-brand-gold bg-black/50 border-white/20 rounded focus:ring-brand-gold focus:ring-2">
-                                <span class="text-xs text-gray-400">Zobrazovat</span>
+                                <span class="text-xs text-gray-400">Zobrazovat na webu</span>
                             </label>
                         </div>
-                        <input type="url" name="delivery_bolt_url" value="<?= val($data, 'delivery', 'bolt', 'url') ?>" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none" placeholder="https://food.bolt.eu/...">
+                        <input type="url" name="delivery_bolt_url" value="<?= val($data, 'delivery', 'bolt', 'url') ?>" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm" placeholder="https://food.bolt.eu/...">
                     </div>
                 </div>
-            </div>
+            </section>
 
             <!-- OTEVÍRACÍ DOBA -->
-            <div class="bg-white/5 border border-white/10 p-6 rounded-sm shadow-xl">
-                <h2 class="text-xl font-heading text-white tracking-wider uppercase mb-4 border-b border-white/10 pb-2">Otevírací Doba</h2>
-                <div class="mb-4">
-                    <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Vyberte dny</label>
-                    <div id="daySelector" class="flex flex-wrap gap-2"></div>
+            <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                    <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-clock text-brand-gold"></i> Otevírací Doba
+                    </h2>
                 </div>
-                <div class="mb-4">
-                    <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1 block">Otevírací doba</label>
-                    <input type="text" id="timeInput" placeholder="11:00 - 22:00 nebo ZAVŘENO" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none placeholder-gray-600">
-                </div>
-                <button type="button" id="addHoursBtn" class="bg-brand-gold/20 hover:bg-brand-gold/30 border border-brand-gold text-brand-gold px-4 py-2 rounded-sm text-sm uppercase tracking-widest transition">
-                    <i class="fas fa-plus mr-2"></i> Přidat
-                </button>
-                <div id="hoursPreview" class="mt-6 space-y-2"></div>
-                <input type="hidden" name="opening_hours_json" id="openingHoursJson" value="">
-            </div>
-
-            <!-- VÝJIMKY (SPECIÁLNÍ DNY) -->
-            <div class="bg-white/5 border border-white/10 p-6 rounded-sm shadow-xl">
-                <h2 class="text-xl font-heading text-white tracking-wider uppercase mb-4 border-b border-white/10 pb-2">
-                    <i class="fas fa-calendar-alt mr-2"></i> Výjimky (Svátky, Speciální Dny)
-                </h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Datum Od</label>
-                        <input type="date" id="exceptionDateFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none" style="color-scheme: dark;">
+                <div class="p-4 sm:p-6">
+                    <div class="mb-4">
+                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-3 block">Vyberte dny</label>
+                        <div id="daySelector" class="flex flex-wrap gap-2"></div>
                     </div>
-                    <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Datum Do</label>
-                        <input type="date" id="exceptionDateTo" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none" style="color-scheme: dark;">
+                    <div class="mb-4">
+                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Otevírací doba</label>
+                        <input type="text" id="timeInput" placeholder="11:00 - 22:00 nebo ZAVŘENO" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none placeholder-gray-500 transition text-sm sm:text-base">
+                    </div>
+                    <button type="button" id="addHoursBtn" class="w-full sm:w-auto bg-brand-gold/20 hover:bg-brand-gold/30 border border-brand-gold text-brand-gold px-6 py-2.5 rounded-sm text-sm uppercase tracking-widest transition font-bold">
+                        <i class="fas fa-plus mr-2"></i> Přidat
+                    </button>
+                    <div id="hoursPreview" class="mt-6 space-y-2"></div>
+                    <input type="hidden" name="opening_hours_json" id="openingHoursJson" value="">
+                </div>
+            </section>
+
+            <!-- VÝJIMKY -->
+            <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                    <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-calendar-alt text-brand-gold"></i> Výjimky (Svátky)
+                    </h2>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Datum Od</label>
+                            <input type="date" id="exceptionDateFrom" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Datum Do</label>
+                            <input type="date" id="exceptionDateTo" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Otevírací doba</label>
+                        <input type="text" id="exceptionTimeInput" placeholder="ZAVŘENO nebo 10:00 - 16:00" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none placeholder-gray-500 transition text-sm sm:text-base">
+                    </div>
+                    <button type="button" id="addExceptionBtn" class="w-full sm:w-auto bg-brand-gold/20 hover:bg-brand-gold/30 border border-brand-gold text-brand-gold px-6 py-2.5 rounded-sm text-sm uppercase tracking-widest transition font-bold">
+                        <i class="fas fa-plus mr-2"></i> Přidat Výjimku
+                    </button>
+                    <div id="exceptionsPreview" class="mt-6 space-y-2"></div>
+                    <input type="hidden" name="exceptions_json" id="exceptionsJson" value="">
+                </div>
+            </section>
+
+            <!-- HODNOCENÍ -->
+            <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                    <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-star text-brand-gold"></i> Hodnocení Google
+                    </h2>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Průměrné hodnocení</label>
+                            <input type="number" step="0.1" min="1" max="5" name="rating_value" value="<?= val($data, 'rating', 'value') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Počet recenzí</label>
+                            <input type="number" name="rating_count" value="<?= val($data, 'rating', 'count') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none text-sm sm:text-base">
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="mb-4">
-                    <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1 block">Otevírací doba</label>
-                    <input type="text" id="exceptionTimeInput" placeholder="ZAVŘENO nebo 10:00 - 16:00" class="w-full bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none placeholder-gray-600">
-                </div>
-
-                <button type="button" id="addExceptionBtn" class="bg-brand-gold/20 hover:bg-brand-gold/30 border border-brand-gold text-brand-gold px-4 py-2 rounded-sm text-sm uppercase tracking-widest transition">
-                    <i class="fas fa-plus mr-2"></i> Přidat Výjimku
-                </button>
-
-                <div id="exceptionsPreview" class="mt-6 space-y-2"></div>
-                <input type="hidden" name="exceptions_json" id="exceptionsJson" value="">
-            </div>
-
-            <!-- HODNOCENÍ GOOGLE -->
-            <div class="bg-white/5 border border-white/10 p-6 rounded-sm shadow-xl">
-                <h2 class="text-xl font-heading text-white tracking-wider uppercase mb-4 border-b border-white/10 pb-2">Hodnocení (Google)</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Průměr</label>
-                        <input type="number" step="0.1" min="1" max="5" name="rating_value" value="<?= val($data, 'rating', 'value') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-1">Počet</label>
-                        <input type="number" name="rating_count" value="<?= val($data, 'rating', 'count') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2 rounded-sm focus:border-brand-gold focus:outline-none">
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-right pb-10">
-                <button type="submit" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-lg rounded-sm hover:bg-white transition uppercase tracking-widest shadow-[0_0_15px_rgba(212,163,115,0.4)]">
+            <!-- SAVE BUTTON -->
+            <div class="sticky bottom-0 bg-[#050505]/95 backdrop-blur-sm border-t border-white/10 py-4 -mx-4 px-4 sm:-mx-6 sm:px-6">
+                <button type="submit" class="w-full sm:w-auto sm:float-right bg-brand-gold text-black font-bold font-heading py-3 px-8 text-base sm:text-lg rounded-sm hover:bg-white transition uppercase tracking-widest shadow-[0_0_20px_rgba(212,163,115,0.5)] hover:shadow-[0_0_30px_rgba(212,163,115,0.7)]">
                     <i class="fas fa-save mr-2"></i> Uložit Změny
                 </button>
             </div>
@@ -326,8 +373,8 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
             btn.type = 'button';
             btn.textContent = dayNames[day];
             btn.className = selectedDays.includes(day) 
-                ? 'px-3 py-2 bg-brand-gold text-black rounded-sm text-sm font-bold cursor-pointer transition'
-                : 'px-3 py-2 bg-black/50 border border-white/20 text-white rounded-sm text-sm hover:border-brand-gold cursor-pointer transition';
+                ? 'px-3 py-2 bg-brand-gold text-black rounded-sm text-xs sm:text-sm font-bold cursor-pointer transition'
+                : 'px-3 py-2 bg-black/50 border border-white/20 text-white rounded-sm text-xs sm:text-sm hover:border-brand-gold cursor-pointer transition';
             btn.onclick = () => toggleDay(day);
             selector.appendChild(btn);
         });
@@ -354,8 +401,8 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         Object.entries(openingHoursData).forEach(([key, value]) => {
             const days = key.split('_').map(d => dayNames[d]).join(' - ');
             const item = document.createElement('div');
-            item.className = 'flex items-center justify-between bg-black/30 p-3 rounded border border-white/5';
-            item.innerHTML = `<div><span class="text-brand-gold font-bold text-sm uppercase">${days}</span><span class="text-white ml-3">${value}</span></div><button type="button" onclick="removeHours('${key}')" class="text-red-400 hover:text-red-300 transition"><i class="fas fa-times"></i></button>`;
+            item.className = 'flex items-center justify-between bg-black/30 p-3 rounded-sm border border-white/5';
+            item.innerHTML = `<div class="flex-1 min-w-0"><span class="text-brand-gold font-bold text-xs sm:text-sm uppercase block sm:inline">${days}</span><span class="text-white text-sm sm:text-base sm:ml-3 block sm:inline mt-1 sm:mt-0">${value}</span></div><button type="button" onclick="removeHours('${key}')" class="text-red-400 hover:text-red-300 transition ml-3 flex-shrink-0"><i class="fas fa-times"></i></button>`;
             preview.appendChild(item);
         });
     }
@@ -389,7 +436,6 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         document.getElementById('openingHoursJson').value = JSON.stringify(openingHoursData);
     }
 
-    // VÝJIMKY
     function renderExceptionsPreview() {
         const preview = document.getElementById('exceptionsPreview');
         preview.innerHTML = '';
@@ -400,8 +446,8 @@ $exceptionsJson = json_encode($data['exceptions'] ?? [], JSON_UNESCAPED_UNICODE)
         Object.entries(exceptionsData).forEach(([key, value]) => {
             const [from, to] = key.split('_');
             const item = document.createElement('div');
-            item.className = 'flex items-center justify-between bg-black/30 p-3 rounded border border-white/5';
-            item.innerHTML = `<div><span class="text-brand-gold font-bold text-sm">${from} – ${to}</span><span class="text-white ml-3">${value}</span></div><button type="button" onclick="removeException('${key}')" class="text-red-400 hover:text-red-300 transition"><i class="fas fa-times"></i></button>`;
+            item.className = 'flex items-center justify-between bg-black/30 p-3 rounded-sm border border-white/5';
+            item.innerHTML = `<div class="flex-1 min-w-0"><span class="text-brand-gold font-bold text-xs sm:text-sm block sm:inline">${from} – ${to}</span><span class="text-white text-sm sm:text-base sm:ml-3 block sm:inline mt-1 sm:mt-0">${value}</span></div><button type="button" onclick="removeException('${key}')" class="text-red-400 hover:text-red-300 transition ml-3 flex-shrink-0"><i class="fas fa-times"></i></button>`;
             preview.appendChild(item);
         });
     }
