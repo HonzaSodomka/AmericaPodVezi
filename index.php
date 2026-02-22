@@ -85,6 +85,41 @@ $dayTranslations = [
     'weekend' => 'Víkend'
 ];
 
+// Mapování dnů na jejich pořadí v týdnu (1 = pondělí, 7 = neděle)
+$dayOrder = [
+    'monday' => 1,
+    'tuesday' => 2,
+    'wednesday' => 3,
+    'thursday' => 4,
+    'friday' => 5,
+    'saturday' => 6,
+    'sunday' => 7,
+    'monday_friday' => 1,
+    'tuesday_friday' => 2,
+    'monday_thursday' => 1,
+    'weekend' => 6
+];
+
+// Funkce pro seřazení dnů podle správného pořadí v týdnu
+function sortDaysByWeekOrder($openingHours, $dayOrder) {
+    $sorted = [];
+    foreach ($openingHours as $key => $value) {
+        $order = $dayOrder[strtolower($key)] ?? 999;
+        $sorted[$key] = ['value' => $value, 'order' => $order];
+    }
+    uasort($sorted, function($a, $b) {
+        return $a['order'] <=> $b['order'];
+    });
+    $result = [];
+    foreach ($sorted as $key => $data) {
+        $result[$key] = $data['value'];
+    }
+    return $result;
+}
+
+// Seřazení otevírací doby
+$openingHours = sortDaysByWeekOrder($openingHours, $dayOrder);
+
 function formatDayKey($key, $translations) {
     $kl = strtolower($key);
     if (isset($translations[$kl])) return $translations[$kl];
@@ -106,6 +141,21 @@ function formatExceptionDate($dateStr) {
         return $day . '.' . $month . '.';
     }
     return $dateStr;
+}
+
+// Helper pro formátování rozsahu výjimky - pokud stejný den, zobrazí jen jednou
+function formatExceptionRange($dateRange) {
+    $dates = explode('_', $dateRange);
+    if (count($dates) === 2) {
+        $fromDisplay = formatExceptionDate($dates[0]);
+        $toDisplay = formatExceptionDate($dates[1]);
+        // Pokud začátek a konec jsou stejné, zobraz jen jedno datum
+        if ($fromDisplay === $toDisplay) {
+            return $fromDisplay;
+        }
+        return $fromDisplay . ' - ' . $toDisplay;
+    }
+    return $dateRange;
 }
 
 // ===== EVENT POPUP LOGIC (FILE-BASED) =====
@@ -854,14 +904,7 @@ if (!empty($boltLink)) {
                         <h4 class="text-brand-gold font-heading text-xs uppercase tracking-widest mb-3">Výjimečná Otevírací Doba</h4>
                         <ul class="text-gray-300 text-sm space-y-3 w-full">
                             <?php foreach ($exceptions as $dateRange => $note): 
-                                $dates = explode('_', $dateRange);
-                                if (count($dates) === 2) {
-                                    $fromDisplay = formatExceptionDate($dates[0]);
-                                    $toDisplay = formatExceptionDate($dates[1]);
-                                    $displayRange = $fromDisplay . ' - ' . $toDisplay;
-                                } else {
-                                    $displayRange = $dateRange;
-                                }
+                                $displayRange = formatExceptionRange($dateRange);
                                 $isClosed = (strpos(strtoupper($note), 'ZAVŘENO') !== false);
                                 $valClass = $isClosed ? 'text-brand-gold' : '';
                             ?>
