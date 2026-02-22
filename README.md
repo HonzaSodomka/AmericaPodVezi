@@ -22,7 +22,7 @@ AmericaPodVezi/
 ├── data.json              # Kontaktní informace
 ├───
 ├── scrape_menu.php       # Scraper pro denní menu
-├── get_today_menu.php     # API endpoint pro menu
+├── get_today_menu.php     # API endpoint pro menu 
 ├── daily_menu.json        # Vygenerovaná data (gitignored)
 ├───
 ├── admin.php              # Admin panel (zabezpečit!)
