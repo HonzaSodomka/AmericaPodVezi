@@ -20,9 +20,18 @@
     "8.5. Den vítězství": "11:00 - 20:00"
   },
   "delivery": {
-    "wolt": "https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi",
-    "foodora": "https://www.foodora.cz/restaurant/iqu6/america-pod-vezi",
-    "bolt": "https://food.bolt.eu/cs-cz/1011-mlada%20boleslav/p/150979-america-pod-vezi/"
+    "wolt": {
+      "url": "https://wolt.com/cs/cze/mlada-boleslav/restaurant/america-pod-vezi",
+      "enabled": true
+    },
+    "foodora": {
+      "url": "https://www.foodora.cz/restaurant/iqu6/america-pod-vezi",
+      "enabled": true
+    },
+    "bolt": {
+      "url": "https://food.bolt.eu/cs-cz/1011-mlada%20boleslav/p/150979-america-pod-vezi/",
+      "enabled": true
+    }
   },
   "daily_menu_url": "https://www.menicka.cz/7509-america-pod-vezi.html"
 }
