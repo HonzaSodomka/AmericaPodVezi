@@ -43,6 +43,7 @@ function initApp() {
     initHeroHeightFix();
     initStickyNavbar();
     initDynamicScrollPadding();
+    initDailyMenuLoader();
 }
 
 /**
@@ -404,4 +405,64 @@ function initConsentAndMaps() {
     }
 
     apply();
+}
+
+/**
+ * Daily Menu Loader
+ */
+function initDailyMenuLoader() {
+    const loadingEl = document.getElementById('menu-loading');
+    const displayEl = document.getElementById('menu-display');
+    const errorEl = document.getElementById('menu-error');
+    
+    if (!loadingEl || !displayEl || !errorEl) return;
+    
+    fetch('get_today_menu.php')
+        .then(res => res.json())
+        .then(data => {
+            loadingEl.classList.add('hidden');
+            
+            if (data.success && data.meals && data.meals.length > 0) {
+                // Zobraz menu
+                const dateEl = document.getElementById('menu-date');
+                if (dateEl) dateEl.textContent = data.date || 'Dnešní menu';
+                
+                // Polévka
+                if (data.soup) {
+                    const soupName = document.getElementById('soup-name');
+                    const soupPrice = document.getElementById('soup-price');
+                    const soupSection = document.getElementById('soup-section');
+                    
+                    if (soupName) soupName.textContent = data.soup.name;
+                    if (soupPrice) soupPrice.textContent = data.soup.price + ' Kč';
+                    if (soupSection) soupSection.classList.remove('hidden');
+                }
+                
+                // Jídla
+                const mealsContainer = document.getElementById('meals-content');
+                if (mealsContainer && data.meals) {
+                    data.meals.forEach(meal => {
+                        const mealDiv = document.createElement('div');
+                        mealDiv.className = 'flex justify-between items-start bg-black/30 p-4 rounded-sm hover:bg-black/50 transition';
+                        mealDiv.innerHTML = `
+                            <span class="text-white text-base flex-1">
+                                ${meal.number ? '<span class="text-brand-gold font-bold mr-2">' + meal.number + '.</span>' : ''}
+                                ${meal.name}
+                            </span>
+                            <span class="text-brand-gold font-bold text-lg ml-4">${meal.price} Kč</span>
+                        `;
+                        mealsContainer.appendChild(mealDiv);
+                    });
+                }
+                
+                displayEl.classList.remove('hidden');
+            } else {
+                errorEl.classList.remove('hidden');
+            }
+        })
+        .catch(err => {
+            console.error('Menu load error:', err);
+            loadingEl.classList.add('hidden');
+            errorEl.classList.remove('hidden');
+        });
 }
