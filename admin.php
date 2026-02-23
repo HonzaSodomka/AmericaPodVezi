@@ -1,6 +1,52 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+session_start();
+
+// --- ZABEZPEČENÍ: Přihlášení ---
+define('ADMIN_PASSWORD', 'admin123'); // ZMĚŇTE V PRODUKCI!
+
+if (isset($_POST['login_password'])) {
+    if ($_POST['login_password'] === ADMIN_PASSWORD) {
+        $_SESSION['admin_logged_in'] = true;
+    } else {
+        $loginError = 'Nesprávné heslo.';
+    }
+}
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: admin.php');
+    exit;
+}
+if (empty($_SESSION['admin_logged_in'])) {
+    ?>
+    <!DOCTYPE html>
+    <html lang="cs">
+    <head><meta charset="UTF-8"><title>Login | Administrace</title><link rel="stylesheet" href="output.css"></head>
+    <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center">
+        <form method="POST" class="bg-white/5 p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
+            <h1 class="text-2xl font-heading text-brand-gold mb-6 uppercase tracking-widest text-center">Administrace</h1>
+            <?php if (!empty($loginError)): ?>
+                <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 text-sm"><?= htmlspecialchars($loginError) ?></div>
+            <?php endif; ?>
+            <div class="mb-6">
+                <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Heslo</label>
+                <input type="password" name="login_password" class="w-full bg-black/50 border border-white/20 px-4 py-3 text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus>
+            </div>
+            <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-3 rounded-sm hover:bg-white transition">Přihlásit</button>
+        </form>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
+// --- ZABEZPEČENÍ: CSRF Token ---
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Odstraněno zobrazování chyb pro produkci
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
 $dataFile = __DIR__ . '/data.json';
 $uploadsDir = __DIR__ . '/uploads/';
@@ -8,6 +54,11 @@ $uploadsDir = __DIR__ . '/uploads/';
 // Create uploads directory if it doesn't exist
 if (!is_dir($uploadsDir)) {
     mkdir($uploadsDir, 0755, true);
+}
+
+// ZABEZPEČENÍ: Zamezení spuštění PHP ve složce uploads
+if (!file_exists($uploadsDir . '.htaccess')) {
+    file_put_contents($uploadsDir . '.htaccess', "php_flag engine off\n<FilesMatch \"\\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|htm|shtml|sh|cgi)$\">\nDeny from all\n</FilesMatch>");
 }
 
 // Mapování dnů na jejich pořadí v týdnu (1 = pondělí, 7 = neděle)
@@ -42,6 +93,11 @@ function sortDaysByWeekOrder($openingHours, $dayOrder) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // ZABEZPEČENÍ: Ověření CSRF tokenu
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Neplatný CSRF token. Zkuste stránku obnovit a odeslat formulář znovu.');
+    }
+
     $currentData = [];
     if (file_exists($dataFile)) {
         $currentData = json_decode(file_get_contents($dataFile), true) ?: [];
@@ -125,16 +181,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($eventImageData) && strpos($eventImageData, 'data:image/') === 0) {
             // New image uploaded - save as file
             
+            // Extract format and data
+            preg_match('/data:image\/(\w+);base64,(.+)/', $eventImageData, $matches);
+            $extension = strtolower($matches[1] ?? 'jpg');
+            if ($extension === 'jpeg') $extension = 'jpg';
+            $base64Data = $matches[2] ?? '';
+            
+            // ZABEZPEČENÍ: Whitelist povolených přípon obrázků
+            $allowedExtensions = ['jpg', 'png', 'webp', 'gif'];
+            if (!in_array($extension, $allowedExtensions, true)) {
+                header('Location: admin.php?error=invalid_image');
+                exit;
+            }
+            
             // Delete old file if exists
             if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                 unlink(__DIR__ . '/' . $eventImageFile);
             }
-            
-            // Extract format and data
-            preg_match('/data:image\/(\w+);base64,(.+)/', $eventImageData, $matches);
-            $extension = $matches[1] ?? 'jpg';
-            if ($extension === 'jpeg') $extension = 'jpg';
-            $base64Data = $matches[2] ?? '';
             
             if (!empty($base64Data)) {
                 $imageData = base64_decode($base64Data);
@@ -181,6 +244,8 @@ if (isset($_GET['saved'])) {
 if (isset($_GET['error'])) {
     if ($_GET['error'] === 'date_invalid') {
         $errorMessage = 'Datum "Od" musí být před datem "Do".';
+    } elseif ($_GET['error'] === 'invalid_image') {
+        $errorMessage = 'Nepovolený formát obrázku. Povolené jsou: JPG, PNG, WebP, GIF.';
     } else {
         $errorMessage = 'Chyba při zápisu do souboru data.json.';
     }
@@ -193,12 +258,12 @@ if (file_exists($dataFile)) {
 
 function val($array, $key1, $key2 = null, $key3 = null) {
     if ($key3 !== null) {
-        return htmlspecialchars($array[$key1][$key2][$key3] ?? '');
+        return htmlspecialchars($array[$key1][$key2][$key3] ?? '', ENT_QUOTES, 'UTF-8');
     }
     if ($key2 !== null) {
-        return htmlspecialchars($array[$key1][$key2] ?? '');
+        return htmlspecialchars($array[$key1][$key2] ?? '', ENT_QUOTES, 'UTF-8');
     }
-    return htmlspecialchars($array[$key1] ?? '');
+    return htmlspecialchars($array[$key1] ?? '', ENT_QUOTES, 'UTF-8');
 }
 
 function isChecked($array, $key1, $key2, $key3) {
@@ -209,13 +274,14 @@ $openingHoursData = $data['opening_hours'] ?? [];
 if (empty($openingHoursData)) {
     $openingHoursData = new stdClass();
 }
-$openingHoursJson = json_encode($openingHoursData, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+// ZABEZPEČENÍ: Ochrana proti XSS přes vnořené HTML/script tagy v JSON datech
+$openingHoursJson = json_encode($openingHoursData, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 
 $exceptionsData = $data['exceptions'] ?? [];
 if (empty($exceptionsData)) {
     $exceptionsData = new stdClass();
 }
-$exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+$exceptionsJson = json_encode($exceptionsData, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 
 // Event data
 $eventData = $data['event'] ?? ['active' => false, 'date_from' => '', 'date_to' => '', 'image_file' => ''];
@@ -284,9 +350,14 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
             <h1 class="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold tracking-widest uppercase text-brand-gold">
                 <i class="fas fa-cog mr-2"></i> Administrace
             </h1>
-            <a href="index.php" target="_blank" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
-                <i class="fas fa-external-link-alt"></i> Zobrazit web
-            </a>
+            <div class="flex items-center gap-4">
+                <a href="index.php" target="_blank" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
+                    <i class="fas fa-external-link-alt"></i> Zobrazit web
+                </a>
+                <a href="admin.php?logout=1" class="inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition">
+                    <i class="fas fa-sign-out-alt"></i> Odhlásit se
+                </a>
+            </div>
         </div>
 
         <?php if ($successMessage): ?>
@@ -304,6 +375,8 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
         <?php endif; ?>
 
         <form method="POST" action="admin.php" class="space-y-6 sm:space-y-8" id="adminForm">
+            <!-- ZABEZPEČENÍ: CSRF Token -->
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             
             <!-- KONTAKTY -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
