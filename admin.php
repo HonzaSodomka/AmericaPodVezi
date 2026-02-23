@@ -1,4 +1,10 @@
 <?php
+// --- ZABEZPEČENÍ: Parametry session cookies (musí být před session_start) ---
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+    'samesite' => 'Strict'
+]);
 session_start();
 
 // --- ZABEZPEČENÍ: CSRF Token pro login i admin ---
@@ -7,18 +13,22 @@ if (empty($_SESSION['csrf_token'])) {
 }
 
 // --- ZABEZPEČENÍ: Přihlášení ---
-define('ADMIN_PASSWORD', 'admin123'); // ZMĚŇTE V PRODUKCI!
+define('ADMIN_PASSWORD', 'admin123'); // ZMĚŇTE V PRODUKCI! (ideálně použít password_hash)
 
 if (isset($_POST['login_password'])) {
     // Ověření CSRF u loginu
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $loginError = 'Platnost formuláře vypršela. Zkuste to prosím znovu.';
     } elseif ($_POST['login_password'] === ADMIN_PASSWORD) {
+        // ZABEZPEČENÍ: Prevence Session Fixation
+        session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
-        // PŘESMĚROVÁNÍ PO ÚSPĚŠNÉM PŘIHLÁŠENÍ - zabrání spuštění ukládacího bloku níže s prázdnými daty!
+        // PŘESMĚROVÁNÍ PO ÚSPĚŠNÉM PŘIHLÁŠENÍ
         header('Location: admin.php');
         exit;
     } else {
+        // ZABEZPEČENÍ: Zpomalení proti Brute-force útokům
+        sleep(1);
         $loginError = 'Nesprávné heslo.';
     }
 }
@@ -202,17 +212,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 exit;
             }
             
-            // Delete old file if exists
-            if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
-                unlink(__DIR__ . '/' . $eventImageFile);
-            }
-            
             if (!empty($base64Data)) {
                 $imageData = base64_decode($base64Data);
+                
+                // ZABEZPEČENÍ: Kontrola skutečného MIME typu dat, nejen přípony
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeType = finfo_buffer($finfo, $imageData);
+                finfo_close($finfo);
+                
+                $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+                if (!in_array($mimeType, $allowedMimes, true)) {
+                    header('Location: admin.php?error=invalid_image_content');
+                    exit;
+                }
+
+                // Delete old file if exists
+                if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
+                    unlink(__DIR__ . '/' . $eventImageFile);
+                }
+
                 $filename = 'event-' . time() . '.' . $extension;
                 $filepath = $uploadsDir . $filename;
                 
-                if (file_put_contents($filepath, $imageData)) {
+                // ZABEZPEČENÍ: LOCK_EX proti souběžnému zápisu
+                if (file_put_contents($filepath, $imageData, LOCK_EX)) {
                     $eventImageFile = 'uploads/' . $filename;
                 }
             }
@@ -234,7 +257,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
     
-    if (file_put_contents($dataFile, $jsonString) !== false) {
+    // ZABEZPEČENÍ: LOCK_EX proti souběžnému přepisu/ztrátě dat
+    if (file_put_contents($dataFile, $jsonString, LOCK_EX) !== false) {
         header('Location: admin.php?saved=1');
         exit;
     } else {
@@ -254,6 +278,8 @@ if (isset($_GET['error'])) {
         $errorMessage = 'Datum "Od" musí být před datem "Do".';
     } elseif ($_GET['error'] === 'invalid_image') {
         $errorMessage = 'Nepovolený formát obrázku. Povolené jsou: JPG, PNG, WebP, GIF.';
+    } elseif ($_GET['error'] === 'invalid_image_content') {
+        $errorMessage = 'Soubor neodpovídá svému formátu. Nahrajte prosím platný obrázek.';
     } else {
         $errorMessage = 'Chyba při zápisu do souboru data.json.';
     }
