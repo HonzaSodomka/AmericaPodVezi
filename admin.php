@@ -1,11 +1,19 @@
 <?php
 session_start();
 
+// --- ZABEZPEČENÍ: CSRF Token pro login i admin ---
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // --- ZABEZPEČENÍ: Přihlášení ---
 define('ADMIN_PASSWORD', 'admin123'); // ZMĚŇTE V PRODUKCI!
 
 if (isset($_POST['login_password'])) {
-    if ($_POST['login_password'] === ADMIN_PASSWORD) {
+    // Ověření CSRF u loginu
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $loginError = 'Platnost formuláře vypršela. Zkuste to prosím znovu.';
+    } elseif ($_POST['login_password'] === ADMIN_PASSWORD) {
         $_SESSION['admin_logged_in'] = true;
     } else {
         $loginError = 'Nesprávné heslo.';
@@ -23,6 +31,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     <head><meta charset="UTF-8"><title>Login | Administrace</title><link rel="stylesheet" href="output.css"></head>
     <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center">
         <form method="POST" class="bg-white/5 p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <h1 class="text-2xl font-heading text-brand-gold mb-6 uppercase tracking-widest text-center">Administrace</h1>
             <?php if (!empty($loginError)): ?>
                 <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 text-sm"><?= htmlspecialchars($loginError) ?></div>
@@ -37,11 +46,6 @@ if (empty($_SESSION['admin_logged_in'])) {
     </html>
     <?php
     exit;
-}
-
-// --- ZABEZPEČENÍ: CSRF Token ---
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 // Odstraněno zobrazování chyb pro produkci
@@ -93,7 +97,7 @@ function sortDaysByWeekOrder($openingHours, $dayOrder) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // ZABEZPEČENÍ: Ověření CSRF tokenu
+    // ZABEZPEČENÍ: Ověření CSRF tokenu v administraci
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         die('Neplatný CSRF token. Zkuste stránku obnovit a odeslat formulář znovu.');
     }
