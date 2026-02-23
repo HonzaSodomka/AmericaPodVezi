@@ -15,6 +15,9 @@ if (isset($_POST['login_password'])) {
         $loginError = 'Platnost formuláře vypršela. Zkuste to prosím znovu.';
     } elseif ($_POST['login_password'] === ADMIN_PASSWORD) {
         $_SESSION['admin_logged_in'] = true;
+        // PŘESMĚROVÁNÍ PO ÚSPĚŠNÉM PŘIHLÁŠENÍ - zabrání spuštění ukládacího bloku níže s prázdnými daty!
+        header('Location: admin.php');
+        exit;
     } else {
         $loginError = 'Nesprávné heslo.';
     }
@@ -96,7 +99,8 @@ function sortDaysByWeekOrder($openingHours, $dayOrder) {
     return $result;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Podmínka action=save zaručuje, že data ukládáme jen tehdy, když se odešle z admin formuláře
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'save') {
     // ZABEZPEČENÍ: Ověření CSRF tokenu v administraci
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         die('Neplatný CSRF token. Zkuste stránku obnovit a odeslat formulář znovu.');
@@ -379,8 +383,9 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
         <?php endif; ?>
 
         <form method="POST" action="admin.php" class="space-y-6 sm:space-y-8" id="adminForm">
-            <!-- ZABEZPEČENÍ: CSRF Token -->
+            <!-- ZABEZPEČENÍ: CSRF Token & Action field -->
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+            <input type="hidden" name="action" value="save">
             
             <!-- KONTAKTY -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
