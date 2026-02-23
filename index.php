@@ -1,10 +1,25 @@
 <?php
-// Načtení dat z JSON
+// BEZPEČNOSTNÍ OPRAVA: Bezpečné načtení dat sdíleným zámkem (čtení)
 $dataFile = __DIR__ . '/data.json';
 $data = [];
+
 if (file_exists($dataFile)) {
-    $jsonString = file_get_contents($dataFile);
-    $data = json_decode($jsonString, true) ?: [];
+    $fp = fopen($dataFile, 'r');
+    if ($fp) {
+        // Získáme sdílený zámek pro čtení (ochrana před tím, aby admin zrovna nepřepisoval soubor)
+        if (flock($fp, LOCK_SH)) {
+            $filesize = filesize($dataFile);
+            if ($filesize > 0) {
+                $jsonString = fread($fp, $filesize);
+                $decoded = json_decode($jsonString, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $data = $decoded;
+                }
+            }
+            flock($fp, LOCK_UN); // Uvolnění zámku
+        }
+        fclose($fp);
+    }
 }
 
 // Výchozí hodnoty
