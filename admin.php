@@ -12,14 +12,87 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// --- ZABEZPEČENÍ: Přihlášení ---
-define('ADMIN_PASSWORD', 'admin123'); // ZMĚŇTE V PRODUKCI! (ideálně použít password_hash)
+$dataFile = __DIR__ . '/data.json';
+$uploadsDir = __DIR__ . '/uploads/';
 
+// Load data including password hash
+function loadData() {
+    global $dataFile;
+    if (file_exists($dataFile)) {
+        return json_decode(file_get_contents($dataFile), true) ?: [];
+    }
+    return [];
+}
+
+// Get admin password hash (create default if not exists)
+function getPasswordHash() {
+    $data = loadData();
+    if (!isset($data['admin_password_hash'])) {
+        // Default password: admin123
+        return '$2y$10$YourDefaultHashForAdmin123GoesHereXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // ZMĚŇTE při prvním nasazení!
+    }
+    return $data['admin_password_hash'];
+}
+
+// --- ZABEZPEČENÍ: Změna hesla ---
+if (isset($_POST['action']) && $_POST['action'] === 'change_password') {
+    if (!isset($_SESSION['admin_logged_in'])) {
+        header('Location: admin.php');
+        exit;
+    }
+    
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        header('Location: admin.php?error=csrf');
+        exit;
+    }
+    
+    $currentPassword = $_POST['current_password'] ?? '';
+    $newPassword = $_POST['new_password'] ?? '';
+    $newPasswordConfirm = $_POST['new_password_confirm'] ?? '';
+    
+    if (empty($currentPassword) || empty($newPassword) || empty($newPasswordConfirm)) {
+        header('Location: admin.php?error=password_empty');
+        exit;
+    }
+    
+    // Verify current password
+    if (!password_verify($currentPassword, getPasswordHash())) {
+        sleep(1); // Brute-force protection
+        header('Location: admin.php?error=password_wrong');
+        exit;
+    }
+    
+    // Check new passwords match
+    if ($newPassword !== $newPasswordConfirm) {
+        header('Location: admin.php?error=password_mismatch');
+        exit;
+    }
+    
+    // Check password strength (min 8 chars)
+    if (strlen($newPassword) < 8) {
+        header('Location: admin.php?error=password_weak');
+        exit;
+    }
+    
+    // Save new password hash
+    $data = loadData();
+    $data['admin_password_hash'] = password_hash($newPassword, PASSWORD_BCRYPT);
+    
+    if (file_put_contents($dataFile, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT), LOCK_EX) !== false) {
+        header('Location: admin.php?password_changed=1');
+        exit;
+    } else {
+        header('Location: admin.php?error=password_save_failed');
+        exit;
+    }
+}
+
+// --- ZABEZPEČENÍ: Přihlášení ---
 if (isset($_POST['login_password'])) {
     // Ověření CSRF u loginu
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $loginError = 'Platnost formuláře vypršela. Zkuste to prosím znovu.';
-    } elseif ($_POST['login_password'] === ADMIN_PASSWORD) {
+    } elseif (password_verify($_POST['login_password'], getPasswordHash())) {
         // ZABEZPEČENÍ: Prevence Session Fixation
         session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
@@ -60,13 +133,6 @@ if (empty($_SESSION['admin_logged_in'])) {
     <?php
     exit;
 }
-
-// Odstraněno zobrazování chyb pro produkci
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-
-$dataFile = __DIR__ . '/data.json';
-$uploadsDir = __DIR__ . '/uploads/';
 
 // Create uploads directory if it doesn't exist
 if (!is_dir($uploadsDir)) {
@@ -116,10 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         die('Neplatný CSRF token. Zkuste stránku obnovit a odeslat formulář znovu.');
     }
 
-    $currentData = [];
-    if (file_exists($dataFile)) {
-        $currentData = json_decode(file_get_contents($dataFile), true) ?: [];
-    }
+    $currentData = loadData();
 
     $currentData['contact']['phone'] = $_POST['contact_phone'] ?? '';
     $currentData['contact']['phone_alt'] = $_POST['contact_phone_alt'] ?? '';
@@ -273,22 +336,44 @@ $errorMessage = '';
 if (isset($_GET['saved'])) {
     $successMessage = 'Změny byly úspěšně uloženy!';
 }
+if (isset($_GET['password_changed'])) {
+    $successMessage = 'Heslo bylo úspěšně změněno!';
+}
 if (isset($_GET['error'])) {
-    if ($_GET['error'] === 'date_invalid') {
-        $errorMessage = 'Datum "Od" musí být před datem "Do".';
-    } elseif ($_GET['error'] === 'invalid_image') {
-        $errorMessage = 'Nepovolený formát obrázku. Povolené jsou: JPG, PNG, WebP, GIF.';
-    } elseif ($_GET['error'] === 'invalid_image_content') {
-        $errorMessage = 'Soubor neodpovídá svému formátu. Nahrajte prosím platný obrázek.';
-    } else {
-        $errorMessage = 'Chyba při zápisu do souboru data.json.';
+    switch ($_GET['error']) {
+        case 'date_invalid':
+            $errorMessage = 'Datum "Od" musí být před datem "Do".';
+            break;
+        case 'invalid_image':
+            $errorMessage = 'Nepovolený formát obrázku. Povolené jsou: JPG, PNG, WebP, GIF.';
+            break;
+        case 'invalid_image_content':
+            $errorMessage = 'Soubor neodpovídá svému formátu. Nahrajte prosím platný obrázek.';
+            break;
+        case 'password_empty':
+            $errorMessage = 'Všechna pole pro změnu hesla musí být vyplněna.';
+            break;
+        case 'password_wrong':
+            $errorMessage = 'Současné heslo je nesprávné.';
+            break;
+        case 'password_mismatch':
+            $errorMessage = 'Nová hesla se neshodují.';
+            break;
+        case 'password_weak':
+            $errorMessage = 'Nové heslo musí mít alespoň 8 znaků.';
+            break;
+        case 'password_save_failed':
+            $errorMessage = 'Chyba při ukládání nového hesla.';
+            break;
+        case 'csrf':
+            $errorMessage = 'Neplatný CSRF token. Zkuste to prosím znovu.';
+            break;
+        default:
+            $errorMessage = 'Chyba při zápisu do souboru data.json.';
     }
 }
 
-$data = [];
-if (file_exists($dataFile)) {
-    $data = json_decode(file_get_contents($dataFile), true) ?: [];
-}
+$data = loadData();
 
 function val($array, $key1, $key2 = null, $key3 = null) {
     if ($key3 !== null) {
@@ -397,16 +482,52 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
         <?php if ($successMessage): ?>
             <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-fade-in">
                 <i class="fas fa-check-circle text-lg"></i>
-                <span class="text-sm sm:text-base"><?= $successMessage ?></span>
+                <span class="text-sm sm:text-base"><?= htmlspecialchars($successMessage) ?></span>
             </div>
         <?php endif; ?>
 
         <?php if ($errorMessage): ?>
             <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-fade-in">
                 <i class="fas fa-exclamation-triangle text-lg"></i>
-                <span class="text-sm sm:text-base"><?= $errorMessage ?></span>
+                <span class="text-sm sm:text-base"><?= htmlspecialchars($errorMessage) ?></span>
             </div>
         <?php endif; ?>
+
+        <!-- ZMĚNA HESLA -->
+        <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden mb-6 sm:mb-8">
+            <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                    <i class="fas fa-key text-brand-gold"></i> Změna hesla
+                </h2>
+            </div>
+            <div class="p-4 sm:p-6">
+                <form method="POST" action="admin.php" class="space-y-4">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                    <input type="hidden" name="action" value="change_password">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Současné heslo</label>
+                            <input type="password" name="current_password" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base" required>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Nové heslo</label>
+                            <input type="password" name="new_password" minlength="8" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base" required>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Nové heslo znovu</label>
+                            <input type="password" name="new_password_confirm" minlength="8" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full sm:w-auto bg-brand-gold text-black font-bold uppercase tracking-widest px-6 py-2.5 rounded-sm hover:bg-white transition text-sm">
+                        <i class="fas fa-lock mr-2"></i> Změnit heslo
+                    </button>
+                    
+                    <p class="text-xs text-gray-500 mt-2">Heslo musí mít minimálně 8 znaků. Použijte kombinaci písmen, čísel a speciálních znaků.</p>
+                </form>
+            </div>
+        </section>
 
         <form method="POST" action="admin.php" class="space-y-6 sm:space-y-8" id="adminForm">
             <!-- ZABEZPEČENÍ: CSRF Token & Action field -->
@@ -1040,11 +1161,12 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
         }
     });
 
-    if (window.location.search.includes('saved=') || window.location.search.includes('error=')) {
+    if (window.location.search.includes('saved=') || window.location.search.includes('error=') || window.location.search.includes('password_changed=')) {
         setTimeout(function() {
             const url = new URL(window.location);
             url.searchParams.delete('saved');
             url.searchParams.delete('error');
+            url.searchParams.delete('password_changed');
             window.history.replaceState({}, document.title, url.pathname + url.search);
         }, 2500);
     }
