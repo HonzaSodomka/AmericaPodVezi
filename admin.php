@@ -24,14 +24,84 @@ function loadData() {
     return [];
 }
 
-// Get admin password hash (create default if not exists)
+// Get admin password hash
 function getPasswordHash() {
     $data = loadData();
-    if (!isset($data['admin_password_hash'])) {
-        // Default password: admin123
-        return '$2y$10$YourDefaultHashForAdmin123GoesHereXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // ZMĚŇTE při prvním nasazení!
+    return $data['admin_password_hash'] ?? null;
+}
+
+// Check if setup is needed
+function needsSetup() {
+    return getPasswordHash() === null;
+}
+
+// --- SETUP: Počáteční nastavení hesla ---
+if (isset($_POST['action']) && $_POST['action'] === 'setup') {
+    if (!needsSetup()) {
+        header('Location: admin.php');
+        exit;
     }
-    return $data['admin_password_hash'];
+    
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $setupError = 'Platnost formuláře vypršela. Zkuste to prosím znovu.';
+    } else {
+        $newPassword = $_POST['setup_password'] ?? '';
+        $newPasswordConfirm = $_POST['setup_password_confirm'] ?? '';
+        
+        if (empty($newPassword) || empty($newPasswordConfirm)) {
+            $setupError = 'Obě pole musí být vyplněna.';
+        } elseif ($newPassword !== $newPasswordConfirm) {
+            $setupError = 'Hesla se neshodují.';
+        } elseif (strlen($newPassword) < 8) {
+            $setupError = 'Heslo musí mít alespoň 8 znaků.';
+        } else {
+            // Create data.json with password hash
+            $data = loadData();
+            $data['admin_password_hash'] = password_hash($newPassword, PASSWORD_BCRYPT);
+            
+            if (file_put_contents($dataFile, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT), LOCK_EX) !== false) {
+                // Auto-login after setup
+                session_regenerate_id(true);
+                $_SESSION['admin_logged_in'] = true;
+                header('Location: admin.php?setup_complete=1');
+                exit;
+            } else {
+                $setupError = 'Chyba při ukládání hesla. Zkontrolujte oprávnění k zápisu.';
+            }
+        }
+    }
+}
+
+// --- SETUP SCREEN ---
+if (needsSetup()) {
+    ?>
+    <!DOCTYPE html>
+    <html lang="cs">
+    <head><meta charset="UTF-8"><title>Nastavení | Administrace</title><link rel="stylesheet" href="output.css"></head>
+    <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center">
+        <form method="POST" class="bg-white/5 p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+            <input type="hidden" name="action" value="setup">
+            <h1 class="text-2xl font-heading text-brand-gold mb-2 uppercase tracking-widest text-center">Vítejte!</h1>
+            <p class="text-gray-400 text-sm text-center mb-6">Nastavte si heslo pro přístup do administrace</p>
+            <?php if (!empty($setupError)): ?>
+                <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 text-sm"><?= htmlspecialchars($setupError) ?></div>
+            <?php endif; ?>
+            <div class="mb-4">
+                <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Nové heslo</label>
+                <input type="password" name="setup_password" minlength="8" class="w-full bg-black/50 border border-white/20 px-4 py-3 text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus required>
+                <p class="text-xs text-gray-500 mt-1">Minimálně 8 znaků</p>
+            </div>
+            <div class="mb-6">
+                <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Heslo znovu</label>
+                <input type="password" name="setup_password_confirm" minlength="8" class="w-full bg-black/50 border border-white/20 px-4 py-3 text-white rounded-sm focus:border-brand-gold focus:outline-none transition" required>
+            </div>
+            <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-3 rounded-sm hover:bg-white transition">Nastavit heslo</button>
+        </form>
+    </body>
+    </html>
+    <?php
+    exit;
 }
 
 // --- ZABEZPEČENÍ: Změna hesla ---
@@ -333,6 +403,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 $successMessage = '';
 $errorMessage = '';
 
+if (isset($_GET['setup_complete'])) {
+    $successMessage = 'Heslo bylo úspěšně nastaveno! Vítejte v administraci.';
+}
 if (isset($_GET['saved'])) {
     $successMessage = 'Změny byly úspěšně uloženy!';
 }
@@ -1161,12 +1234,13 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
         }
     });
 
-    if (window.location.search.includes('saved=') || window.location.search.includes('error=') || window.location.search.includes('password_changed=')) {
+    if (window.location.search.includes('saved=') || window.location.search.includes('error=') || window.location.search.includes('password_changed=') || window.location.search.includes('setup_complete=')) {
         setTimeout(function() {
             const url = new URL(window.location);
             url.searchParams.delete('saved');
             url.searchParams.delete('error');
             url.searchParams.delete('password_changed');
+            url.searchParams.delete('setup_complete');
             window.history.replaceState({}, document.title, url.pathname + url.search);
         }, 2500);
     }
