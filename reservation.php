@@ -74,6 +74,11 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = 'email';
 }
 
+if (!empty($errors)) {
+    echo json_encode(['success' => false, 'message' => 'Zkontrolujte prosím vyplněné údaje']);
+    exit;
+}
+
 if (empty($note) || strlen($note) < 10) {
     $errors[] = 'note';
 }
@@ -82,6 +87,20 @@ if (!empty($errors)) {
     echo json_encode(['success' => false, 'message' => 'Zkontrolujte prosím vyplněné údaje']);
     exit;
 }
+
+// SECURITY FIX: Sanitize email to prevent header injection
+// Remove any newline characters that could be used for header injection
+$email = filter_var($email, FILTER_SANITIZE_EMAIL);
+$email = str_replace(array("\r", "\n", "%0a", "%0d"), '', $email);
+
+// Double-check after sanitization
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['success' => false, 'message' => 'Neplatná emailová adresa']);
+    exit;
+}
+
+// Sanitize name for email headers (no newlines)
+$name = str_replace(array("\r", "\n", "%0a", "%0d"), '', $name);
 
 // Prepare email
 $emailSubject = "Nová rezervace akce z webu - " . $name;
@@ -98,9 +117,9 @@ $emailBody .= "---\n";
 $emailBody .= "Odesláno: " . date('d.m.Y H:i') . "\n";
 $emailBody .= "IP adresa: " . $clientIP . "\n";
 
+// SECURITY FIX: Use safe email headers without X-Mailer (hides PHP version)
 $headers = "From: " . $email . "\r\n";
 $headers .= "Reply-To: " . $email . "\r\n";
-$headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
 // Send email
