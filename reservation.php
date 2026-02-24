@@ -24,31 +24,80 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Rate limiting
+// SECURITY FIX: Rate limiting with proper file locking to prevent race conditions
 $rateLimitFile = __DIR__ . '/rate_limit.json';
 $clientIP = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 $currentTime = time();
 $rateLimit = [];
 
-if (file_exists($rateLimitFile)) {
-    $rateLimit = json_decode(file_get_contents($rateLimitFile), true) ?: [];
+// Create file if it doesn't exist
+if (!file_exists($rateLimitFile)) {
+    file_put_contents($rateLimitFile, json_encode([]));
 }
 
-$rateLimit = array_filter($rateLimit, function($timestamp) use ($currentTime) {
-    return ($currentTime - $timestamp) < 3600;
-});
+// Open file with exclusive lock for reading and writing
+$fp = fopen($rateLimitFile, 'r+');
+if ($fp === false) {
+    error_log('Failed to open rate limit file');
+    echo json_encode(['success' => false, 'message' => 'Chyba serveru. Zkuste to prosím později.']);
+    exit;
+}
 
-if (isset($rateLimit[$clientIP]) && is_array($rateLimit[$clientIP])) {
-    if (count($rateLimit[$clientIP]) >= 3) {
-        echo json_encode(['success' => false, 'message' => 'Příliš mnoho požadavků. Zkuste to prosím za chvíli.']);
-        exit;
+// Acquire exclusive lock (blocks until lock is available)
+if (flock($fp, LOCK_EX)) {
+    // Read current rate limit data
+    $filesize = filesize($rateLimitFile);
+    if ($filesize > 0) {
+        $content = fread($fp, $filesize);
+        $rateLimit = json_decode($content, true) ?: [];
     }
+    
+    // Clean up old entries (older than 1 hour)
+    $rateLimit = array_filter($rateLimit, function($timestamps) use ($currentTime) {
+        if (!is_array($timestamps)) return false;
+        // Filter timestamps within last hour
+        $filtered = array_filter($timestamps, function($ts) use ($currentTime) {
+            return ($currentTime - $ts) < 3600;
+        });
+        return !empty($filtered);
+    });
+    
+    // Check rate limit for this IP
+    if (isset($rateLimit[$clientIP]) && is_array($rateLimit[$clientIP])) {
+        // Remove old timestamps for this IP
+        $rateLimit[$clientIP] = array_filter($rateLimit[$clientIP], function($ts) use ($currentTime) {
+            return ($currentTime - $ts) < 3600;
+        });
+        $rateLimit[$clientIP] = array_values($rateLimit[$clientIP]); // Re-index array
+        
+        if (count($rateLimit[$clientIP]) >= 3) {
+            // Release lock and close file
+            flock($fp, LOCK_UN);
+            fclose($fp);
+            
+            echo json_encode(['success' => false, 'message' => 'Příliš mnoho požadavků. Zkuste to prosím za chvíli.']);
+            exit;
+        }
+    } else {
+        $rateLimit[$clientIP] = [];
+    }
+    
+    // Store this for later (after successful email send)
+    $shouldUpdateRateLimit = true;
 } else {
-    $rateLimit[$clientIP] = [];
+    // Could not acquire lock
+    fclose($fp);
+    error_log('Failed to acquire lock on rate limit file');
+    echo json_encode(['success' => false, 'message' => 'Chyba serveru. Zkuste to prosím později.']);
+    exit;
 }
 
 // Honeypot check
 if (!empty($_POST['website'])) {
+    // Release lock and close file before exit
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    
     echo json_encode(['success' => true, 'message' => 'Rezervace odeslána']);
     exit;
 }
@@ -74,16 +123,15 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = 'email';
 }
 
-if (!empty($errors)) {
-    echo json_encode(['success' => false, 'message' => 'Zkontrolujte prosím vyplněné údaje']);
-    exit;
-}
-
 if (empty($note) || strlen($note) < 10) {
     $errors[] = 'note';
 }
 
 if (!empty($errors)) {
+    // Release lock and close file before exit
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    
     echo json_encode(['success' => false, 'message' => 'Zkontrolujte prosím vyplněné údaje']);
     exit;
 }
@@ -95,6 +143,10 @@ $email = str_replace(array("\r", "\n", "%0a", "%0d"), '', $email);
 
 // Double-check after sanitization
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    // Release lock and close file before exit
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    
     echo json_encode(['success' => false, 'message' => 'Neplatná emailová adresa']);
     exit;
 }
@@ -126,11 +178,24 @@ $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 $mailSent = mail($recipientEmail, $emailSubject, $emailBody, $headers);
 
 if ($mailSent) {
+    // Update rate limit only if email was successfully sent
     $rateLimit[$clientIP][] = $currentTime;
-    file_put_contents($rateLimitFile, json_encode($rateLimit));
+    
+    // Truncate file and write updated data
+    ftruncate($fp, 0);
+    rewind($fp);
+    fwrite($fp, json_encode($rateLimit));
+    
+    // Release lock and close file
+    flock($fp, LOCK_UN);
+    fclose($fp);
     
     echo json_encode(['success' => true, 'message' => 'Rezervace byla úspěšně odeslána!']);
 } else {
+    // Release lock and close file without updating rate limit
+    flock($fp, LOCK_UN);
+    fclose($fp);
+    
     echo json_encode(['success' => false, 'message' => 'Nepodařilo se odeslat email. Zkuste to prosím znovu nebo zavolejte.']);
 }
 
