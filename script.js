@@ -489,3 +489,41 @@ function initDailyMenuLoader() {
     // Načti dnešek
     loadMenu(0);
 }
+
+// --- DOKONALÝ SCROLL SPY (Zvýraznění menu) ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Vezmeme všechny sekce, které mají nějaké ID
+    const sections = document.querySelectorAll('section[id]');
+    // Vezmeme všechny odkazy v PC navigaci i v mobilním menu
+    const navLinks = document.querySelectorAll('#navbar a, #mobile-menu a');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+
+        // Zjistíme, nad kterou sekcí zrovna jsme (s posunem 150px kvůli horní liště)
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (window.scrollY >= sectionTop - 150) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        // Projdeme všechny odkazy a obarvíme ten správný
+        navLinks.forEach(link => {
+            // Nejprve všem sebereme zlatou barvu
+            link.classList.remove('text-brand-gold');
+            
+            if (current) {
+                // Pokud jsme u nějaké sekce, obarvíme odkaz, který k ní vede
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('text-brand-gold');
+                }
+            } else {
+                // Pokud jsme úplně nahoře (nejsme u sekce), obarvíme odkaz "DOMŮ"
+                if (link.getAttribute('href') === '#') {
+                    link.classList.add('text-brand-gold');
+                }
+            }
+        });
+    });
+});
