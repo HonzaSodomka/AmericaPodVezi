@@ -446,12 +446,12 @@ if (!empty($boltLink)) {
     </nav>
 
     <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-6 menu-closed backdrop-blur-xl md:hidden" role="dialog" aria-modal="true" aria-label="Navigační menu">
-        <a href="#" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">DOMŮ</a>
-        <a href="#denni-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">DENNÍ MENU</a>
-        <a href="#stale-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">STÁLÉ MENU</a>
-        <a href="#about" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">O NÁS</a>
-        <a href="#reservation" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">REZERVACE</a>
-        <a href="#contact" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">KONTAKT</a>
+        <a href="#" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">DOMŮ</a>
+        <a href="#denni-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">DENNÍ MENU</a>
+        <a href="#stale-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">STÁLÉ MENU</a>
+        <a href="#about" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">O NÁS</a>
+        <a href="#reservation" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">REZERVACE</a>
+        <a href="#contact" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">KONTAKT</a>
     </div>
 
     <section class="hero-section flex flex-col pt-[110px] pb-12 sm:pt-[130px] md:pt-[100px] relative overflow-hidden min-h-screen">
