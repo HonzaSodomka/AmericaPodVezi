@@ -223,7 +223,7 @@ $schema = [
     "email" => $email,
     "servesCuisine" => ["American", "BBQ", "Burgers", "Steaks"],
     "priceRange" => "$$",
-    "hasMenu" => $dailyMenuUrl,
+    "hasMenu" => "https://americapodvezi.cz/#stale-menu",
     "acceptsReservations" => true,
     "aggregateRating" => [
         "@type" => "AggregateRating",
@@ -300,44 +300,35 @@ if (!empty($boltLink)) {
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="canonical" href="https://americapodvezi.cz/">
-    <!-- noindex záměrně zachováno - odstranit až před ostrým spuštěním -->
-    <meta name="robots" content="noindex, nofollow">
     <title>America Pod Věží | Burger & BBQ Restaurant Mladá Boleslav</title>
     <meta name="description" content="Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.">
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://americapodvezi.cz/">
     <meta property="og:title" content="America Pod Věží | Burger & BBQ Restaurant">
     <meta property="og:description" content="Přijďte ochutnat nejlepší burgery a BBQ v Mladé Boleslavi. Těšíme se na vás!">
     <meta property="og:image" content="https://americapodvezi.cz/prostory.jpg">
 
-    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://americapodvezi.cz/">
     <meta name="twitter:title" content="America Pod Věží | Burger & BBQ Restaurant">
     <meta name="twitter:description" content="Přijďte ochutnat nejlepší burgery a BBQ v Mladé Boleslavi. Těšíme se na vás!">
     <meta name="twitter:image" content="https://americapodvezi.cz/prostory.jpg">
 
-    <!-- Schema.org structured data (Restaurant) -->
     <script type="application/ld+json">
     <?= $schemaJson ?>
     </script>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Icons (Font Awesome 6.7.2 - lokálně) -->
     <link rel="stylesheet" href="fa/css/fontawesome.min.css">
     <link rel="stylesheet" href="fa/css/solid.min.css">
     <link rel="stylesheet" href="fa/css/brands.min.css">
 
-    <!-- Tailwind CSS (build) -->
     <link rel="stylesheet" href="output.css">
 
-    <!-- Změna pro čistý Scroll a GPU výkon navigace -->
     <style>
         .nav-backdrop {
             position: absolute;
@@ -352,7 +343,6 @@ if (!empty($boltLink)) {
         }
     </style>
 
-    <!-- JS Fallback for content visibility -->
     <noscript>
         <style>
             .scroll-wait { opacity: 1 !important; }
@@ -362,7 +352,6 @@ if (!empty($boltLink)) {
 </head>
 <body class="bg-black text-white overflow-x-hidden">
 
-    <!-- Preloader (Cinematic) -->
     <div id="preloader" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center transition-opacity duration-1000">
         <div class="text-white font-heading font-bold text-5xl md:text-7xl anim-text-reveal mb-6 select-none">
             AMERICA
@@ -374,17 +363,13 @@ if (!empty($boltLink)) {
     </div>
 
     <?php if ($showEventPopup): ?>
-    <!-- Event Popup Modal - Clean Design -->
     <div id="event-popup" class="fixed inset-0 z-[120] hidden" style="background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(8px);">
         <div class="absolute inset-0 flex items-center justify-center p-4">
-            <!-- Container for image + close button -->
             <div class="relative max-w-2xl w-full">
-                <!-- Close button positioned on top right corner of image -->
                 <button id="event-close" aria-label="Zavřít" class="absolute top-3 right-3 z-10 w-12 h-12 bg-brand-gold hover:bg-white text-black rounded-full flex items-center justify-center transition shadow-2xl group">
                     <i class="fas fa-times text-xl group-hover:rotate-90 transition-transform duration-300"></i>
                 </button>
                 
-                <!-- Image without any border or padding -->
                 <img src="<?= $eventImagePath ?>" alt="Aktuální akce" class="w-full h-auto max-h-[90vh] object-contain rounded-sm shadow-2xl" loading="eager">
             </div>
         </div>
@@ -430,12 +415,13 @@ if (!empty($boltLink)) {
     </script>
     <?php endif; ?>
 
-    <!-- Navigation -->
     <nav class="fixed w-full z-50 top-0 left-0 p-6 md:px-12 transition-all duration-300 border-b border-transparent" id="navbar">
         <div class="nav-backdrop"></div>
         <div class="flex justify-between items-center max-w-7xl mx-auto relative z-10">
-            <div class="flex items-center gap-3 animate-enter">
-                <span class="text-white font-heading font-bold tracking-[0.2em] text-xl border-2 border-white/80 px-4 py-1 bg-black/20 backdrop-blur-sm shadow-lg">AMERICA</span>
+            <div class="flex items-center animate-enter">
+                <a href="#" aria-label="Návrat na začátek" class="block focus:outline-none group">
+                    <img src="logo.png" alt="America Pod Věží Logo" class="h-10 sm:h-12 md:h-14 w-auto drop-shadow-lg transition-transform duration-300 group-hover:scale-105">
+                </a>
             </div>
             <div class="hidden md:flex gap-10 lg:gap-12 items-center animate-enter delay-100">
                 <a href="#" class="nav-link font-heading">DOMŮ</a>
@@ -451,7 +437,6 @@ if (!empty($boltLink)) {
         </div>
     </nav>
 
-    <!-- Mobile Menu Overlay -->
     <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-6 menu-closed backdrop-blur-xl md:hidden" role="dialog" aria-modal="true" aria-label="Navigační menu">
         <a href="#" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">DOMŮ</a>
         <a href="#denni-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">DENNÍ MENU</a>
@@ -461,7 +446,6 @@ if (!empty($boltLink)) {
         <a href="#contact" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none focus:text-brand-gold">KONTAKT</a>
     </div>
 
-    <!-- Hero Section -->
     <section class="hero-section flex flex-col pt-[110px] pb-12 sm:pt-[130px] md:pt-[100px] relative overflow-hidden min-h-screen">
         <picture class="absolute inset-0 z-0">
             <source srcset="hero.webp" type="image/webp">
@@ -488,15 +472,15 @@ if (!empty($boltLink)) {
                 </p>
                 <div class="flex flex-wrap gap-4 items-center justify-center md:justify-start animate-enter delay-300">
                     <div class="flex flex-row gap-3 w-full md:w-auto">
-    <a href="#denni-menu" class="min-h-[64px] flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading px-4 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-row items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-2 whitespace-nowrap min-w-[140px]">
-        <i class="fas fa-utensils text-sm sm:text-base"></i>
-        <span class="text-base sm:text-lg">DENNÍ MENU</span>
-    </a>
-    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="min-h-[64px] flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
-        <span class="text-base sm:text-lg mt-1">REZERVACE</span>
-        <span class="text-[10px] sm:text-xs font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> <?= htmlspecialchars($phone) ?></span>
-    </a>
-</div>
+                        <a href="#denni-menu" class="min-h-[64px] flex-1 md:flex-none bg-brand-gold text-black font-bold font-heading px-4 sm:px-6 rounded hover:bg-white transition shadow-lg shadow-amber-900/40 uppercase tracking-widest flex flex-row items-center justify-center transform hover:scale-105 duration-200 text-center leading-none gap-2 whitespace-nowrap min-w-[140px]">
+                            <i class="fas fa-utensils text-sm sm:text-base"></i>
+                            <span class="text-base sm:text-lg">DENNÍ MENU</span>
+                        </a>
+                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="min-h-[64px] flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
+                            <span class="text-base sm:text-lg mt-1">REZERVACE</span>
+                            <span class="text-[10px] sm:text-xs font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> <?= htmlspecialchars($phone) ?></span>
+                        </a>
+                    </div>
 
                     <?php if (!empty($activeDeliveries)): ?>
                     <div class="min-h-[64px] bg-black/50 backdrop-blur-md border border-white/20 rounded flex flex-col sm:flex-row items-center justify-center px-4 md:px-6 py-2 gap-1 md:gap-4 shadow-xl w-full md:w-auto overflow-hidden">
@@ -511,144 +495,129 @@ if (!empty($boltLink)) {
         </div>
     </section>
 
-    <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-<!-- DENNÍ MENU SECTION -->
-<!-- Nahradit sekci v index.php (cca řádek 669) touto novým HTML -->
-<section id="denni-menu" class="bg-black py-20 px-8 md:px-12 relative">
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-10 scroll-wait">
-            <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
-                Denní <span class="text-brand-gold">Menu</span>
-            </h2>
-            <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
-        </div>
-
-        <!-- Loading State -->
-        <div id="menu-loading" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-5xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
-            <div class="relative z-10">
-                <div class="text-brand-gold text-4xl md:text-5xl mb-6 animate-pulse">
-                    <i class="fas fa-spinner fa-spin"></i>
-                </div>
-                <p class="text-gray-300">Načítám menu...</p>
+    <section id="denni-menu" class="bg-black py-20 px-8 md:px-12 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-10 scroll-wait">
+                <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+                    Denní <span class="text-brand-gold">Menu</span>
+                </h2>
+                <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
             </div>
-        </div>
 
-        <!-- Menu Display (Hidden by default) -->
-        <div id="menu-display" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-5xl mx-auto scroll-wait delay-100 relative overflow-hidden hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
-            <div class="relative z-10">
-                <!-- Navigation Header -->
-                <div class="flex items-center justify-between mb-6">
-                    <button id="menu-prev-day" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black border border-white/20 hover:border-brand-gold flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/10 disabled:hover:text-white" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="flex-1 text-center">
-                        <div class="text-brand-gold text-4xl md:text-5xl mb-4">
-                            <i class="fas fa-utensils"></i>
+            <div id="menu-loading" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-5xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="text-brand-gold text-4xl md:text-5xl mb-6 animate-pulse">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <p class="text-gray-300">Načítám menu...</p>
+                </div>
+            </div>
+
+            <div id="menu-display" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-5xl mx-auto scroll-wait delay-100 relative overflow-hidden hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-6">
+                        <button id="menu-prev-day" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black border border-white/20 hover:border-brand-gold flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/10 disabled:hover:text-white" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="flex-1 text-center">
+                            <div class="text-brand-gold text-4xl md:text-5xl mb-4">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <h3 id="menu-date" class="text-2xl md:text-3xl font-heading font-bold text-white tracking-wider uppercase"></h3>
                         </div>
-                        <h3 id="menu-date" class="text-2xl md:text-3xl font-heading font-bold text-white tracking-wider uppercase"></h3>
+                        <button id="menu-next-day" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black border border-white/20 hover:border-brand-gold flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/10 disabled:hover:text-white" disabled>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
-                    <button id="menu-next-day" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black border border-white/20 hover:border-brand-gold flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/10 disabled:hover:text-white" disabled>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
 
-                <!-- Phone Button (Top) -->
-                <div class="flex justify-center mb-6 pb-6 border-b border-white/10">
-                    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-8 py-4 rounded-sm transition duration-300 text-base font-bold font-heading tracking-wider uppercase shadow-lg">
-                        <i class="fas fa-phone-alt text-lg"></i> 
-                        <span>Objednat s sebou: <?= htmlspecialchars($phone) ?></span>
-                    </a>
-                </div>
-                
-                <!-- Menu Content -->
-                <div id="menu-content">
-                    <!-- Polévka -->
-                    <div id="soup-section" class="mb-8 text-left max-w-3xl mx-auto hidden">
-                        <h4 class="text-brand-gold font-heading text-lg uppercase tracking-widest mb-3 border-b border-white/20 pb-2">
-                            <i class="fas fa-bowl-hot mr-2"></i> Polévka
-                        </h4>
-                        <div id="soup-content" class="flex justify-between items-center bg-black/30 p-4 rounded-sm hover:bg-black/40 transition">
-                            <span id="soup-name" class="text-white text-base"></span>
-                            <span id="soup-price" class="text-brand-gold font-bold text-lg ml-4"></span>
+                    <div class="flex justify-center mb-6 pb-6 border-b border-white/10">
+                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-8 py-4 rounded-sm transition duration-300 text-base font-bold font-heading tracking-wider uppercase shadow-lg">
+                            <i class="fas fa-phone-alt text-lg"></i> 
+                            <span>Objednat s sebou: <?= htmlspecialchars($phone) ?></span>
+                        </a>
+                    </div>
+                    
+                    <div id="menu-content">
+                        <div id="soup-section" class="mb-8 text-left max-w-3xl mx-auto hidden">
+                            <h4 class="text-brand-gold font-heading text-lg uppercase tracking-widest mb-3 border-b border-white/20 pb-2">
+                                <i class="fas fa-bowl-hot mr-2"></i> Polévka
+                            </h4>
+                            <div id="soup-content" class="flex justify-between items-center bg-black/30 p-4 rounded-sm hover:bg-black/40 transition">
+                                <span id="soup-name" class="text-white text-base"></span>
+                                <span id="soup-price" class="text-brand-gold font-bold text-lg ml-4"></span>
+                            </div>
+                        </div>
+
+                        <div id="meals-section" class="text-left max-w-3xl mx-auto">
+                            <h4 class="text-brand-gold font-heading text-lg uppercase tracking-widest mb-3 border-b border-white/20 pb-2">
+                                <i class="fas fa-hamburger mr-2"></i> Hlavní jídla
+                            </h4>
+                            <div id="meals-content" class="space-y-3"></div>
                         </div>
                     </div>
-
-                    <!-- Hlavní jídla -->
-                    <div id="meals-section" class="text-left max-w-3xl mx-auto">
-                        <h4 class="text-brand-gold font-heading text-lg uppercase tracking-widest mb-3 border-b border-white/20 pb-2">
-                            <i class="fas fa-hamburger mr-2"></i> Hlavní jídla
-                        </h4>
-                        <div id="meals-content" class="space-y-3"></div>
-                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Closed/Empty State -->
-        <div id="menu-closed" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-3xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
-            <div class="relative z-10">
-                <!-- Navigation Header -->
-                <div class="flex items-center justify-between mb-6">
-                    <button id="menu-prev-day-closed" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black border border-white/20 hover:border-brand-gold flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="flex-1 text-center">
-                        <div class="text-gray-600 text-4xl md:text-5xl mb-4">
-                            <i class="fas fa-calendar-times"></i>
+            <div id="menu-closed" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-3xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-6">
+                        <button id="menu-prev-day-closed" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black border border-white/20 hover:border-brand-gold flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="flex-1 text-center">
+                            <div class="text-gray-600 text-4xl md:text-5xl mb-4">
+                                <i class="fas fa-calendar-times"></i>
+                            </div>
+                            <h3 id="menu-date-closed" class="text-2xl md:text-3xl font-heading font-bold text-white mb-2 tracking-wider uppercase"></h3>
                         </div>
-                        <h3 id="menu-date-closed" class="text-2xl md:text-3xl font-heading font-bold text-white mb-2 tracking-wider uppercase"></h3>
+                        <button id="menu-next-day-closed" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black border border-white/20 hover:border-brand-gold flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed" disabled>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
-                    <button id="menu-next-day-closed" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-gold hover:text-black border border-white/20 hover:border-brand-gold flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed" disabled>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+                    <p id="menu-closed-message" class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto"></p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
+                            <i class="fas fa-phone-alt"></i> Informace: <?= htmlspecialchars($phone) ?>
+                        </a>
+                        <?php if ($dailyMenuUrl): ?>
+                        <a href="<?= $dailyMenuUrl ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading uppercase tracking-widest">
+                            <i class="fas fa-external-link-alt"></i> Menicka.cz
+                        </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
-                <p id="menu-closed-message" class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto"></p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
-                        <i class="fas fa-phone-alt"></i> Informace: <?= htmlspecialchars($phone) ?>
-                    </a>
-                    <?php if ($dailyMenuUrl): ?>
-                    <a href="<?= $dailyMenuUrl ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading uppercase tracking-widest">
-                        <i class="fas fa-external-link-alt"></i> Menicka.cz
-                    </a>
-                    <?php endif; ?>
+            </div>
+
+            <div id="menu-error" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-3xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="text-gray-600 text-4xl md:text-5xl mb-6">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-heading font-bold text-white mb-4 tracking-wider uppercase">Menu není k dispozici</h3>
+                    <p class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto">Omlouváme se, nepodařilo se načíst denní menu. Kontaktujte nás prosím telefonicky.</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
+                            <i class="fas fa-phone-alt"></i> Zavolat: <?= htmlspecialchars($phone) ?>
+                        </a>
+                        <?php if ($dailyMenuUrl): ?>
+                        <a href="<?= $dailyMenuUrl ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading uppercase tracking-widest">
+                            <i class="fas fa-external-link-alt"></i> Menicka.cz
+                        </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Error State -->
-        <div id="menu-error" class="bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl max-w-3xl mx-auto scroll-wait delay-100 text-center relative overflow-hidden hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent pointer-events-none"></div>
-            <div class="relative z-10">
-                <div class="text-gray-600 text-4xl md:text-5xl mb-6">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <h3 class="text-2xl md:text-3xl font-heading font-bold text-white mb-4 tracking-wider uppercase">Menu není k dispozici</h3>
-                <p class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto">Omlouváme se, nepodařilo se načíst denní menu. Kontaktujte nás prosím telefonicky.</p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
-                        <i class="fas fa-phone-alt"></i> Zavolat: <?= htmlspecialchars($phone) ?>
-                    </a>
-                    <?php if ($dailyMenuUrl): ?>
-                    <a href="<?= $dailyMenuUrl ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading uppercase tracking-widest">
-                        <i class="fas fa-external-link-alt"></i> Menicka.cz
-                    </a>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-    <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- STÁLÉ MENU SECTION -->
     <section id="stale-menu" class="bg-[#050505] py-20 px-8 md:px-12 relative">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-10 scroll-wait">
@@ -658,40 +627,19 @@ if (!empty($boltLink)) {
                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
             </div>
 
-            <!-- Jídelní listek viewer -->
-            <div class="w-full scroll-wait">
-                <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 px-2 gap-4">
-                    <h3 class="text-xl md:text-2xl font-heading font-bold text-white tracking-wider uppercase"><i class="fas fa-book-open text-brand-gold mr-3"></i> Stálý Lístek</h3>
-                    <a href="menu.pdf" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-brand-gold text-white hover:text-black border border-white/20 hover:border-brand-gold px-4 py-2 rounded-sm transition duration-300 text-sm font-bold tracking-wider uppercase">
-                        <i class="fas fa-file-pdf"></i> Stáhnout Menu
-                    </a>
-                </div>
-                <div class="md:hidden text-gray-500 text-xs flex items-center gap-1 animate-pulse mb-2 px-2">
-                    <i class="fas fa-hand-pointer"></i> Posouvej tahem
-                </div>
-                <div class="relative w-full bg-white/5 border border-white/10 rounded-sm overflow-hidden shadow-2xl min-h-[500px] md:min-h-[600px] flex items-center justify-center" id="menu-container">
-                    <button id="prev-page" aria-label="Předchozí strana menu" class="absolute left-2 md:left-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
-                        <i class="fas fa-chevron-left text-lg md:text-xl"></i>
-                    </button>
-                    <div id="menu-viewer" class="w-full h-full flex items-center justify-center p-0 md:p-4 transition duration-300">
-                        <img src="menu-page-1.svg" id="current-menu-image" alt="Jídelní lístek strana 1 - Burgery a předkrmy" width="800" height="600" loading="lazy" class="h-full w-full object-contain shadow-2xl max-h-[500px] md:max-h-[600px] select-none">
-                        <div id="menu-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none hidden">
-                            <i class="fas fa-camera text-4xl text-gray-700 mb-4"></i>
-                            <p class="text-gray-500">Zde se zobrazí jídelní lístek</p>
-                        </div>
-                    </div>
-                    <button id="next-page" aria-label="Další strana menu" class="absolute right-2 md:right-4 z-20 w-10 h-10 md:w-12 md:h-12 bg-black/50 hover:bg-brand-gold text-white hover:text-black rounded-full flex items-center justify-center transition duration-300 backdrop-blur-sm border border-white/10">
-                        <i class="fas fa-chevron-right text-lg md:text-xl"></i>
-                    </button>
-                    <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none">
-                        <span id="page-indicator" class="bg-black/80 px-4 py-1 rounded-full text-xs text-brand-gold font-heading tracking-widest border border-white/10 shadow-lg">
-                            STRANA 1 / 4
-                        </span>
-                    </div>
-                </div>
+            <div class="max-w-3xl mx-auto bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl text-center scroll-wait delay-100">
+                <i class="fas fa-file-pdf text-5xl md:text-6xl text-brand-gold mb-6 drop-shadow-lg"></i>
+                <h3 class="text-2xl md:text-3xl font-heading font-bold text-white tracking-wider uppercase mb-4">Náš jídelní a nápojový lístek</h3>
+                <p class="text-gray-400 mb-8 max-w-xl mx-auto font-light">
+                    Prohlédněte si naši kompletní nabídku burgerů z čerstvého masa, BBQ specialit z grilu, salátů a nápojů.
+                </p>
+                
+                <?php $pdfVersion = file_exists(__DIR__ . '/menu.pdf') ? filemtime(__DIR__ . '/menu.pdf') : '1'; ?>
+                <a href="menu.pdf?v=<?= $pdfVersion ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-black hover:bg-white px-8 py-4 rounded-sm transition duration-300 text-base md:text-lg font-bold font-heading tracking-widest uppercase shadow-[0_0_20px_rgba(212,163,115,0.3)] transform hover:scale-105">
+                    <i class="fas fa-book-open"></i> Otevřít menu (PDF)
+                </a>
             </div>
 
-            <!-- Fotokartičky – Speciality & Catering (pod listek) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-10 scroll-wait">
                 <div class="relative h-56 md:h-72 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default delay-100">
                     <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
@@ -713,10 +661,8 @@ if (!empty($boltLink)) {
         </div>
     </section>
 
-    <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- ABOUT SECTION -->
     <section id="about" class="bg-black py-20 px-8 md:px-12 overflow-hidden relative">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 scroll-wait">
@@ -726,27 +672,41 @@ if (!empty($boltLink)) {
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
             </div>
             <div class="flex flex-col lg:flex-row gap-12 items-center">
-                <div class="w-full lg:w-1/2 flex flex-col gap-4 scroll-wait delay-100 order-2 lg:order-1">
-                    <div class="relative rounded-sm overflow-hidden h-[350px] shadow-2xl border border-white/10 group">
+                <div class="w-full lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 scroll-wait delay-100 order-2 lg:order-1">
+                    
+                    <div class="relative rounded-sm overflow-hidden h-[300px] sm:col-span-2 shadow-2xl border border-white/10 group">
                         <picture>
                             <source srcset="prostory.webp" type="image/webp">
-                            <img src="prostory.jpg" alt="Stylový interiér restaurace America Pod Věží s barem" width="700" height="350" loading="lazy" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
+                            <img src="prostory.jpg" alt="Stylový interiér restaurace America Pod Věží s barem" loading="lazy" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
                         </picture>
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
                             <h3 class="text-brand-gold font-heading text-lg tracking-widest uppercase">Restaurace</h3>
                             <p class="text-gray-300 text-xs">Příjemné prostředí pro 40 hostů</p>
                         </div>
                     </div>
-                    <div class="relative rounded-sm overflow-hidden h-[350px] shadow-2xl border border-white/10 group">
+
+                    <div class="relative rounded-sm overflow-hidden h-[250px] shadow-2xl border border-white/10 group">
                         <picture>
                             <source srcset="salonek.webp" type="image/webp">
-                            <img src="salonek.jpg" alt="Soukromý salonek pro 30 osob na oslavy v Mladé Boleslavi" width="700" height="350" loading="lazy" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
+                            <img src="salonek.jpg" alt="Velký soukromý salonek pro 32 osob" loading="lazy" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
                         </picture>
                         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
-                            <h3 class="text-brand-gold font-heading text-lg tracking-widest uppercase">Akce & Salonky</h3>
-                            <p class="text-gray-300 text-xs">Kapacita až 100 osob pro vaše oslavy</p>
+                            <h3 class="text-brand-gold font-heading text-base tracking-widest uppercase">Velký Salonek</h3>
+                            <p class="text-gray-300 text-[10px] sm:text-xs">Kapacita 32 míst</p>
                         </div>
                     </div>
+
+                    <div class="relative rounded-sm overflow-hidden h-[250px] shadow-2xl border border-white/10 group">
+                        <picture>
+                            <source srcset="salonek2.webp" type="image/webp">
+                            <img src="salonek2.jpg" alt="Malý soukromý salonek pro 15 osob" loading="lazy" class="w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-105 transition duration-500">
+                        </picture>
+                        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4">
+                            <h3 class="text-brand-gold font-heading text-base tracking-widest uppercase">Malý Salonek</h3>
+                            <p class="text-gray-300 text-[10px] sm:text-xs">Kapacita 15 míst</p>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="w-full lg:w-1/2 text-center lg:text-left scroll-wait delay-200 order-1 lg:order-2">
                     <h3 class="text-3xl md:text-4xl font-heading font-bold text-white tracking-wider uppercase mb-6 leading-tight">
@@ -796,95 +756,90 @@ if (!empty($boltLink)) {
         </div>
     </section>
 
-    <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- RESERVATION / EVENTS SECTION -->
-<section id="reservation" class="bg-[#050505] py-20 px-8 md:px-12 relative">
-    <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-10 scroll-wait">
-             <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
-                Rezervace <span class="text-brand-gold">Akcí</span>
-             </h2>
-             <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg mb-6"></div>
-             <p class="text-gray-300 text-lg font-light leading-relaxed max-w-2xl mx-auto">
-                 Ať už chystáte narozeninovou oslavu, firemní večírek, nebo rodinné setkání, naše salonky jsou vám plně k dispozici. Vyplňte nezávaznou poptávku a my se vám co nejdříve ozveme s nabídkou rautu a termínu na míru.
-             </p>
-        </div>
-        
-        <form id="reservation-form" method="POST" action="reservation.php" class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-sm shadow-xl scroll-wait delay-100 max-w-3xl mx-auto">
-            <!-- Honeypot (bot trap) - hidden field -->
-            <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+    <section id="reservation" class="bg-[#050505] py-20 px-8 md:px-12 relative">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-10 scroll-wait">
+                 <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+                    Rezervace <span class="text-brand-gold">Akcí</span>
+                 </h2>
+                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg mb-6"></div>
+                 <p class="text-gray-300 text-lg font-light leading-relaxed max-w-2xl mx-auto">
+                     Ať už chystáte narozeninovou oslavu, firemní večírek, nebo rodinné setkání, naše salonky jsou vám plně k dispozici. Vyplňte nezávaznou poptávku a my se vám co nejdříve ozveme s nabídkou rautu a termínu na míru.
+                 </p>
+            </div>
             
-            <?php
-            // Display success/error messages
-            if (isset($_GET['reservation'])):
-                $status = $_GET['reservation'];
-                if ($status === 'success'):
-            ?>
-                <div class="bg-green-900/30 border border-green-500/50 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-pulse">
-                    <i class="fas fa-check-circle text-lg"></i>
-                    <span class="text-sm">Děkujeme! Vaše poptávka byla odeslána. Brzy se vám ozveme.</span>
-                </div>
-            <?php
-                elseif ($status === 'error'):
-            ?>
-                <div class="bg-red-900/30 border border-red-500/50 text-red-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
-                    <i class="fas fa-exclamation-triangle text-lg"></i>
-                    <span class="text-sm">Omlouváme se, nepodařilo se odeslat email. Zkuste to prosím později nebo nás kontaktujte telefonicky.</span>
-                </div>
-            <?php
-                elseif ($status === 'invalid'):
-            ?>
-                <div class="bg-yellow-900/30 border border-yellow-500/50 text-yellow-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
-                    <i class="fas fa-info-circle text-lg"></i>
-                    <span class="text-sm">Zkontrolujte prosím vyplněné údaje a zkuste to znovu.</span>
-                </div>
-            <?php
-                elseif ($status === 'rate_limit'):
-            ?>
-                <div class="bg-orange-900/30 border border-orange-500/50 text-orange-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
-                    <i class="fas fa-clock text-lg"></i>
-                    <span class="text-sm">Příliš mnoho pokusů. Zkuste to prosím za chvíli.</span>
-                </div>
-            <?php
+            <form id="reservation-form" method="POST" action="reservation.php" class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-sm shadow-xl scroll-wait delay-100 max-w-3xl mx-auto">
+                <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+                
+                <?php
+                // Display success/error messages
+                if (isset($_GET['reservation'])):
+                    $status = $_GET['reservation'];
+                    if ($status === 'success'):
+                ?>
+                    <div class="bg-green-900/30 border border-green-500/50 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-pulse">
+                        <i class="fas fa-check-circle text-lg"></i>
+                        <span class="text-sm">Děkujeme! Vaše poptávka byla odeslána. Brzy se vám ozveme.</span>
+                    </div>
+                <?php
+                    elseif ($status === 'error'):
+                ?>
+                    <div class="bg-red-900/30 border border-red-500/50 text-red-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
+                        <i class="fas fa-exclamation-triangle text-lg"></i>
+                        <span class="text-sm">Omlouváme se, nepodařilo se odeslat email. Zkuste to prosím později nebo nás kontaktujte telefonicky.</span>
+                    </div>
+                <?php
+                    elseif ($status === 'invalid'):
+                ?>
+                    <div class="bg-yellow-900/30 border border-yellow-500/50 text-yellow-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
+                        <i class="fas fa-info-circle text-lg"></i>
+                        <span class="text-sm">Zkontrolujte prosím vyplněné údaje a zkuste to znovu.</span>
+                    </div>
+                <?php
+                    elseif ($status === 'rate_limit'):
+                ?>
+                    <div class="bg-orange-900/30 border border-orange-500/50 text-orange-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
+                        <i class="fas fa-clock text-lg"></i>
+                        <span class="text-sm">Příliš mnoho pokusů. Zkuste to prosím za chvíli.</span>
+                    </div>
+                <?php
+                    endif;
                 endif;
-            endif;
-            ?>
+                ?>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div class="flex flex-col">
-                    <label for="res-name" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Jméno a příjmení</label>
-                    <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="Např. Jan Novák">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="flex flex-col">
+                        <label for="res-name" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Jméno a příjmení</label>
+                        <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="Např. Jan Novák">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="res-phone" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Telefon</label>
+                        <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="+420 777 777 777">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="res-email" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">E-mail</label>
+                        <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="jan@novak.cz">
+                    </div>
                 </div>
-                <div class="flex flex-col">
-                    <label for="res-phone" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Telefon</label>
-                    <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="+420 777 777 777">
+                <div class="flex flex-col mb-6">
+                    <label for="res-note" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Vaše představa (termín, počet osob, typ akce...)</label>
+                    <textarea id="res-note" name="note" rows="3" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm resize-none" placeholder="Dobrý den, rádi bychom u vás uspořádali narozeninovou oslavu pro cca 20 lidí..."></textarea>
                 </div>
-                <div class="flex flex-col">
-                    <label for="res-email" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">E-mail</label>
-                    <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="jan@novak.cz">
+                <div class="text-center">
+                    <button type="submit" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-sm md:text-base rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
+                        <i class="fas fa-paper-plane mr-2"></i> Odeslat nezávaznou poptávku
+                    </button>
+                    <p class="text-gray-500 text-[10px] mt-3 font-light">Odesláním formuláře souhlasíte se zpracováním údajů pro vyřízení rezervace.</p>
                 </div>
-            </div>
-            <div class="flex flex-col mb-6">
-                <label for="res-note" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Vaše představa (termín, počet osob, typ akce...)</label>
-                <textarea id="res-note" name="note" rows="3" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm resize-none" placeholder="Dobrý den, rádi bychom u vás uspořádali narozeninovou oslavu pro cca 20 lidí..."></textarea>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-sm md:text-base rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
-                    <i class="fas fa-paper-plane mr-2"></i> Odeslat nezávaznou poptávku
-                </button>
-                <p class="text-gray-500 text-[10px] mt-3 font-light">Odesláním formuláře souhlasíte se zpracováním údajů pro vyřízení rezervace.</p>
-            </div>
-        </form>
-    </div>
-</section>
+            </form>
+        </div>
+    </section>
 
 
-    <!-- SECTION SEPARATOR -->
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
-    <!-- CONTACT SECTION -->
     <section id="contact" class="bg-black py-16 px-8 md:px-12">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-10 scroll-wait">
@@ -1004,10 +959,9 @@ if (!empty($boltLink)) {
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="bg-black text-gray-500 py-6 text-center text-xs tracking-widest uppercase border-t border-white/10">
         <p>
-            &copy; <span id="current-year"><?= date('Y') ?></span> America Pod Věží | <?= htmlspecialchars(str_replace(', ', ' | ', $address)) ?> | <a href="mailto:<?= htmlspecialchars($email) ?>" class="hover:text-brand-gold transition"><?= htmlspecialchars($email) ?></a>
+            © <span id="current-year"><?= date('Y') ?></span> America Pod Věží | <?= htmlspecialchars(str_replace(', ', ' | ', $address)) ?> | <a href="mailto:<?= htmlspecialchars($email) ?>" class="hover:text-brand-gold transition"><?= htmlspecialchars($email) ?></a>
         </p>
         <p class="mt-4 text-[10px] text-gray-600 font-sans tracking-normal normal-case opacity-80">
             Provozovatel: America Pod Věží s.r.o. | IČO: doplnit <br>
@@ -1017,7 +971,6 @@ if (!empty($boltLink)) {
         </p>
     </footer>
 
-    <!-- GDPR Consent Banner -->
     <div id="consent-banner" class="fixed bottom-0 left-0 right-0 z-[110] hidden">
         <div class="h-[2px] w-full bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent"></div>
         <div class="bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-white/5">
@@ -1042,7 +995,6 @@ if (!empty($boltLink)) {
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="script.js"></script>
 <script>
 const form = document.getElementById('reservation-form');
@@ -1125,7 +1077,6 @@ function showError(field, msg) {
     field.parentElement.appendChild(err);
 }
 </script>
-
 
 </body>
 </html>

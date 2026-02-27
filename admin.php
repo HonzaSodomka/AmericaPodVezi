@@ -276,6 +276,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         die('Neplatný CSRF token. Zkuste stránku obnovit a odeslat formulář znovu.');
     }
 
+    // --- Zpracování PDF Menu ---
+    if (isset($_FILES['menu_pdf']) && $_FILES['menu_pdf']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['menu_pdf']['error'] === UPLOAD_ERR_OK) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $_FILES['menu_pdf']['tmp_name']);
+            finfo_close($finfo);
+
+            $ext = strtolower(pathinfo($_FILES['menu_pdf']['name'], PATHINFO_EXTENSION));
+
+            if ($mime === 'application/pdf' && $ext === 'pdf') {
+                move_uploaded_file($_FILES['menu_pdf']['tmp_name'], __DIR__ . '/menu.pdf');
+            } else {
+                header('Location: admin.php?error=invalid_pdf');
+                exit;
+            }
+        } else {
+            header('Location: admin.php?error=upload_failed');
+            exit;
+        }
+    }
+
     $currentData = loadData();
 
     $currentData['contact']['phone'] = $_POST['contact_phone'] ?? '';
@@ -414,6 +435,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
     
+    // PŘIDEJ TENTO ŘÁDEK: Vytvoření zálohy před přepisem
+    copy($dataFile, $dataFile . '.bak');
+    
     // ZABEZPEČENÍ: LOCK_EX proti souběžnému přepisu/ztrátě dat
     if (file_put_contents($dataFile, $jsonString, LOCK_EX) !== false) {
         header('Location: admin.php?saved=1');
@@ -453,6 +477,12 @@ if (isset($_GET['error'])) {
             break;
         case 'invalid_image_content':
             $errorMessage = 'Soubor neodpovídá svému formátu. Nahrajte prosím platný obrázek.';
+            break;
+        case 'invalid_pdf':
+            $errorMessage = 'Nahraný soubor není platné PDF.';
+            break;
+        case 'upload_failed':
+            $errorMessage = 'Chyba při nahrávání souboru. Není PDF příliš velké?';
             break;
         case 'password_empty':
             $errorMessage = 'Všechna pole pro změnu hesla musí být vyplněna.';
@@ -582,7 +612,6 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                         <i class="fas fa-sync-alt"></i> Načíst menu nyní
                     </button>
                 </form>
-                <!-- ZMĚNA: Přímý odkaz na produkční web místo index.php -->
                 <a href="https://america.webresent.cz" target="_blank" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
                     <i class="fas fa-external-link-alt"></i> Zobrazit web
                 </a>
@@ -606,7 +635,6 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
             </div>
         <?php endif; ?>
 
-        <!-- ZMĚNA HESLA -->
         <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden mb-6 sm:mb-8">
             <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                 <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -642,12 +670,10 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
             </div>
         </section>
 
-        <form method="POST" action="admin.php" class="space-y-6 sm:space-y-8" id="adminForm">
-            <!-- ZABEZPEČENÍ: CSRF Token & Action field -->
+        <form method="POST" action="admin.php" class="space-y-6 sm:space-y-8" id="adminForm" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <input type="hidden" name="action" value="save">
             
-            <!-- KONTAKTY -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -690,11 +716,10 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                 </div>
             </section>
 
-            <!-- ROZVOZ & MENU -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
-                        <i class="fas fa-utensils text-brand-gold"></i> Rozvoz & Menu
+                        <i class="fas fa-utensils text-brand-gold"></i> Rozvoz & Denní Menu
                     </h2>
                 </div>
                 <div class="p-4 sm:p-6 space-y-4">
@@ -746,7 +771,28 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                 </div>
             </section>
 
-            <!-- OTEVÍRACÍ DOBA -->
+            <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                    <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-file-pdf text-brand-gold"></i> Stálé Menu (PDF)
+                    </h2>
+                </div>
+                <div class="p-4 sm:p-6 space-y-4">
+                    <p class="text-gray-400 text-sm">Zde můžete nahrát aktuální verzi stálého jídelního lístku ve formátu PDF. Původní soubor se automaticky přepíše.</p>
+                    <div>
+                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Nový PDF soubor</label>
+                        <input type="file" name="menu_pdf" accept="application/pdf" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-bold file:bg-brand-gold file:text-black hover:file:bg-white file:transition file:cursor-pointer bg-black/50 border border-white/20 rounded-sm cursor-pointer">
+                    </div>
+                    <?php if (file_exists(__DIR__ . '/menu.pdf')): ?>
+                        <div class="mt-4 flex items-center gap-3 bg-black/30 p-3 rounded-sm border border-white/10">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-sm text-gray-300">Aktuální menu nahráno: <?= date('d.m.Y H:i', filemtime(__DIR__ . '/menu.pdf')) ?></span>
+                            <a href="menu.pdf?v=<?= time() ?>" target="_blank" class="text-brand-gold hover:text-white transition text-sm ml-auto font-bold uppercase tracking-widest">Zobrazit</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -785,7 +831,6 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                 </div>
             </section>
 
-            <!-- VÝJIMKY -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -830,7 +875,6 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                 </div>
             </section>
 
-            <!-- AKCE / POPUP -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
@@ -843,14 +887,12 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                     </p>
 
                     <div class="space-y-6">
-                        <!-- Active Toggle -->
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" name="event_active" id="eventActive" class="sr-only peer" <?= $eventActive ? 'checked' : '' ?>>
                             <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-gold"></div>
                             <span class="ml-3 text-sm font-heading tracking-widest uppercase text-white">Zobrazit akci na webu</span>
                         </label>
 
-                        <!-- Date Range -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="flex flex-col">
                                 <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2">Zobrazovat OD</label>
@@ -862,14 +904,12 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                             </div>
                         </div>
 
-                        <!-- Image Upload -->
                         <div>
                             <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Obrázek letáku</label>
                             <input type="file" id="eventImageInput" accept="image/png, image/jpeg, image/jpg, image/webp" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-bold file:bg-brand-gold file:text-black hover:file:bg-white file:transition file:cursor-pointer bg-black/50 border border-white/20 rounded-sm cursor-pointer">
                             <p class="text-xs text-gray-500 mt-2">Podporované formáty: PNG, JPEG, WebP. Doporučený formát: na výšku nebo čtverec.</p>
                             <p class="text-xs text-gray-500">Velké obrázky budou automaticky zmenšeny na max. 1200px pro rychlé načítání.</p>
                             
-                            <!-- Preview Container -->
                             <div class="mt-4 relative <?= $eventImagePreview ? '' : 'hidden' ?> w-full max-w-sm border border-white/20 rounded-sm overflow-hidden bg-black/30" id="eventPreviewContainer">
                                 <img id="eventPreview" src="<?= $eventImagePreview ?>" alt="Náhled akce" class="w-full h-auto">
                                 <div class="absolute top-2 right-2 flex gap-2">
@@ -880,14 +920,12 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                                 <div class="absolute bottom-0 left-0 right-0 bg-black/80 p-2 text-xs text-gray-300" id="eventImageInfo"></div>
                             </div>
 
-                            <!-- Hidden input for base64 data (temporary during upload) -->
                             <input type="hidden" name="event_image_data" id="eventImageData" value="">
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- HODNOCENÍ -->
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
