@@ -297,23 +297,31 @@ if (!empty($boltLink)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#d4a373">
+    
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
     <link rel="canonical" href="https://americapodvezi.cz/">
     <title>America Pod Věží | Burger & BBQ Restaurant Mladá Boleslav</title>
     <meta name="description" content="Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.">
 
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="restaurant.restaurant">
+    <meta property="restaurant:contact_info:street_address" content="Komenského náměstí 61">
+    <meta property="restaurant:contact_info:locality" content="Mladá Boleslav">
     <meta property="og:url" content="https://americapodvezi.cz/">
     <meta property="og:title" content="America Pod Věží | Burger & BBQ Restaurant">
     <meta property="og:description" content="Přijďte ochutnat nejlepší burgery a BBQ v Mladé Boleslavi. Těšíme se na vás!">
-    <meta property="og:image" content="https://americapodvezi.cz/prostory.jpg">
+    <meta property="og:image" content="https://americapodvezi.cz/og-image.jpg">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://americapodvezi.cz/">
     <meta name="twitter:title" content="America Pod Věží | Burger & BBQ Restaurant">
     <meta name="twitter:description" content="Přijďte ochutnat nejlepší burgery a BBQ v Mladé Boleslavi. Těšíme se na vás!">
-    <meta name="twitter:image" content="https://americapodvezi.cz/prostory.jpg">
+    <meta name="twitter:image" content="https://americapodvezi.cz/og-image.jpg">
 
     <script type="application/ld+json">
     <?= $schemaJson ?>
