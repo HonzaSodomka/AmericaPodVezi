@@ -725,7 +725,7 @@ if (!empty($boltLink)) {
                         Jsme <strong>Family Style Restaurant</strong> s dlouholetou tradicí, přímo v historickém srdci Mladé Boleslavi. Naším cílem není být jen další restaurací, ale místem, kde se budete cítit jako doma.
                     </p>
                     <p class="text-gray-300 mb-6 leading-relaxed">
-                        Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen "na jedno" (čepujeme Plzeň a Bohém), u nás si přijdete na své.
+                        Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen "na jedno" (čepujeme Krušovice Bohém), u nás si přijdete na své.
                     </p>
                     <div class="bg-white/5 p-6 rounded-sm border border-white/5 mb-8 text-left">
                         <h3 class="text-brand-gold font-heading text-xl mb-3 border-b border-white/10 pb-2">Plánujete akci?</h3>
@@ -972,7 +972,7 @@ if (!empty($boltLink)) {
             © <span id="current-year"><?= date('Y') ?></span> America Pod Věží | <?= htmlspecialchars(str_replace(', ', ' | ', $address)) ?> | <a href="mailto:<?= htmlspecialchars($email) ?>" class="hover:text-brand-gold transition"><?= htmlspecialchars($email) ?></a>
         </p>
         <p class="mt-4 text-[10px] text-gray-600 font-sans tracking-normal normal-case opacity-80">
-            Provozovatel: America Pod Věží s.r.o. | IČO: doplnit <br>
+            Provozovatel: America Pod Věží s.r.o. | IČO: 66773971 <br>
             <span class="mt-1 block uppercase tracking-widest opacity-60">Realizováno <a href="https://webresent.cz" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:underline">Webresent</a></span>
             &nbsp;|&nbsp;
             <a href="#" id="cookie-settings" class="hover:text-brand-gold transition normal-case">Změnit nastavení cookies</a>
