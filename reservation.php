@@ -11,7 +11,8 @@ if (file_exists($dataFile)) {
     $data = json_decode(file_get_contents($dataFile), true) ?: [];
 }
 
-$recipientEmail = $data['contact']['email_reservation'] ?? null;
+// 1. NATVRDO PŘEPÍŠEME PŘÍJEMCE NA TVŮJ SEZNAM (Pro testování)
+$recipientEmail = "h.sodomka@seznam.cz"; // <--- ZDE VYPLŇ SVŮJ SEZNAM!
 
 if (!$recipientEmail) {
     echo json_encode(['success' => false, 'message' => 'Email pro rezervace není nastaven']);
@@ -137,11 +138,9 @@ if (!empty($errors)) {
 }
 
 // SECURITY FIX: Sanitize email to prevent header injection
-// Remove any newline characters that could be used for header injection
 $email = filter_var($email, FILTER_SANITIZE_EMAIL);
 $email = str_replace(array("\r", "\n", "%0a", "%0d"), '', $email);
 
-// Double-check after sanitization
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     // Release lock and close file before exit
     flock($fp, LOCK_UN);
@@ -154,8 +153,11 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 // Sanitize name for email headers (no newlines)
 $name = str_replace(array("\r", "\n", "%0a", "%0d"), '', $name);
 
+// 2. NASTAVÍME ODESÍLATELE NA AKTUÁLNÍ DOMÉNU SERVERU
+$serverEmail = "noreply@america.webresent.cz";
+
 // Prepare email
-$emailSubject = "Nová rezervace akce z webu - " . $name;
+$emailSubject = "TEST WEBU - Nová rezervace akce - " . $name;
 
 $emailBody = "=================================\n";
 $emailBody .= "NOVÁ REZERVACE AKCE Z WEBU\n";
@@ -169,10 +171,11 @@ $emailBody .= "---\n";
 $emailBody .= "Odesláno: " . date('d.m.Y H:i') . "\n";
 $emailBody .= "IP adresa: " . $clientIP . "\n";
 
-// SECURITY FIX: Use safe email headers without X-Mailer (hides PHP version)
-$headers = "From: " . $email . "\r\n";
-$headers .= "Reply-To: " . $email . "\r\n";
+// 3. OPRAVENÉ HLAVIČKY (Zabrání padání do spamu kvůli DMARC/SPF)
+$headers = "From: America Test <" . $serverEmail . ">\r\n";
+$headers .= "Reply-To: " . $name . " <" . $email . ">\r\n";
 $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+$headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 
 // Send email
 $mailSent = mail($recipientEmail, $emailSubject, $emailBody, $headers);
