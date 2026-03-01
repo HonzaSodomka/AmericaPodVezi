@@ -731,9 +731,9 @@ if (!empty($boltLink)) {
             </div>
             
             <div class="relative max-w-6xl mx-auto scroll-wait delay-100 group">
-                <div id="gallery-carousel" class="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-6 px-4">
+                <div id="gallery-carousel" class="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-6">
                     <?php foreach ($data['gallery'] as $index => $img): ?>
-                        <div class="snap-center shrink-0 w-[85vw] sm:w-[60vw] md:w-[45%] lg:w-[31%] h-[300px] md:h-[400px] relative rounded-sm overflow-hidden border border-white/10 shadow-2xl">
+                        <div class="snap-start shrink-0 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.3333%-1rem)] h-[300px] md:h-[400px] relative rounded-sm overflow-hidden border border-white/10 shadow-2xl">
                             <img src="<?= htmlspecialchars($img) ?>?v=<?= filemtime(__DIR__.'/'.$img) ?>" alt="Fotogalerie America Pod Věží" class="w-full h-full object-cover hover:scale-105 transition duration-700">
                         </div>
                     <?php endforeach; ?>

@@ -481,8 +481,12 @@ function initGallery() {
     };
 
     const getScrollAmount = () => {
-        const item = carousel.querySelector('.snap-center');
-        return item ? item.offsetWidth + 24 : carousel.offsetWidth * 0.5;
+        const item = carousel.querySelector('.snap-start');
+        if (!item) return carousel.clientWidth;
+        
+        // Dynamicky načte šířku fotky a přesnou velikost mezery z CSS
+        const gap = parseFloat(window.getComputedStyle(carousel).gap) || 0;
+        return item.offsetWidth + gap;
     };
     
     prevBtn.addEventListener('click', () => {
