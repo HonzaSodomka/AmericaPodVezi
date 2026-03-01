@@ -22,13 +22,26 @@ if (file_exists($dataFile)) {
     }
 }
 
-// Výchozí hodnoty
+// Výchozí hodnoty z administrace
 $phone = $data['contact']['phone'] ?? '326 322 007';
-$phoneClean = preg_replace('/\s+/', '', $phone);
-$phoneAlt = $data['contact']['phone_alt'] ?? '606 537 469';
-$phoneAltClean = preg_replace('/\s+/', '', $phoneAlt);
-$email = $data['contact']['email'] ?? 'info@americapodvezi.cz';
 $address = $data['contact']['address'] ?? 'Komenského náměstí 61, Mladá Boleslav';
+
+// CHYTRÉ ČIŠTĚNÍ TELEFONU (ochrana proti duplicitní předvolbě v odkazech)
+$phoneClean = preg_replace('/[^\d+]/', '', $phone);
+if (!str_starts_with($phoneClean, '+')) {
+    if (str_starts_with($phoneClean, '420')) {
+        $phoneClean = '+' . $phoneClean;
+    } else {
+        $phoneClean = '+420' . $phoneClean;
+    }
+}
+
+// ODDĚLENÍ ULICE OD MĚSTA PRO SEO SCHÉMA
+$streetOnly = trim(explode(',', $address)[0] ?? '');
+
+// VERZOVÁNÍ PDF MENU (zabraňuje cachování starého menu)
+$pdfVersion = file_exists(__DIR__ . '/menu.pdf') ? filemtime(__DIR__ . '/menu.pdf') : '1';
+$menuPdfLink = 'menu.pdf?v=' . $pdfVersion;
 
 // Zajištění datových typů a výchozích hodnot
 $ratingValue = (float) ($data['rating']['value'] ?? 4.5);
@@ -44,7 +57,7 @@ function safeUrl($url) {
     return '';
 }
 
-// Nová logika pro delivery s enabled přepínačem
+// Logika pro delivery s enabled přepínačem
 $delivery = $data['delivery'] ?? [];
 $woltLink = '';
 $foodoraLink = '';
@@ -54,7 +67,6 @@ if (isset($delivery['wolt'])) {
     if (is_array($delivery['wolt']) && !empty($delivery['wolt']['enabled']) && !empty($delivery['wolt']['url'])) {
         $woltLink = safeUrl($delivery['wolt']['url']);
     } elseif (is_string($delivery['wolt'])) {
-        // Backward compatibility pro starou strukturu
         $woltLink = safeUrl($delivery['wolt']);
     }
 }
@@ -100,22 +112,12 @@ $dayTranslations = [
     'weekend' => 'Víkend'
 ];
 
-// Mapování dnů na jejich pořadí v týdnu (1 = pondělí, 7 = neděle)
 $dayOrder = [
-    'monday' => 1,
-    'tuesday' => 2,
-    'wednesday' => 3,
-    'thursday' => 4,
-    'friday' => 5,
-    'saturday' => 6,
-    'sunday' => 7,
-    'monday_friday' => 1,
-    'tuesday_friday' => 2,
-    'monday_thursday' => 1,
-    'weekend' => 6
+    'monday' => 1, 'tuesday' => 2, 'wednesday' => 3, 'thursday' => 4,
+    'friday' => 5, 'saturday' => 6, 'sunday' => 7,
+    'monday_friday' => 1, 'tuesday_friday' => 2, 'monday_thursday' => 1, 'weekend' => 6
 ];
 
-// Funkce pro seřazení dnů podle správného pořadí v týdnu
 function sortDaysByWeekOrder($openingHours, $dayOrder) {
     $sorted = [];
     foreach ($openingHours as $key => $value) {
@@ -132,7 +134,6 @@ function sortDaysByWeekOrder($openingHours, $dayOrder) {
     return $result;
 }
 
-// Seřazení otevírací doby
 $openingHours = sortDaysByWeekOrder($openingHours, $dayOrder);
 
 function formatDayKey($key, $translations) {
@@ -146,25 +147,19 @@ function formatDayKey($key, $translations) {
     return implode(' - ', $res);
 }
 
-// Helper pro formátování datumu ve výjimkách (bez roku)
 function formatExceptionDate($dateStr) {
-    // 2026-02-07 -> 7.2.
     $parts = explode('-', $dateStr);
     if (count($parts) === 3) {
-        $day = intval($parts[2]);
-        $month = intval($parts[1]);
-        return $day . '.' . $month . '.';
+        return intval($parts[2]) . '.' . intval($parts[1]) . '.';
     }
     return $dateStr;
 }
 
-// Helper pro formátování rozsahu výjimky - pokud stejný den, zobrazí jen jednou
 function formatExceptionRange($dateRange) {
     $dates = explode('_', $dateRange);
     if (count($dates) === 2) {
         $fromDisplay = formatExceptionDate($dates[0]);
         $toDisplay = formatExceptionDate($dates[1]);
-        // Pokud začátek a konec jsou stejné, zobraz jen jedno datum
         if ($fromDisplay === $toDisplay) {
             return $fromDisplay;
         }
@@ -173,7 +168,7 @@ function formatExceptionRange($dateRange) {
     return $dateRange;
 }
 
-// ===== EVENT POPUP LOGIC (FILE-BASED) =====
+// ===== EVENT POPUP LOGIC =====
 $showEventPopup = false;
 $eventImagePath = '';
 
@@ -182,13 +177,9 @@ if (isset($data['event'])) {
     $eventActive = !empty($event['active']);
     $eventDateFrom = $event['date_from'] ?? '';
     $eventDateTo = $event['date_to'] ?? '';
-    
-    // Support both old (image_data) and new (image_file) format
     $eventImageFile = $event['image_file'] ?? '';
     
-    // Check if event should be displayed today
     if ($eventActive && $eventDateFrom && $eventDateTo && $eventImageFile) {
-        // Verify file exists
         if (file_exists(__DIR__ . '/' . $eventImageFile)) {
             $today = date('Y-m-d');
             if ($today >= $eventDateFrom && $today <= $eventDateTo) {
@@ -199,7 +190,7 @@ if (isset($data['event'])) {
     }
 }
 
-// Generování JSON-LD
+// OPRAVENÉ Generování JSON-LD pro Google
 $schema = [
     "@context" => "https://schema.org",
     "@type" => "Restaurant",
@@ -209,7 +200,7 @@ $schema = [
     "description" => "Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.",
     "address" => [
         "@type" => "PostalAddress",
-        "streetAddress" => $address,
+        "streetAddress" => $streetOnly, // Jen ulice bez města
         "addressLocality" => "Mladá Boleslav",
         "postalCode" => "293 01",
         "addressCountry" => "CZ"
@@ -219,11 +210,10 @@ $schema = [
         "latitude" => 50.4149,
         "longitude" => 14.9120
     ],
-    "telephone" => "+420" . $phoneClean,
-    "email" => $email,
+    "telephone" => $phoneClean, // Ošetřená předvolba
     "servesCuisine" => ["American", "BBQ", "Burgers", "Steaks"],
     "priceRange" => "$$",
-    "hasMenu" => "https://americapodvezi.cz/#stale-menu",
+    "hasMenu" => "https://americapodvezi.cz/" . $menuPdfLink, // Odkaz přímo na PDF
     "acceptsReservations" => true,
     "aggregateRating" => [
         "@type" => "AggregateRating",
@@ -274,7 +264,6 @@ if (!empty($schemaHours)) {
     $schema['openingHoursSpecification'] = $schemaHours;
 }
 
-// BEZPEČNOSTNÍ OPRAVA: Ochrana proti XSS uvnitř JSON-LD script tagu
 $schemaJson = json_encode(
     $schema, 
     JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
@@ -300,22 +289,22 @@ if (!empty($boltLink)) {
     <meta name="theme-color" content="#d4a373">
     
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    
     <link rel="icon" type="image/png" href="favicon.png">
-    
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    
     <link rel="canonical" href="https://americapodvezi.cz/">
+    
     <title>America Pod Věží | Burger & BBQ Restaurant Mladá Boleslav</title>
     <meta name="description" content="Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.">
 
-    <meta property="og:type" content="restaurant.restaurant">
-    <meta property="restaurant:contact_info:street_address" content="Komenského náměstí 61">
-    <meta property="restaurant:contact_info:locality" content="Mladá Boleslav">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="cs_CZ">
+    <meta property="og:site_name" content="America Pod Věží">
     <meta property="og:url" content="https://americapodvezi.cz/">
     <meta property="og:title" content="America Pod Věží | Burger & BBQ Restaurant">
     <meta property="og:description" content="Přijďte ochutnat nejlepší burgery a BBQ v Mladé Boleslavi. Těšíme se na vás!">
     <meta property="og:image" content="https://americapodvezi.cz/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://americapodvezi.cz/">
@@ -335,7 +324,8 @@ if (!empty($boltLink)) {
     <link rel="stylesheet" href="fa/css/solid.min.css">
     <link rel="stylesheet" href="fa/css/brands.min.css">
 
-    <link rel="stylesheet" href="output.css">
+    <?php $cssVersion = file_exists(__DIR__ . '/output.css') ? filemtime(__DIR__ . '/output.css') : '1'; ?>
+    <link rel="stylesheet" href="output.css?v=<?= $cssVersion ?>">
 
     <style>
         .nav-backdrop {
@@ -345,7 +335,7 @@ if (!empty($boltLink)) {
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             opacity: 0;
-            transition: opacity 0s; /* Zvládáno přes JS */
+            transition: opacity 0s;
             z-index: -1;
             pointer-events: none;
         }
@@ -377,14 +367,11 @@ if (!empty($boltLink)) {
                 <button id="event-close" aria-label="Zavřít" class="absolute top-3 right-3 z-10 w-12 h-12 bg-brand-gold hover:bg-white text-black rounded-full flex items-center justify-center transition shadow-2xl group">
                     <i class="fas fa-times text-xl group-hover:rotate-90 transition-transform duration-300"></i>
                 </button>
-                
                 <img src="<?= $eventImagePath ?>" alt="Aktuální akce" class="w-full h-auto max-h-[90vh] object-contain rounded-sm shadow-2xl" loading="eager">
             </div>
         </div>
     </div>
-
     <script>
-    // Event popup logic - show once per session
     (function() {
         const popup = document.getElementById('event-popup');
         const closeBtn = document.getElementById('event-close');
@@ -395,29 +382,20 @@ if (!empty($boltLink)) {
             sessionStorage.setItem(sessionKey, 'true');
         }
         
-        // Check if already shown this session
         if (!sessionStorage.getItem(sessionKey)) {
-            // Wait for preloader to finish (2s animation + 0.5s buffer)
             setTimeout(function() {
                 popup.classList.remove('hidden');
             }, 2500);
         }
         
-        // Close on button click
         closeBtn.addEventListener('click', closePopup);
         
-        // Close on backdrop click
         popup.addEventListener('click', function(e) {
-            if (e.target === popup) {
-                closePopup();
-            }
+            if (e.target === popup) closePopup();
         });
         
-        // Close on ESC key
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && !popup.classList.contains('hidden')) {
-                closePopup();
-            }
+            if (e.key === 'Escape' && !popup.classList.contains('hidden')) closePopup();
         });
     })();
     </script>
@@ -484,7 +462,7 @@ if (!empty($boltLink)) {
                             <i class="fas fa-utensils text-sm sm:text-base"></i>
                             <span class="text-base sm:text-lg">DENNÍ MENU</span>
                         </a>
-                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="min-h-[64px] flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
+                        <a href="tel:<?= htmlspecialchars($phoneClean) ?>" class="min-h-[64px] flex-1 md:flex-none border-2 border-white/80 text-white font-bold font-heading px-2 sm:px-6 rounded hover:bg-white hover:text-black hover:border-white transition uppercase tracking-widest flex flex-col items-center justify-center transform hover:scale-105 duration-200 leading-none gap-1 whitespace-nowrap min-w-[140px]">
                             <span class="text-base sm:text-lg mt-1">REZERVACE</span>
                             <span class="text-[10px] sm:text-xs font-sans font-normal opacity-90"><i class="fas fa-phone-alt text-xs mr-1"></i> <?= htmlspecialchars($phone) ?></span>
                         </a>
@@ -543,7 +521,7 @@ if (!empty($boltLink)) {
                     </div>
 
                     <div class="flex justify-center mb-6 pb-6 border-b border-white/10">
-                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-8 py-4 rounded-sm transition duration-300 text-base font-bold font-heading tracking-wider uppercase shadow-lg">
+                        <a href="tel:<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-8 py-4 rounded-sm transition duration-300 text-base font-bold font-heading tracking-wider uppercase shadow-lg">
                             <i class="fas fa-phone-alt text-lg"></i> 
                             <span>Objednat s sebou: <?= htmlspecialchars($phone) ?></span>
                         </a>
@@ -589,7 +567,7 @@ if (!empty($boltLink)) {
                     </div>
                     <p id="menu-closed-message" class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto"></p>
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
+                        <a href="tel:<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
                             <i class="fas fa-phone-alt"></i> Informace: <?= htmlspecialchars($phone) ?>
                         </a>
                         <?php if ($dailyMenuUrl): ?>
@@ -610,7 +588,7 @@ if (!empty($boltLink)) {
                     <h3 class="text-2xl md:text-3xl font-heading font-bold text-white mb-4 tracking-wider uppercase">Menu není k dispozici</h3>
                     <p class="text-gray-300 font-light text-sm md:text-base mb-8 max-w-xl mx-auto">Omlouváme se, nepodařilo se načíst denní menu. Kontaktujte nás prosím telefonicky.</p>
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
+                        <a href="tel:<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase">
                             <i class="fas fa-phone-alt"></i> Zavolat: <?= htmlspecialchars($phone) ?>
                         </a>
                         <?php if ($dailyMenuUrl): ?>
@@ -642,8 +620,7 @@ if (!empty($boltLink)) {
                     Prohlédněte si naši kompletní nabídku burgerů z čerstvého masa, BBQ specialit z grilu, salátů a nápojů.
                 </p>
                 
-                <?php $pdfVersion = file_exists(__DIR__ . '/menu.pdf') ? filemtime(__DIR__ . '/menu.pdf') : '1'; ?>
-                <a href="menu.pdf?v=<?= $pdfVersion ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-black hover:bg-white px-8 py-4 rounded-sm transition duration-300 text-base md:text-lg font-bold font-heading tracking-widest uppercase shadow-[0_0_20px_rgba(212,163,115,0.3)] transform hover:scale-105">
+                <a href="<?= $menuPdfLink ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-black hover:bg-white px-8 py-4 rounded-sm transition duration-300 text-base md:text-lg font-bold font-heading tracking-widest uppercase shadow-[0_0_20px_rgba(212,163,115,0.3)] transform hover:scale-105">
                     <i class="fas fa-book-open"></i> Otevřít menu (PDF)
                 </a>
             </div>
@@ -767,84 +744,30 @@ if (!empty($boltLink)) {
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
     <section id="reservation" class="bg-[#050505] py-20 px-8 md:px-12 relative">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-10 scroll-wait">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="mb-10 scroll-wait">
                  <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
-                    Rezervace <span class="text-brand-gold">Akcí</span>
+                    Rezervace <span class="text-brand-gold">Stolů & Akcí</span>
                  </h2>
                  <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg mb-6"></div>
-                 <p class="text-gray-300 text-lg font-light leading-relaxed max-w-2xl mx-auto">
-                     Ať už chystáte narozeninovou oslavu, firemní večírek, nebo rodinné setkání, naše salonky jsou vám plně k dispozici. Vyplňte nezávaznou poptávku a my se vám co nejdříve ozveme s nabídkou rautu a termínu na míru.
+                 <p class="text-gray-300 text-lg font-light leading-relaxed max-w-2xl mx-auto mb-10">
+                     Chcete si rezervovat stůl na večer, nebo rovnou celý salonek pro narozeninovou oslavu či firemní večírek? <strong>Rezervace přijímáme výhradně telefonicky.</strong> Zavolejte nám a obratem s vámi domluvíme všechny detaily.
                  </p>
-            </div>
-            
-            <form id="reservation-form" method="POST" action="reservation.php" class="bg-white/5 border border-white/10 p-6 md:p-8 rounded-sm shadow-xl scroll-wait delay-100 max-w-3xl mx-auto">
-                <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
-                
-                <?php
-                // Display success/error messages
-                if (isset($_GET['reservation'])):
-                    $status = $_GET['reservation'];
-                    if ($status === 'success'):
-                ?>
-                    <div class="bg-green-900/30 border border-green-500/50 text-green-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3 animate-pulse">
-                        <i class="fas fa-check-circle text-lg"></i>
-                        <span class="text-sm">Děkujeme! Vaše poptávka byla odeslána. Brzy se vám ozveme.</span>
-                    </div>
-                <?php
-                    elseif ($status === 'error'):
-                ?>
-                    <div class="bg-red-900/30 border border-red-500/50 text-red-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
-                        <i class="fas fa-exclamation-triangle text-lg"></i>
-                        <span class="text-sm">Omlouváme se, nepodařilo se odeslat email. Zkuste to prosím později nebo nás kontaktujte telefonicky.</span>
-                    </div>
-                <?php
-                    elseif ($status === 'invalid'):
-                ?>
-                    <div class="bg-yellow-900/30 border border-yellow-500/50 text-yellow-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
-                        <i class="fas fa-info-circle text-lg"></i>
-                        <span class="text-sm">Zkontrolujte prosím vyplněné údaje a zkuste to znovu.</span>
-                    </div>
-                <?php
-                    elseif ($status === 'rate_limit'):
-                ?>
-                    <div class="bg-orange-900/30 border border-orange-500/50 text-orange-200 px-4 py-3 rounded-sm mb-6 flex items-center gap-3">
-                        <i class="fas fa-clock text-lg"></i>
-                        <span class="text-sm">Příliš mnoho pokusů. Zkuste to prosím za chvíli.</span>
-                    </div>
-                <?php
-                    endif;
-                endif;
-                ?>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div class="flex flex-col">
-                        <label for="res-name" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Jméno a příjmení</label>
-                        <input type="text" id="res-name" name="name" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="Např. Jan Novák">
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="res-phone" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Telefon</label>
-                        <input type="tel" id="res-phone" name="phone" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="+420 777 777 777">
-                    </div>
-                    <div class="flex flex-col">
-                        <label for="res-email" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">E-mail</label>
-                        <input type="email" id="res-email" name="email" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm" placeholder="jan@novak.cz">
-                    </div>
-                </div>
-                <div class="flex flex-col mb-6">
-                    <label for="res-note" class="text-brand-gold text-xs md:text-sm font-heading tracking-widest uppercase mb-2">Vaše představa (termín, počet osob, typ akce...)</label>
-                    <textarea id="res-note" name="note" rows="3" required class="bg-black/50 border border-white/20 text-white font-sans px-3 py-2.5 rounded-sm focus:outline-none focus:border-brand-gold transition placeholder-gray-600 text-sm resize-none" placeholder="Dobrý den, rádi bychom u vás uspořádali narozeninovou oslavu pro cca 20 lidí..."></textarea>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="bg-brand-gold text-black font-bold font-heading py-3 px-8 text-sm md:text-base rounded-sm hover:bg-white transition shadow-[0_0_15px_rgba(212,163,115,0.4)] uppercase tracking-widest transform hover:scale-105 duration-200 w-full sm:w-auto">
-                        <i class="fas fa-paper-plane mr-2"></i> Odeslat nezávaznou poptávku
-                    </button>
-                    <p class="text-gray-500 text-[10px] mt-3 font-light">Odesláním formuláře souhlasíte se zpracováním údajů pro vyřízení rezervace.</p>
-                </div>
-            </form>
+                 <div class="flex justify-center items-center scroll-wait delay-100">
+                    <a href="tel:<?= htmlspecialchars($phoneClean) ?>" class="bg-brand-gold text-black hover:bg-white transition px-10 py-5 rounded-sm flex items-center gap-5 group w-full sm:w-auto justify-center shadow-[0_0_20px_rgba(212,163,115,0.2)] transform hover:scale-105 duration-300">
+                        <div class="w-14 h-14 bg-black/10 rounded-full flex items-center justify-center group-hover:bg-brand-gold/20 transition">
+                            <i class="fas fa-phone-alt text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <span class="block text-xs font-heading uppercase tracking-widest mb-1 opacity-80">Zavolejte nám</span>
+                            <span class="block font-bold text-2xl md:text-3xl leading-none"><?= htmlspecialchars($phone) ?></span>
+                        </div>
+                    </a>
+                 </div>
+            </div>
         </div>
     </section>
-
 
     <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
 
@@ -874,11 +797,7 @@ if (!empty($boltLink)) {
                         </div>
                         <div>
                             <h3 class="text-white font-heading text-lg tracking-widest uppercase">Rezervace & Akce</h3>
-                            <div class="flex flex-col">
-                                <a href="tel:+420<?= htmlspecialchars($phoneClean) ?>" class="text-gray-300 text-lg font-bold hover:text-white transition"><?= htmlspecialchars($phone) ?></a>
-                                <a href="tel:+420<?= htmlspecialchars($phoneAltClean) ?>" class="text-brand-gold text-base font-bold hover:text-white transition"><?= htmlspecialchars($phoneAlt) ?></a>
-                            </div>
-                            <a href="mailto:<?= htmlspecialchars($email) ?>" class="text-sm text-gray-500 hover:text-white transition mt-1 block"><?= htmlspecialchars($email) ?></a>
+                            <a href="tel:<?= htmlspecialchars($phoneClean) ?>" class="text-gray-300 text-lg font-bold hover:text-white transition block mt-1"><?= htmlspecialchars($phone) ?></a>
                         </div>
                     </div>
                     <a href="https://www.facebook.com/profile.php?id=100063543104526" target="_blank" rel="noopener noreferrer" class="flex items-start gap-4 group cursor-pointer">
@@ -969,7 +888,7 @@ if (!empty($boltLink)) {
 
     <footer class="bg-black text-gray-500 py-6 text-center text-xs tracking-widest uppercase border-t border-white/10">
         <p>
-            © <span id="current-year"><?= date('Y') ?></span> America Pod Věží | <?= htmlspecialchars(str_replace(', ', ' | ', $address)) ?> | <a href="mailto:<?= htmlspecialchars($email) ?>" class="hover:text-brand-gold transition"><?= htmlspecialchars($email) ?></a>
+            © <span id="current-year"><?= date('Y') ?></span> America Pod Věží | <?= htmlspecialchars(str_replace(', ', ' | ', $address)) ?>
         </p>
         <p class="mt-4 text-[10px] text-gray-600 font-sans tracking-normal normal-case opacity-80">
             Provozovatel: America Pod Věží s.r.o. | IČO: 66773971 <br>
@@ -1003,88 +922,8 @@ if (!empty($boltLink)) {
         </div>
     </div>
 
-    <script src="script.js"></script>
-<script>
-const form = document.getElementById('reservation-form');
-
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Smaž chyby
-    document.querySelectorAll('.error-msg').forEach(el => el.remove());
-    document.querySelectorAll('.border-red-500').forEach(el => {
-        el.classList.remove('border-red-500');
-        el.classList.add('border-white/20');
-    });
-    
-    const name = document.getElementById('res-name');
-    const phone = document.getElementById('res-phone');
-    const email = document.getElementById('res-email');
-    const note = document.getElementById('res-note');
-    
-    let ok = true;
-    
-    if (name.value.trim().length < 2) {
-        showError(name, 'Jméno musí mít alespoň 2 znaky');
-        ok = false;
-    }
-    
-    if (phone.value.trim().length < 9 || !/^[\d\s\+\-\(\)]+$/.test(phone.value)) {
-        showError(phone, 'Telefon min. 9 číslic');
-        ok = false;
-    }
-    
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-        showError(email, 'Neplatný email');
-        ok = false;
-    }
-    
-    if (note.value.trim().length < 10) {
-        showError(note, 'Min. 10 znaků');
-        ok = false;
-    }
-    
-    if (!ok) return;
-    
-    // AJAX odeslání
-    const formData = new FormData(form);
-    const btn = form.querySelector('button[type="submit"]');
-    const btnText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = 'Odesílám...';
-    
-    fetch('reservation.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // SUCCESS
-            form.innerHTML = '<div class="text-center py-12"><div class="text-7xl mb-4">✅</div><h3 class="text-3xl font-bold text-brand-gold mb-3">Rezervace odeslána!</h3><p class="text-white/80 text-lg">Ozveme se vám co nejdříve.</p></div>';
-        } else {
-            // ERROR
-            btn.disabled = false;
-            btn.textContent = btnText;
-            alert('❌ ' + data.message);
-        }
-    })
-    .catch(error => {
-        btn.disabled = false;
-        btn.textContent = btnText;
-        alert('❌ Chyba připojení. Zkuste to prosím znovu nebo zavolejte.');
-    });
-});
-
-function showError(field, msg) {
-    field.classList.remove('border-white/20');
-    field.classList.add('border-red-500');
-    const err = document.createElement('span');
-    err.className = 'error-msg text-red-400 text-sm mt-1 block';
-    err.textContent = '⚠️ ' + msg;
-    field.parentElement.appendChild(err);
-}
-</script>
+    <?php $jsVersion = file_exists(__DIR__ . '/script.js') ? filemtime(__DIR__ . '/script.js') : '1'; ?>
+    <script src="script.js?v=<?= $jsVersion ?>"></script>
 
 </body>
 </html>

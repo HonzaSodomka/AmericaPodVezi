@@ -300,9 +300,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $currentData = loadData();
 
     $currentData['contact']['phone'] = $_POST['contact_phone'] ?? '';
-    $currentData['contact']['phone_alt'] = $_POST['contact_phone_alt'] ?? '';
-    $currentData['contact']['email'] = $_POST['contact_email'] ?? '';
-    $currentData['contact']['email_reservation'] = $_POST['contact_email_reservation'] ?? '';
     $currentData['contact']['address'] = $_POST['contact_address'] ?? '';
 
     $currentData['rating']['value'] = (float)($_POST['rating_value'] ?? 4.5);
@@ -612,9 +609,9 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                         <i class="fas fa-sync-alt"></i> Načíst menu nyní
                     </button>
                 </form>
-                <a href="https://america.webresent.cz" target="_blank" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
-                    <i class="fas fa-external-link-alt"></i> Zobrazit web
-                </a>
+                <a href="https://americapodvezi.cz" target="_blank" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
+    <i class="fas fa-external-link-alt"></i> Zobrazit web
+</a>
                 <a href="admin.php?logout=1" class="inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition">
                     <i class="fas fa-sign-out-alt"></i> Odhlásit se
                 </a>
@@ -681,32 +678,14 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                     </h2>
                 </div>
                 <div class="p-4 sm:p-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 gap-4">
                         <div class="flex flex-col">
                             <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
-                                <i class="fas fa-phone text-xs"></i> Hlavní Telefon
+                                <i class="fas fa-phone text-xs"></i> Telefon
                             </label>
                             <input type="text" name="contact_phone" value="<?= val($data, 'contact', 'phone') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base">
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
-                                <i class="fas fa-phone text-xs"></i> Alternativní Telefon
-                            </label>
-                            <input type="text" name="contact_phone_alt" value="<?= val($data, 'contact', 'phone_alt') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base">
-                        </div>
-                        <div class="flex flex-col">
-                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
-                                <i class="fas fa-envelope text-xs"></i> E-mail
-                            </label>
-                            <input type="email" name="contact_email" value="<?= val($data, 'contact', 'email') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base">
-                        </div>
-                        <div class="flex flex-col">
-                            <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
-                                <i class="fas fa-calendar-check text-xs"></i> E-mail na Rezervace
-                            </label>
-                            <input type="email" name="contact_email_reservation" value="<?= val($data, 'contact', 'email_reservation') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base" placeholder="rezervace@...">
-                        </div>
-                        <div class="flex flex-col sm:col-span-2">
                             <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
                                 <i class="fas fa-map-marker-alt text-xs"></i> Adresa
                             </label>
