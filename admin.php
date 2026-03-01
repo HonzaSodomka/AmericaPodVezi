@@ -129,7 +129,7 @@ if (needsSetup()) {
     <html lang="cs">
     <head><meta charset="UTF-8"><meta name="robots" content="noindex"><title>Nastavení | Administrace</title><link rel="stylesheet" href="output.css"></head>
     <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center">
-        <form method="POST" class="bg-white/5 p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
+        <form method="POST" class="bg-white/5 p-10 sm:p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <input type="hidden" name="action" value="setup">
             <h1 class="text-2xl font-heading text-brand-gold mb-2 uppercase tracking-widest text-center">Vítejte!</h1>
@@ -139,14 +139,14 @@ if (needsSetup()) {
             <?php endif; ?>
             <div class="mb-4">
                 <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Nové heslo</label>
-                <input type="password" name="setup_password" minlength="8" class="w-full bg-black/50 border border-white/20 px-4 py-3 text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus required>
+                <input type="password" name="setup_password" minlength="8" class="w-full bg-black/50 border border-white/20 px-5 py-4 text-lg text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus required>
                 <p class="text-xs text-gray-500 mt-1">Minimálně 8 znaků</p>
             </div>
             <div class="mb-6">
                 <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Heslo znovu</label>
-                <input type="password" name="setup_password_confirm" minlength="8" class="w-full bg-black/50 border border-white/20 px-4 py-3 text-white rounded-sm focus:border-brand-gold focus:outline-none transition" required>
+                <input type="password" name="setup_password_confirm" minlength="8" class="w-full bg-black/50 border border-white/20 px-5 py-4 text-lg text-white rounded-sm focus:border-brand-gold focus:outline-none transition" required>
             </div>
-            <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-3 rounded-sm hover:bg-white transition">Nastavit heslo</button>
+            <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-5 text-lg rounded-sm hover:bg-white transition">Nastavit heslo</button>
         </form>
     </body>
     </html>
@@ -236,7 +236,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     <html lang="cs">
     <head><meta charset="UTF-8"><meta name="robots" content="noindex"><title>Login | Administrace</title><link rel="stylesheet" href="output.css"></head>
     <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center">
-        <form method="POST" class="bg-white/5 p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
+        <form method="POST" class="bg-white/5 p-10 sm:p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <h1 class="text-2xl font-heading text-brand-gold mb-6 uppercase tracking-widest text-center">Administrace</h1>
             <?php if (!empty($loginError)): ?>
@@ -244,9 +244,9 @@ if (empty($_SESSION['admin_logged_in'])) {
             <?php endif; ?>
             <div class="mb-6">
                 <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Heslo</label>
-                <input type="password" name="login_password" class="w-full bg-black/50 border border-white/20 px-4 py-3 text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus>
+                <input type="password" name="login_password" class="w-full bg-black/50 border border-white/20 px-5 py-4 text-lg text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus>
             </div>
-            <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-3 rounded-sm hover:bg-white transition">Přihlásit</button>
+            <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-5 text-lg rounded-sm hover:bg-white transition">Přihlásit</button>
         </form>
     </body>
     </html>
