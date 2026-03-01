@@ -123,6 +123,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'setup') {
 }
 
 // --- SETUP SCREEN ---
+// --- SETUP SCREEN ---
 if (needsSetup()) {
     ?>
     <!DOCTYPE html>
@@ -131,44 +132,34 @@ if (needsSetup()) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex">
-        <title>Setup | Admin</title>
+        <title>Nastavení | Administrace</title>
         <link rel="stylesheet" href="output.css">
     </head>
     <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center p-4">
-        <form method="POST" class="w-full max-w-[400px] bg-[#0A0A0A] border border-white/10 p-8 shadow-2xl">
+        <form method="POST" class="bg-white/5 p-10 sm:p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <input type="hidden" name="action" value="setup">
-            
-            <h1 class="text-xl font-heading text-brand-gold mb-8 uppercase tracking-[0.3em] border-b border-white/10 pb-4">Initialize Admin</h1>
-
+            <h1 class="text-3xl sm:text-2xl font-heading text-brand-gold mb-4 sm:mb-2 uppercase tracking-widest text-center">Vítejte!</h1>
+            <p class="text-gray-400 text-base sm:text-sm text-center mb-8 sm:mb-6">Nastavte si heslo pro přístup do administrace</p>
             <?php if (!empty($setupError)): ?>
-                <div class="bg-red-500/10 border-l-2 border-red-500 text-red-200 px-4 py-3 mb-6 text-sm italic"><?= htmlspecialchars($setupError) ?></div>
+                <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 text-sm"><?= htmlspecialchars($setupError) ?></div>
             <?php endif; ?>
-
-            <div class="space-y-6">
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase tracking-widest mb-2 block font-bold">New Password</label>
-                    <input type="password" name="setup_password" minlength="8" 
-                           class="w-full bg-black border border-white/10 px-4 py-3 text-white focus:border-brand-gold outline-none transition-all" autofocus required>
-                </div>
-
-                <div>
-                    <label class="text-[10px] text-gray-500 uppercase tracking-widest mb-2 block font-bold">Confirm Password</label>
-                    <input type="password" name="setup_password_confirm" minlength="8" 
-                           class="w-full bg-black border border-white/10 px-4 py-3 text-white focus:border-brand-gold outline-none transition-all" required>
-                </div>
-
-                <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-4 mt-4 hover:bg-white transition-colors duration-300">
-                    Set Credentials
-                </button>
+            <div class="mb-6">
+                <label class="text-brand-gold text-[12px] sm:text-[10px] uppercase tracking-widest mb-3 block font-bold">Nové heslo</label>
+                <input type="password" name="setup_password" minlength="8" class="w-full bg-black/50 border border-white/20 px-5 py-5 sm:py-3 text-xl sm:text-base text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus required>
+                <p class="text-xs text-gray-500 mt-2 uppercase">Minimálně 8 znaků</p>
             </div>
+            <div class="mb-10 sm:mb-6">
+                <label class="text-brand-gold text-[12px] sm:text-[10px] uppercase tracking-widest mb-3 block font-bold">Heslo znovu</label>
+                <input type="password" name="setup_password_confirm" minlength="8" class="w-full bg-black/50 border border-white/20 px-5 py-5 sm:py-3 text-xl sm:text-base text-white rounded-sm focus:border-brand-gold focus:outline-none transition" required>
+            </div>
+            <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-6 sm:py-3 text-lg sm:text-base rounded-sm hover:bg-white transition">Nastavit heslo</button>
         </form>
     </body>
     </html>
     <?php
     exit;
 }
-
 // --- ZABEZPEČENÍ: Změna hesla ---
 if (isset($_POST['action']) && $_POST['action'] === 'change_password') {
     if (!isset($_SESSION['admin_logged_in'])) {
@@ -246,7 +237,6 @@ if (isset($_GET['logout'])) {
     exit;
 }
 // --- LOGIN SCREEN ---
-// --- LOGIN SCREEN ---
 if (empty($_SESSION['admin_logged_in'])) {
     ?>
     <!DOCTYPE html>
@@ -255,39 +245,22 @@ if (empty($_SESSION['admin_logged_in'])) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex">
-        <title>Login | Admin</title>
+        <title>Login | Administrace</title>
         <link rel="stylesheet" href="output.css">
     </head>
     <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-[380px]">
-            <form method="POST" class="bg-[#0A0A0A] border border-white/10 p-8 shadow-2xl">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                
-                <div class="mb-10 text-center">
-                    <h1 class="text-lg font-heading text-white uppercase tracking-[0.4em]">Admin Access</h1>
-                    <div class="h-[1px] w-12 bg-brand-gold mx-auto mt-4"></div>
-                </div>
-
-                <?php if (!empty($loginError)): ?>
-                    <div class="text-red-500 text-xs text-center mb-6 italic"><?= htmlspecialchars($loginError) ?></div>
-                <?php endif; ?>
-
-                <div class="space-y-8">
-                    <div class="relative">
-                        <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block">System Password</label>
-                        <input type="password" name="login_password" 
-                               class="w-full bg-transparent border-b border-white/20 py-2 text-xl text-white focus:border-brand-gold outline-none transition-all" autofocus>
-                    </div>
-
-                    <button type="submit" class="w-full border border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-black font-bold uppercase tracking-[0.2em] py-4 transition-all duration-300">
-                        Authorize
-                    </button>
-                </div>
-            </form>
-            <p class="text-center mt-8">
-                <a href="https://americapodvezi.cz" class="text-[10px] text-gray-600 hover:text-white uppercase tracking-widest transition-colors">Return to Terminal</a>
-            </p>
-        </div>
+        <form method="POST" class="bg-white/5 p-10 sm:p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+            <h1 class="text-3xl sm:text-2xl font-heading text-brand-gold mb-8 sm:mb-6 uppercase tracking-widest text-center">Administrace</h1>
+            <?php if (!empty($loginError)): ?>
+                <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 text-sm"><?= htmlspecialchars($loginError) ?></div>
+            <?php endif; ?>
+            <div class="mb-10 sm:mb-6">
+                <label class="text-brand-gold text-[12px] sm:text-[10px] uppercase tracking-widest mb-3 block font-bold">Heslo</label>
+                <input type="password" name="login_password" class="w-full bg-black/50 border border-white/20 px-5 py-5 sm:py-3 text-xl sm:text-base text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus>
+            </div>
+            <button type="submit" class="w-full bg-brand-gold text-black font-bold uppercase tracking-widest py-6 sm:py-3 text-lg sm:text-base rounded-sm hover:bg-white transition">Přihlásit</button>
+        </form>
     </body>
     </html>
     <?php
