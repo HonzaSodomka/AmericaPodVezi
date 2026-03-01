@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /uploads/
+Disallow: /fa/
+
+Sitemap: https://americapodvezi.cz/sitemap.xml
