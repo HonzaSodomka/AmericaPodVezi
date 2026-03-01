@@ -35,6 +35,56 @@ function needsSetup() {
     return getPasswordHash() === null;
 }
 
+// --- ZMENŠENÍ FOTEK GALERIE ---
+function processAndSaveImage($tmpName, $ext, $destination, $maxDim = 1200) {
+    if (!extension_loaded('gd')) return move_uploaded_file($tmpName, $destination);
+    
+    if ($ext === 'jpg' || $ext === 'jpeg') $img = @imagecreatefromjpeg($tmpName);
+    elseif ($ext === 'png') $img = @imagecreatefrompng($tmpName);
+    elseif ($ext === 'webp') $img = @imagecreatefromwebp($tmpName);
+    else return false;
+    
+    if (!$img) return move_uploaded_file($tmpName, $destination);
+    
+    $width = imagesx($img); $height = imagesy($img);
+    if ($width > $maxDim || $height > $maxDim) {
+        $newWidth = $width > $height ? $maxDim : (int)($width * ($maxDim / $height));
+        $newHeight = $width > $height ? (int)($height * ($maxDim / $width)) : $maxDim;
+        
+        $newImg = imagecreatetruecolor($newWidth, $newHeight);
+        if ($ext === 'png' || $ext === 'webp') {
+            imagealphablending($newImg, false); imagesavealpha($newImg, true);
+            imagefilledrectangle($newImg, 0, 0, $newWidth, $newHeight, imagecolorallocatealpha($newImg, 255, 255, 255, 127));
+        }
+        imagecopyresampled($newImg, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+        imagedestroy($img); $img = $newImg;
+    }
+    
+    $success = false;
+    if ($ext === 'jpg' || $ext === 'jpeg') $success = imagejpeg($img, $destination, 85);
+    elseif ($ext === 'png') $success = imagepng($img, $destination, 8);
+    elseif ($ext === 'webp') $success = imagewebp($img, $destination, 85);
+    imagedestroy($img); return $success;
+}
+
+// --- MAZÁNÍ Z GALERIE ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_gallery') {
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Neplatný CSRF token.');
+    }
+    $index = (int)($_POST['image_index'] ?? -1);
+    $currentData = loadData();
+    if ($index >= 0 && isset($currentData['gallery'][$index])) {
+        $file = __DIR__ . '/' . $currentData['gallery'][$index];
+        if (file_exists($file)) unlink($file);
+        array_splice($currentData['gallery'], $index, 1);
+        
+        copy($dataFile, $dataFile . '.bak');
+        file_put_contents($dataFile, json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT), LOCK_EX);
+    }
+    header('Location: admin.php?saved=1'); exit;
+}
+
 // --- SETUP: Počáteční nastavení hesla ---
 if (isset($_POST['action']) && $_POST['action'] === 'setup') {
     if (!needsSetup()) {
@@ -430,6 +480,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         'image_file' => $eventImageFile
     ];
 
+    // --- ULOŽENÍ FOTOGALERIE ---
+    $gallery = $currentData['gallery'] ?? [];
+    if (isset($_FILES['gallery_images'])) {
+        $fileCount = is_array($_FILES['gallery_images']['name']) ? count($_FILES['gallery_images']['name']) : 0;
+        for ($i = 0; $i < $fileCount; $i++) {
+            if (count($gallery) >= 10) break; // Limit 10 fotek
+            
+            if ($_FILES['gallery_images']['error'][$i] === UPLOAD_ERR_OK) {
+                $ext = strtolower(pathinfo($_FILES['gallery_images']['name'][$i], PATHINFO_EXTENSION));
+                if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $filename = 'gallery-' . time() . '-' . $i . '.' . $ext;
+                    if (processAndSaveImage($_FILES['gallery_images']['tmp_name'][$i], $ext, $uploadsDir . $filename, 1200)) {
+                        $gallery[] = 'uploads/' . $filename;
+                    }
+                }
+            }
+        }
+    }
+    $currentData['gallery'] = $gallery;
+
     $jsonString = json_encode($currentData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
     
     // PŘIDEJ TENTO ŘÁDEK: Vytvoření zálohy před přepisem
@@ -610,8 +680,8 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                     </button>
                 </form>
                 <a href="https://americapodvezi.cz" target="_blank" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
-    <i class="fas fa-external-link-alt"></i> Zobrazit web
-</a>
+                    <i class="fas fa-external-link-alt"></i> Zobrazit web
+                </a>
                 <a href="admin.php?logout=1" class="inline-flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition">
                     <i class="fas fa-sign-out-alt"></i> Odhlásit se
                 </a>
@@ -674,6 +744,48 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
             <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
                 <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
                     <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
+                        <i class="fas fa-camera text-brand-gold"></i> Fotogalerie
+                    </h2>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <p class="text-gray-400 text-sm mb-4">Nahoře nahrajte fotky na web (max. 10 celkem). Fotky z mobilu se automaticky zmenší a zrychlí.</p>
+                    
+                    <?php 
+                    $currentGalleryCount = count($data['gallery'] ?? []); 
+                    $remaining = 10 - $currentGalleryCount;
+                    ?>
+                    
+                    <?php if ($remaining > 0): ?>
+                    <div class="mb-6">
+                        <input type="file" name="gallery_images[]" accept="image/png, image/jpeg, image/jpg, image/webp" multiple class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-bold file:bg-brand-gold file:text-black hover:file:bg-white file:transition file:cursor-pointer bg-black/50 border border-white/20 rounded-sm cursor-pointer">
+                        <p class="text-xs text-gray-500 mt-2">Můžete nahrát ještě <?= $remaining ?> fotek. (Můžete vybrat více souborů najednou).</p>
+                    </div>
+                    <?php else: ?>
+                    <div class="mb-6 bg-yellow-900/30 border border-yellow-600/50 p-3 rounded-sm text-yellow-500 text-sm">
+                        Dosažen maximální počet 10 fotek. Pro nahrání nových musíte nějaké smazat.
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if ($currentGalleryCount > 0): ?>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4">
+                        <?php foreach (($data['gallery'] ?? []) as $index => $img): ?>
+                            <div class="relative group aspect-square rounded-sm overflow-hidden border border-white/10 bg-black">
+                                <img src="<?= htmlspecialchars($img) ?>?v=<?= time() ?>" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button type="button" onclick="deleteGalleryImage(<?= $index ?>)" class="bg-red-500 hover:bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center transform hover:scale-110 transition shadow-lg">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+
+            <section class="bg-white/5 border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+                <div class="bg-white/5 px-4 sm:px-6 py-4 border-b border-white/10">
+                    <h2 class="text-lg sm:text-xl font-heading text-white tracking-wider uppercase flex items-center gap-2">
                         <i class="fas fa-address-book text-brand-gold"></i> Kontakty
                     </h2>
                 </div>
@@ -681,7 +793,7 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                     <div class="grid grid-cols-1 gap-4">
                         <div class="flex flex-col">
                             <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 flex items-center gap-1">
-                                <i class="fas fa-phone text-xs"></i> Telefon
+                                <i class="fas fa-phone text-xs"></i> Telefon pro rezervace
                             </label>
                             <input type="text" name="contact_phone" value="<?= val($data, 'contact', 'phone') ?>" class="bg-black/50 border border-white/20 text-white px-3 py-2.5 rounded-sm focus:border-brand-gold focus:ring-1 focus:ring-brand-gold focus:outline-none transition text-sm sm:text-base">
                         </div>
@@ -757,9 +869,8 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
                     </h2>
                 </div>
                 <div class="p-4 sm:p-6 space-y-4">
-                    <p class="text-gray-400 text-sm">Zde můžete nahrát aktuální verzi stálého jídelního lístku ve formátu PDF. Původní soubor se automaticky přepíše.</p>
+                    <p class="text-gray-400 text-sm">Zde můžete nahrát aktuální verzi stálého jídelního lístku ve formátu PDF.</p>
                     <div>
-                        <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Nový PDF soubor</label>
                         <input type="file" name="menu_pdf" accept="application/pdf" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-bold file:bg-brand-gold file:text-black hover:file:bg-white file:transition file:cursor-pointer bg-black/50 border border-white/20 rounded-sm cursor-pointer">
                     </div>
                     <?php if (file_exists(__DIR__ . '/menu.pdf')): ?>
@@ -1180,6 +1291,19 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
     function syncExceptionsJson() {
         document.getElementById('exceptionsJson').value = JSON.stringify(exceptionsData);
     }
+
+    // FOTOGALERIE MAZÁNÍ
+    window.deleteGalleryImage = function(index) {
+        if(!confirm('Opravdu smazat tuto fotku z galerie?')) return;
+        const form = document.getElementById('adminForm');
+        form.querySelector('input[name="action"]').value = 'delete_gallery';
+        const idxInput = document.createElement('input');
+        idxInput.type = 'hidden';
+        idxInput.name = 'image_index';
+        idxInput.value = index;
+        form.appendChild(idxInput);
+        form.submit();
+    };
 
     // ===== EVENT IMAGE HANDLER (FILE-BASED) =====
     const eventImageInput = document.getElementById('eventImageInput');

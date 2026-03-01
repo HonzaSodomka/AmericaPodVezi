@@ -44,6 +44,7 @@ function initApp() {
     initStickyNavbar();
     initDynamicScrollPadding();
     initDailyMenuLoader();
+    initGallery();
 }
 
 function initHeroHeightFix() {
@@ -364,9 +365,6 @@ function initConsentAndMaps() {
     apply();
 }
 
-/**
- * Daily Menu Loader with Navigation
- */
 function initDailyMenuLoader() {
     const loadingEl = document.getElementById('menu-loading');
     const displayEl = document.getElementById('menu-display');
@@ -393,7 +391,6 @@ function initDailyMenuLoader() {
                     return;
                 }
                 
-                // Zavřeno nebo prázdné?
                 if (data.is_closed || data.is_empty) {
                     document.getElementById('menu-date-closed').textContent = data.date || '';
                     document.getElementById('menu-closed-message').textContent = 
@@ -404,28 +401,20 @@ function initDailyMenuLoader() {
                     
                     if (prevBtnClosed) {
                         prevBtnClosed.disabled = !data.navigation.has_prev;
-                        prevBtnClosed.onclick = () => {
-                            currentDayOffset--;
-                            loadMenu(currentDayOffset);
-                        };
+                        prevBtnClosed.onclick = () => { currentDayOffset--; loadMenu(currentDayOffset); };
                     }
                     
                     if (nextBtnClosed) {
                         nextBtnClosed.disabled = !data.navigation.has_next;
-                        nextBtnClosed.onclick = () => {
-                            currentDayOffset++;
-                            loadMenu(currentDayOffset);
-                        };
+                        nextBtnClosed.onclick = () => { currentDayOffset++; loadMenu(currentDayOffset); };
                     }
                     
                     showState(closedEl);
                     return;
                 }
                 
-                // Zobraz menu
                 document.getElementById('menu-date').textContent = data.date || 'Menu';
                 
-                // Polévka
                 const soupSection = document.getElementById('soup-section');
                 if (data.soup) {
                     document.getElementById('soup-name').textContent = data.soup.name;
@@ -435,7 +424,6 @@ function initDailyMenuLoader() {
                     soupSection.classList.add('hidden');
                 }
                 
-                // Jídla - OPRAVENÝ LAYOUT s odděleným číslem
                 const mealsContainer = document.getElementById('meals-content');
                 mealsContainer.innerHTML = '';
                 
@@ -444,10 +432,7 @@ function initDailyMenuLoader() {
                         const mealDiv = document.createElement('div');
                         mealDiv.className = 'flex items-start gap-2 bg-black/30 p-4 rounded-sm hover:bg-black/40 transition';
                         
-                        // Struktura: [Číslo] [Text - flex-1] [Cena]
-                        const numberHtml = meal.number 
-                            ? `<span class="text-brand-gold font-bold shrink-0">${meal.number}.</span>` 
-                            : '';
+                        const numberHtml = meal.number ? `<span class="text-brand-gold font-bold shrink-0">${meal.number}.</span>` : '';
                         
                         mealDiv.innerHTML = `
                             ${numberHtml}
@@ -458,24 +443,17 @@ function initDailyMenuLoader() {
                     });
                 }
                 
-                // Navigation
                 const prevBtn = document.getElementById('menu-prev-day');
                 const nextBtn = document.getElementById('menu-next-day');
                 
                 if (prevBtn) {
                     prevBtn.disabled = !data.navigation.has_prev;
-                    prevBtn.onclick = () => {
-                        currentDayOffset--;
-                        loadMenu(currentDayOffset);
-                    };
+                    prevBtn.onclick = () => { currentDayOffset--; loadMenu(currentDayOffset); };
                 }
                 
                 if (nextBtn) {
                     nextBtn.disabled = !data.navigation.has_next;
-                    nextBtn.onclick = () => {
-                        currentDayOffset++;
-                        loadMenu(currentDayOffset);
-                    };
+                    nextBtn.onclick = () => { currentDayOffset++; loadMenu(currentDayOffset); };
                 }
                 
                 showState(displayEl);
@@ -486,21 +464,47 @@ function initDailyMenuLoader() {
             });
     };
     
-    // Načti dnešek
     loadMenu(0);
 }
 
-// --- DOKONALÝ SCROLL SPY (Zvýraznění menu) ---
+// LOGIKA PRO FOTOGALERII
+function initGallery() {
+    const carousel = document.getElementById('gallery-carousel');
+    const prevBtn = document.getElementById('gallery-prev');
+    const nextBtn = document.getElementById('gallery-next');
+    
+    if (!carousel || !prevBtn || !nextBtn) return;
+    
+    const updateButtons = () => {
+        prevBtn.disabled = carousel.scrollLeft <= 5;
+        nextBtn.disabled = carousel.scrollLeft >= (carousel.scrollWidth - carousel.clientWidth - 5);
+    };
+
+    const getScrollAmount = () => {
+        const item = carousel.querySelector('.snap-center');
+        return item ? item.offsetWidth + 24 : carousel.offsetWidth * 0.5;
+    };
+    
+    prevBtn.addEventListener('click', () => {
+        carousel.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        carousel.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    });
+    
+    carousel.addEventListener('scroll', updateButtons, { passive: true });
+    window.addEventListener('resize', updateButtons);
+    setTimeout(updateButtons, 100);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Vezmeme všechny sekce, které mají nějaké ID
     const sections = document.querySelectorAll('section[id]');
-    // Vezmeme všechny odkazy v PC navigaci i v mobilním menu
     const navLinks = document.querySelectorAll('#navbar a, #mobile-menu a');
 
     window.addEventListener('scroll', () => {
         let current = '';
 
-        // Zjistíme, nad kterou sekcí zrovna jsme (s posunem 150px kvůli horní liště)
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             if (window.scrollY >= sectionTop - 150) {
@@ -508,18 +512,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Projdeme všechny odkazy a obarvíme ten správný
         navLinks.forEach(link => {
-            // Nejprve všem sebereme zlatou barvu
             link.classList.remove('text-brand-gold');
             
             if (current) {
-                // Pokud jsme u nějaké sekce, obarvíme odkaz, který k ní vede
                 if (link.getAttribute('href') === `#${current}`) {
                     link.classList.add('text-brand-gold');
                 }
             } else {
-                // Pokud jsme úplně nahoře (nejsme u sekce), obarvíme odkaz "DOMŮ"
                 if (link.getAttribute('href') === '#') {
                     link.classList.add('text-brand-gold');
                 }
