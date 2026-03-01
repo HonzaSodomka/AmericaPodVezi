@@ -872,7 +872,7 @@ if (!empty($boltLink)) {
             © <span id="current-year"><?= date('Y') ?></span> America Pod Věží | <?= htmlspecialchars(str_replace(', ', ' | ', $address)) ?>
         </p>
         <p class="mt-4 text-[10px] text-gray-600 font-sans tracking-normal normal-case opacity-80">
-            Provozovatel: America Pod Věží s.r.o. | IČO: 66773971 <br>
+            Provozovatel: Zdeněk Vimi | IČO: 66773971 <br>
             <span class="mt-1 block uppercase tracking-widest opacity-60">Realizováno <a href="https://webresent.cz" target="_blank" rel="noopener noreferrer" class="text-brand-gold hover:underline">Webresent</a></span>
             &nbsp;|&nbsp;
             <a href="#" id="cookie-settings" class="hover:text-brand-gold transition normal-case">Změnit nastavení cookies</a>
