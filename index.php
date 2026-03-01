@@ -420,7 +420,7 @@ if (!empty($boltLink)) {
             <div class="hidden md:flex gap-10 lg:gap-12 items-center animate-enter delay-100">
                 <a href="#" class="nav-link font-heading">DOMŮ</a>
                 <a href="#denni-menu" class="nav-link font-heading">DENNÍ MENU</a>
-                <a href="<?= $menuPdfLink ?>" target="_blank" class="nav-link font-heading">STÁLÉ MENU</a>
+                <a href="#stale-menu" class="nav-link font-heading">STÁLÉ MENU</a>
                 <a href="#about" class="nav-link font-heading">O NÁS</a>
                 <?php if (!empty($data['gallery'])): ?>
                 <a href="#galerie" class="nav-link font-heading">GALERIE</a>
@@ -436,7 +436,7 @@ if (!empty($boltLink)) {
     <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-6 menu-closed backdrop-blur-xl md:hidden" role="dialog" aria-modal="true" aria-label="Navigační menu">
         <a href="#" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">DOMŮ</a>
         <a href="#denni-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">DENNÍ MENU</a>
-        <a href="<?= $menuPdfLink ?>" target="_blank" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">STÁLÉ MENU</a>
+        <a href="#stale-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">STÁLÉ MENU</a>
         <a href="#about" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">O NÁS</a>
         <?php if (!empty($data['gallery'])): ?>
         <a href="#galerie" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">GALERIE</a>
@@ -608,6 +608,50 @@ if (!empty($boltLink)) {
                             <i class="fas fa-external-link-alt"></i> Menicka.cz
                         </a>
                         <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
+
+    <section id="stale-menu" class="bg-[#050505] py-20 px-8 md:px-12 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-10 scroll-wait">
+                <h2 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
+                    Stálé <span class="text-brand-gold">Menu</span>
+                </h2>
+                <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg"></div>
+            </div>
+
+            <div class="max-w-3xl mx-auto bg-white/5 border border-white/10 p-8 md:p-12 rounded-sm shadow-xl text-center scroll-wait delay-100">
+                <i class="fas fa-file-pdf text-5xl md:text-6xl text-brand-gold mb-6 drop-shadow-lg"></i>
+                <h3 class="text-2xl md:text-3xl font-heading font-bold text-white tracking-wider uppercase mb-4">Náš jídelní a nápojový lístek</h3>
+                <p class="text-gray-400 mb-8 max-w-xl mx-auto font-light">
+                    Prohlédněte si naši kompletní nabídku burgerů z čerstvého masa, BBQ specialit z grilu, salátů a nápojů.
+                </p>
+                
+                <a href="<?= $menuPdfLink ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 bg-brand-gold text-black hover:bg-white px-8 py-4 rounded-sm transition duration-300 text-base md:text-lg font-bold font-heading tracking-widest uppercase shadow-[0_0_20px_rgba(212,163,115,0.3)] transform hover:scale-105">
+                    <i class="fas fa-book-open"></i> Otevřít menu (PDF)
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-10 scroll-wait">
+                <div class="relative h-56 md:h-72 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default delay-100">
+                    <div class="absolute inset-0 bg-cover bg-center bg-zebra" role="img" aria-label="Specialita podniku: BBQ žebra z grilu"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
+                    <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6">
+                        <span class="block text-brand-gold font-heading text-xs md:text-lg tracking-widest uppercase mb-0 md:mb-1">Speciality</span>
+                        <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Burgery, Quesadillas & BBQ</span>
+                    </div>
+                </div>
+                <div class="relative h-56 md:h-72 overflow-hidden rounded-sm border border-white/5 bg-gray-800 cursor-default delay-200">
+                    <div class="absolute inset-0 bg-cover bg-center bg-akce" role="img" aria-label="Catering a rauty pro firemní večírky"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent"></div>
+                    <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6">
+                        <span class="block text-brand-gold font-heading text-xs md:text-lg tracking-widest uppercase mb-0 md:mb-1">Catering</span>
+                        <span class="block text-white/70 text-[10px] md:text-sm font-light leading-tight">Oslavy & Akce</span>
                     </div>
                 </div>
             </div>
