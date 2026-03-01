@@ -129,10 +129,10 @@ if (needsSetup()) {
     <html lang="cs">
     <head><meta charset="UTF-8"><meta name="robots" content="noindex"><title>Nastavení | Administrace</title><link rel="stylesheet" href="output.css"></head>
     <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center">
-        <form method="POST" class="bg-white/5 p-10 sm:p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
+        <form method="POST" class="bg-white/5 p-12 sm:p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <input type="hidden" name="action" value="setup">
-            <h1 class="text-2xl font-heading text-brand-gold mb-2 uppercase tracking-widest text-center">Vítejte!</h1>
+            <h1 class="text-2xl font-heading text-brand-gold mb-4 uppercase tracking-widest text-center">Vítejte!</h1>
             <p class="text-gray-400 text-sm text-center mb-6">Nastavte si heslo pro přístup do administrace</p>
             <?php if (!empty($setupError)): ?>
                 <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 text-sm"><?= htmlspecialchars($setupError) ?></div>
@@ -236,13 +236,13 @@ if (empty($_SESSION['admin_logged_in'])) {
     <html lang="cs">
     <head><meta charset="UTF-8"><meta name="robots" content="noindex"><title>Login | Administrace</title><link rel="stylesheet" href="output.css"></head>
     <body class="bg-[#050505] text-white font-sans min-h-screen flex items-center justify-center">
-        <form method="POST" class="bg-white/5 p-10 sm:p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
+        <form method="POST" class="bg-white/5 p-12 sm:p-8 rounded-sm border border-white/10 w-full max-w-md shadow-2xl">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
             <h1 class="text-2xl font-heading text-brand-gold mb-6 uppercase tracking-widest text-center">Administrace</h1>
             <?php if (!empty($loginError)): ?>
                 <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-sm mb-6 text-sm"><?= htmlspecialchars($loginError) ?></div>
             <?php endif; ?>
-            <div class="mb-6">
+            <div class="mb-10">
                 <label class="text-brand-gold text-[10px] uppercase tracking-widest mb-2 block">Heslo</label>
                 <input type="password" name="login_password" class="w-full bg-black/50 border border-white/20 px-5 py-4 text-lg text-white rounded-sm focus:border-brand-gold focus:outline-none transition" autofocus>
             </div>
