@@ -190,7 +190,7 @@ if (isset($data['event'])) {
     }
 }
 
-// OPRAVENÉ Generování JSON-LD pro Google
+// Generování JSON-LD pro Google
 $schema = [
     "@context" => "https://schema.org",
     "@type" => "Restaurant",
@@ -200,7 +200,7 @@ $schema = [
     "description" => "Autentická americká restaurace v srdci Mladé Boleslavi. Burgery z čerstvého masa, BBQ žebra, steaky a skvělá atmosféra přímo pod věží.",
     "address" => [
         "@type" => "PostalAddress",
-        "streetAddress" => $streetOnly, // Jen ulice bez města
+        "streetAddress" => $streetOnly,
         "addressLocality" => "Mladá Boleslav",
         "postalCode" => "293 01",
         "addressCountry" => "CZ"
@@ -210,10 +210,10 @@ $schema = [
         "latitude" => 50.4149,
         "longitude" => 14.9120
     ],
-    "telephone" => $phoneClean, // Ošetřená předvolba
+    "telephone" => $phoneClean,
     "servesCuisine" => ["American", "BBQ", "Burgers", "Steaks"],
     "priceRange" => "$$",
-    "hasMenu" => "https://americapodvezi.cz/" . $menuPdfLink, // Odkaz přímo na PDF
+    "hasMenu" => "https://americapodvezi.cz/" . $menuPdfLink,
     "acceptsReservations" => true,
     "aggregateRating" => [
         "@type" => "AggregateRating",
@@ -414,7 +414,6 @@ if (!empty($boltLink)) {
                 <a href="#denni-menu" class="nav-link font-heading">DENNÍ MENU</a>
                 <a href="#stale-menu" class="nav-link font-heading">STÁLÉ MENU</a>
                 <a href="#about" class="nav-link font-heading">O NÁS</a>
-                <a href="#reservation" class="nav-link font-heading">REZERVACE</a>
                 <a href="#contact" class="nav-link font-heading">KONTAKT</a>
             </div>
             <button id="menu-btn" aria-label="Otevřít menu" aria-expanded="false" aria-controls="mobile-menu" class="text-white text-3xl focus:outline-none z-50 relative md:hidden animate-enter">
@@ -428,7 +427,6 @@ if (!empty($boltLink)) {
         <a href="#denni-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">DENNÍ MENU</a>
         <a href="#stale-menu" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">STÁLÉ MENU</a>
         <a href="#about" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">O NÁS</a>
-        <a href="#reservation" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">REZERVACE</a>
         <a href="#contact" class="text-3xl font-heading font-bold tracking-widest hover:text-brand-gold transition focus:outline-none">KONTAKT</a>
     </div>
 
@@ -704,17 +702,26 @@ if (!empty($boltLink)) {
                     <p class="text-gray-300 mb-6 leading-relaxed">
                         Zakládáme si na poctivé kuchyni. Naše vyhlášené <strong class="text-white">burgery připravujeme denně z čerstvě mletého masa</strong> a pečeme si vlastní housky. Ať už dostanete chuť na pořádný steak, BBQ žebra přímo z grilu, nebo jen "na jedno" (čepujeme Krušovice Bohém), u nás si přijdete na své.
                     </p>
-                    <div class="bg-white/5 p-6 rounded-sm border border-white/5 mb-8 text-left">
-                        <h3 class="text-brand-gold font-heading text-xl mb-3 border-b border-white/10 pb-2">Plánujete akci?</h3>
+                    
+                    <div id="reservation" class="bg-white/5 p-6 rounded-sm border border-white/5 mb-8 text-left scroll-mt-24">
+                        <h3 class="text-brand-gold font-heading text-xl mb-3 border-b border-white/10 pb-2">
+                            Rezervace stolů & Plánování akcí
+                        </h3>
                         <p class="text-gray-300 text-sm mb-4">
-                            Kromě restaurace nabízíme <strong>dva soukromé salonky</strong> (32 a 15 míst). Celková kapacita až 100 hostů je ideální pro svatby, firemní večírky i rodinné oslavy.
+                            Chcete si rezervovat stůl na večer? Nebo plánujete svatbu, firemní večírek či rodinnou oslavu? Nabízíme restauraci a <strong>dva soukromé salonky</strong> (celková kapacita až 100 hostů).
                         </p>
-                        <ul class="text-gray-400 text-sm space-y-2">
+                        <ul class="text-gray-400 text-sm space-y-2 mb-6">
                             <li class="flex items-center gap-2"><i class="fas fa-check text-brand-gold text-xs"></i> Rauty na míru (teplá i studená kuchyně)</li>
                             <li class="flex items-center gap-2"><i class="fas fa-check text-brand-gold text-xs"></i> Grilovací & BBQ speciality</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-beer text-brand-gold text-xs"></i> Čepované pivo & hudba na přání</li>
                         </ul>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <a href="tel:<?= htmlspecialchars($phoneClean) ?>" class="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-white text-black px-6 py-3 rounded-sm transition duration-300 text-sm font-bold font-heading tracking-wider uppercase shadow-lg transform hover:scale-105">
+                                <i class="fas fa-phone-alt"></i> Zavolejte nám: <?= htmlspecialchars($phone) ?>
+                            </a>
+                        </div>
                     </div>
+
                     <a href="https://www.google.com/search?q=America+Pod+V%C4%9B%C5%BE%C3%AD+recenze" target="_blank" rel="noopener noreferrer" class="bg-white/5 border border-white/10 rounded-sm p-4 inline-flex items-center gap-4 mb-6 hover:bg-white/10 transition cursor-pointer group">
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 uppercase tracking-wider mb-1">Hodnocení Google</span>
@@ -737,34 +744,6 @@ if (!empty($boltLink)) {
                         <i class="fab fa-google text-2xl text-gray-400 group-hover:text-brand-gold transition"></i>
                     </a>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="h-px w-full bg-gradient-to-r from-transparent via-brand-gold/80 to-transparent shadow-[0_0_15px_rgba(212,163,115,0.4)]"></div>
-
-    <section id="reservation" class="bg-[#050505] py-20 px-8 md:px-12 relative">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="mb-10 scroll-wait">
-                 <h2 class="text-3xl md:text-5xl font-heading font-bold text-white tracking-widest uppercase mb-2">
-                    Rezervace <span class="text-brand-gold">Stolů & Akcí</span>
-                 </h2>
-                 <div class="h-1 w-24 bg-brand-gold mx-auto shadow-lg mb-6"></div>
-                 <p class="text-gray-300 text-lg font-light leading-relaxed max-w-2xl mx-auto mb-10">
-                     Chcete si rezervovat stůl na večer, nebo rovnou celý salonek pro narozeninovou oslavu či firemní večírek? <strong>Rezervace přijímáme výhradně telefonicky.</strong> Zavolejte nám a obratem s vámi domluvíme všechny detaily.
-                 </p>
-
-                 <div class="flex justify-center items-center scroll-wait delay-100">
-                    <a href="tel:<?= htmlspecialchars($phoneClean) ?>" class="bg-brand-gold text-black hover:bg-white transition px-10 py-5 rounded-sm flex items-center gap-5 group w-full sm:w-auto justify-center shadow-[0_0_20px_rgba(212,163,115,0.2)] transform hover:scale-105 duration-300">
-                        <div class="w-14 h-14 bg-black/10 rounded-full flex items-center justify-center group-hover:bg-brand-gold/20 transition">
-                            <i class="fas fa-phone-alt text-2xl"></i>
-                        </div>
-                        <div class="text-left">
-                            <span class="block text-xs font-heading uppercase tracking-widest mb-1 opacity-80">Zavolejte nám</span>
-                            <span class="block font-bold text-2xl md:text-3xl leading-none"><?= htmlspecialchars($phone) ?></span>
-                        </div>
-                    </a>
-                 </div>
             </div>
         </div>
     </section>
