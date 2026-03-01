@@ -732,12 +732,12 @@ if (!empty($boltLink)) {
             
             <div class="relative max-w-6xl mx-auto scroll-wait delay-100 group">
                 <div id="gallery-carousel" class="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-6">
-                    <?php foreach ($data['gallery'] as $index => $img): ?>
-                        <div class="snap-start shrink-0 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.3333%-1rem)] h-[300px] md:h-[400px] relative rounded-sm overflow-hidden border border-white/10 shadow-2xl">
-                            <img src="<?= htmlspecialchars($img) ?>?v=<?= filemtime(__DIR__.'/'.$img) ?>" alt="Fotogalerie America Pod Věží" class="w-full h-full object-cover hover:scale-105 transition duration-700">
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+    <?php foreach ($data['gallery'] as $index => $img): ?>
+        <div class="snap-start shrink-0 w-[70vw] sm:w-[45vw] lg:w-[22vw] aspect-square relative rounded-sm overflow-hidden border border-white/10 shadow-2xl">
+            <img src="<?= htmlspecialchars($img) ?>?v=<?= filemtime(__DIR__.'/'.$img) ?>" alt="Galerie America Pod Věží" class="w-full h-full object-cover hover:scale-105 transition duration-700">
+        </div>
+    <?php endforeach; ?>
+</div>
                 
                 <button id="gallery-prev" aria-label="Předchozí fotka" class="absolute left-2 md:-left-6 top-[calc(50%-1.5rem)] bg-black/80 hover:bg-brand-gold text-brand-gold hover:text-black border border-brand-gold/30 hover:border-brand-gold w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 disabled:opacity-0 shadow-[0_0_15px_rgba(0,0,0,0.8)] z-10">
                     <i class="fas fa-chevron-left text-xl"></i>

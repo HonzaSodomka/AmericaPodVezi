@@ -768,17 +768,15 @@ if (!empty($eventImageFile) && file_exists(__DIR__ . '/' . $eventImageFile)) {
 
                     <?php if ($currentGalleryCount > 0): ?>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4">
-                        <?php foreach (($data['gallery'] ?? []) as $index => $img): ?>
-                            <div class="relative group aspect-square rounded-sm overflow-hidden border border-white/10 bg-black">
-                                <img src="<?= htmlspecialchars($img) ?>?v=<?= time() ?>" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <button type="button" onclick="deleteGalleryImage(<?= $index ?>)" class="bg-red-500 hover:bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center transform hover:scale-110 transition shadow-lg">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+    <?php foreach (($data['gallery'] ?? []) as $index => $img): ?>
+        <div class="relative aspect-square rounded-sm overflow-hidden border border-white/20 bg-black">
+            <img src="<?= htmlspecialchars($img) ?>?v=<?= time() ?>" class="w-full h-full object-cover">
+            <button type="button" onclick="deleteGalleryImage(<?= $index ?>)" class="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white w-7 h-7 rounded-sm flex items-center justify-center transition shadow-xl z-20">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+        </div>
+    <?php endforeach; ?>
+</div>
                     <?php endif; ?>
                 </div>
             </section>
